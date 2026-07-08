@@ -777,6 +777,11 @@ section p {
     flex-wrap: wrap;
     align-items: center;
     gap: 12px;
+    margin-bottom: 6px;
+}
+
+.manager-contact-row:last-child {
+    margin-bottom: 0;
 }
 
 .manager-contact-link {
