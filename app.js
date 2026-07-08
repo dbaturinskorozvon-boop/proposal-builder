@@ -2,24 +2,47 @@ const adminData = {
     managers: [
         {
             id: 1,
-            name: "Иванов Иван Иванович",
-            email: "ivanov@skorozvon.ru",
-            phone: "+7 (999) 123-45-67",
-            telegram: "@ivanov_skr",
-            max: "@ivanov_skr",
+            name: "Иванова Анна",
+            email: "aivanova@skorozvon.ru",
             photo: ""
         },
         {
             id: 2,
-            name: "Петрова Анна Сергеевна",
-            email: "petrova@skorozvon.ru",
-            phone: "+7 (999) 765-43-21",
-            telegram: "@petrova_skr",
-            max: "@petrova_skr",
+            name: "Белоусова Ксения",
+            email: "kabelousova@skorozvon.ru",
+            photo: ""
+        },
+        {
+            id: 3,
+            name: "Шелудченко Ксения",
+            email: "ksheludchenko@skorozvon.ru",
+            photo: ""
+        },
+        {
+            id: 4,
+            name: "Борисова Мария",
+            email: "mshherbakova@skorozvon.ru",
+            photo: ""
+        },
+        {
+            id: 5,
+            name: "Захарова Юлия",
+            email: "yzakharova@skorozvon.ru",
             photo: ""
         }
     ],
 
+    sharedContacts: {
+        phones: ["8 800 333 97 00", "+7 (495) 449-97-02"],
+        whatsapp: "+7 922 104 08 45",
+        whatsappNote: "Добавьте нас в контакты и напишите сообщение, чтобы мы смогли вам ответить",
+        telegram: "@skorozvon_tg",
+        telegramLink: "https://t.me/skorozvon_tg",
+        manual: {
+            url: "https://skorozvon.ru/manual",
+            label: "Полная и объемная инструкция по Скорозвону"
+        }
+    },
     clientProblems: [
         {
             id: "p1",
@@ -911,11 +934,32 @@ function updateManagerBlock() {
         photo.style.display = "none";
     }
 
+    const shared = adminData.sharedContacts;
     const contactItems = [];
-    if (manager.phone) contactItems.push(`<a href="tel:${manager.phone}" class="manager-contact">${manager.phone}</a>`);
-    if (manager.email) contactItems.push(`<a href="mailto:${manager.email}" class="manager-contact">${manager.email}</a>`);
-    if (manager.telegram) contactItems.push(`<span class="manager-contact">TG: ${manager.telegram}</span>`);
-    if (manager.max) contactItems.push(`<span class="manager-contact">MAX: ${manager.max}</span>`);
+
+    contactItems.push(`<a href="mailto:${manager.email}" class="manager-contact">${manager.email}</a>`);
+
+    shared.phones.forEach(phone => {
+        const cleanPhone = phone.replace(/\s/g, "");
+        contactItems.push(`<a href="tel:${cleanPhone}" class="manager-contact">${phone}</a>`);
+    });
+
+    contactItems.push(`
+        <span class="manager-contact">
+            WA / MAX: ${shared.whatsapp}
+            <span class="contact-note">${shared.whatsappNote}</span>
+        </span>
+    `);
+
+    contactItems.push(`
+        <span class="manager-contact">
+            TG: <a href="${shared.telegramLink}" target="_blank">${shared.telegram}</a>
+        </span>
+    `);
+
+    contactItems.push(`
+        <a href="${shared.manual.url}" target="_blank" class="manager-contact">${shared.manual.label}</a>
+    `);
 
     contacts.innerHTML = contactItems.join("");
 }

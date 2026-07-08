@@ -777,8 +777,20 @@ section p {
     color: var(--text);
     text-decoration: none;
     display: flex;
-    align-items: center;
-    gap: 5px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.manager-contact a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.manager-contact .contact-note {
+    font-size: 10px;
+    color: var(--text-muted);
+    line-height: 1.3;
 }
 
 .manager-logo {
