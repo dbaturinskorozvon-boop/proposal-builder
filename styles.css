@@ -737,7 +737,7 @@ section p {
     align-items: center;
 }
 
-.manager-card img {
+.manager-card .manager-photo {
     width: 80px;
     height: 80px;
     border-radius: 50%;
