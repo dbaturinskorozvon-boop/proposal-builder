@@ -804,8 +804,16 @@ section p {
 .contact-icon {
     flex-shrink: 0;
     fill: currentColor;
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
+}
+
+.messenger-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
 }
 
 .messenger-icons {
@@ -813,19 +821,12 @@ section p {
     align-items: center;
 }
 
-.messenger-icon {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
 .messenger-icon-first {
     z-index: 1;
 }
 
 .messenger-icon-second {
-    margin-left: -8px;
+    margin-left: -6px;
     z-index: 2;
 }
 
