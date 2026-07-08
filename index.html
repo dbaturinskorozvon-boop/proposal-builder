@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор коммерческих предложений Скорозвон</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Конструктор КП</h1>
+                <p class="subtitle">Соберите коммерческое предложение за пару минут</p>
+            </div>
+
+            <div class="form-section">
+                <h2>1. Менеджер и клиент</h2>
+                <label>
+                    <span>Менеджер</span>
+                    <select id="managerSelect">
+                        <option value="">Выберите менеджера</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Форма организации</span>
+                    <input type="text" id="clientOrgForm" placeholder="ООО, ИП, ЗАО..." value="ООО">
+                </label>
+                <label>
+                    <span>Название компании</span>
+                    <input type="text" id="clientName" placeholder="Ромашка">
+                </label>
+                <label>
+                    <span>Дата создания</span>
+                    <input type="date" id="proposalDate">
+                </label>
+                <label>
+                    <span>Действует до</span>
+                    <input type="date" id="validUntilDate">
+                </label>
+            </div>
+
+            <div class="form-section">
+                <h2>2. Задача клиента</h2>
+                <select id="clientProblemSelect">
+                    <option value="">Не выбрано</option>
+                    <option value="custom">Свой вариант</option>
+                </select>
+                <div id="customProblemWrapper" style="display: none; margin-top: 12px;">
+                    <textarea id="customProblemText" rows="3" placeholder="Опишите задачу клиента"></textarea>
+                </div>
+                <p class="field-hint">Задачи настраиваются в админке</p>
+            </div>
+
+            <div class="form-section">
+                <h2>3. Спецпредложение</h2>
+                <select id="specialOfferSelect">
+                    <option value="">Не выбрано</option>
+                </select>
+                <p class="field-hint">Выберите акционный пакет для клиента</p>
+            </div>
+
+            <div class="form-section" id="skorozvonSection">
+                <h2>4. Тарификация</h2>
+                <label>
+                    <span>Тариф</span>
+                    <select id="tariffSelect">
+                        <option value="basic">Базовый</option>
+                        <option value="pro" selected>Профессиональный</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Количество операторов</span>
+                    <input type="number" id="operatorsCount" min="1" value="3">
+                </label>
+                <label>
+                    <span>Период подписки</span>
+                    <select id="periodSelect">
+                        <option value="daily">Ежедневно</option>
+                        <option value="3" selected>3 месяца</option>
+                        <option value="6">6 месяцев</option>
+                        <option value="12">12 месяцев</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Количество минут в месяц</span>
+                    <input type="number" id="minutesCount" min="0" step="100" value="1000">
+                </label>
+                <label>
+                    <span>Модуль управления дозваниваемостью</span>
+                    <select id="moduleSelect">
+                        <option value="none">Не нужен</option>
+                        <option value="standard" selected>Модуль Standart</option>
+                        <option value="pro">Модуль PRO</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Количество входящих номеров</span>
+                    <input type="number" id="incomingNumbers" min="0" value="0">
+                </label>
+                <label>
+                    <span>Подключение входящей линии АТС в сервисе</span>
+                    <select id="incomingAtcSelect">
+                        <option value="none"></option>
+                        <option value="incoming_atc">Да</option>
+                    </select>
+                </label>
+
+                <label>
+                    <span>Подключение АТС (sip-trunk)</span>
+                    <select id="atcSelect">
+                        <option value="none">Не нужно</option>
+                        <option value="with_reg">С регистрацией</option>
+                        <option value="without_reg">Без регистрации</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Количество подключений АТС</span>
+                    <input type="number" id="atcCount" min="1" value="1">
+                </label>
+            </div>
+
+            <div class="form-section" id="featuresSection">
+                <h2>5. Дополнительные фичи</h2>
+                <div id="featuresList" class="checkbox-list"></div>
+            </div>
+
+            <div class="form-section" id="discoverySection" style="display: none;">
+                <h2>6. Дискавери-продукты</h2>
+                <div id="discoveryList" class="checkbox-list"></div>
+            </div>
+
+            <div class="form-section">
+                <h2>7. Бонусы</h2>
+                <div id="bonusesList" class="checkbox-list"></div>
+            </div>
+
+
+
+
+            <div class="sidebar-footer">
+                <button class="btn-primary" id="downloadPdf">Скачать PDF</button>
+            </div>
+        </aside>
+
+        <main class="preview-area">
+            <div class="preview-toolbar">
+                <span class="preview-label">Превью КП</span>
+                <button class="btn-secondary" id="printProposal">Печать / PDF</button>
+            </div>
+            <div class="preview-scroll">
+                <div class="proposal-page" id="proposalPreview">
+                    <header class="proposal-header">
+                        <div class="proposal-header-content">
+                            <p class="hero-label">Коммерческое предложение</p>
+                            <h1 id="previewHeaderTitle">
+                                <span class="header-line" id="previewClientNameLine">для компании <span id="previewOrgForm">ООО</span> «<span id="previewClientName">__________</span>»</span>
+                                <span class="header-line">по сервису Скорозвон</span>
+                            </h1>
+                            <p class="header-date-line">Дата отправки: <span id="previewCreatedDate"></span></p>
+                        </div>
+                        <div class="proposal-header-logo">
+                            <img src="logo-light.png" alt="Скорозвон" class="logo-img" onerror="this.style.display='none'">
+                        </div>
+                    </header>
+
+                    <section class="proposal-problem" id="problemSection" style="display: none;">
+                        <h2>Задача</h2>
+                        <p id="previewProblemText"></p>
+                    </section>
+
+                    <section class="proposal-special-offer" id="specialOfferSection" style="display: none;">
+                        <div class="special-offer-badge">Спецпредложение</div>
+                        <h2 id="previewSpecialOfferTitle"></h2>
+                        <p id="previewSpecialOfferDescription"></p>
+                        <div id="previewSpecialOfferBonuses"></div>
+                    </section>
+
+                    <section class="proposal-calc">
+                        <h2>Тарификация в сервисе</h2>
+                        
+                        <div class="license-table-wrap">
+                            <div class="license-table-caption">
+                                <span>1. Оплата лицензий в сервисе</span>
+                                <span class="license-tariff-name" id="previewTariffName">Тариф «Профессиональный»</span>
+                            </div>
+                            <table class="license-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Ежедневное списание</th>
+                                        <th>3 месяца</th>
+                                        <th>6 месяцев</th>
+                                        <th>12 месяцев</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="row-label">1 лицензия</td>
+                                        <td id="priceDailyPerLicense">150 ₽ в день</td>
+                                        <td id="price3mPerLicense">2 300 ₽/мес</td>
+                                        <td id="price6mPerLicense">2 000 ₽/мес</td>
+                                        <td id="price12mPerLicense">1 800 ₽/мес</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="row-label" id="licenseRowLabel">Итого за 2 лицензии</td>
+                                        <td id="priceDailyTotal">9 000</td>
+                                        <td id="price3mTotal">13 800</td>
+                                        <td id="price6mTotal">24 000</td>
+                                        <td id="price12mTotal">43 200</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="calc-details" id="calcDetails">
+                            <div class="calc-details-caption">2. Дополнительные услуги</div>
+                            <div id="calcDetailsList"></div>
+                        </div>
+
+                        <div class="calc-summary-row">
+                            <div class="calc-summary-label">Итого за <span id="previewPeriodLabel">3 месяца</span></div>
+                            <div class="calc-summary-value" id="previewCalcTotal">0 ₽</div>
+                        </div>
+                    </section>
+
+                    <section class="proposal-bonuses" id="bonusesSection">
+                        <h2>Бонусы и спецусловия</h2>
+                        <div id="previewBonuses"></div>
+                    </section>
+
+                    <section class="proposal-validity" id="validitySection" style="display: none;">
+                        <h2>Срок действия предложения</h2>
+                        <p id="previewValidityText"></p>
+                    </section>
+
+                    <section class="proposal-discovery" id="discoveryPreviewSection" style="display: none;">
+                        <h2>AI-инструменты Скорозвона</h2>
+                        <div id="previewDiscovery"></div>
+                    </section>
+
+                    <section class="proposal-about">
+                        <h2>Скорозвон — это облачный сервис для звонков</h2>
+                        <p>С 2012 года помогаем повышать эффективность отделов продаж и колл-центров по всему миру.</p>
+                        <p>Ключевым функционалом сервиса является предиктивный обзвон. Скорозвон звонит одновременно нескольким контактам из базы: как только какой-то контакт взял трубку, сервис соединяет его с менеджером, который освободился.</p>
+                        <p>При таком методе 1 менеджер совершает от <strong>250 разговорных звонков</strong> в день.</p>
+                    </section>
+
+                    <div class="two-columns">
+                        <section class="proposal-advantages">
+                            <h2>Преимущества Скорозвона</h2>
+                            <ul>
+                                <li>Отказоустойчивая сеть операторов связи</li>
+                                <li>Техническая поддержка 365 дней в году</li>
+                                <li>Возможность интеграции AmoCRM/Битрикс24 и по REST API</li>
+                                <li>Настройка скриптов для менеджеров</li>
+                                <li>Предиктивный диалер — высокая скорость обзвона, минимум простоев команды</li>
+                                <li>Высокое распознавание автоответчиков, ГПЯ и виртуальных ассистентов</li>
+                                <li>Распределение сотрудников на группы</li>
+                            </ul>
+                        </section>
+
+                        <section class="proposal-benefits">
+                            <h2>Использование сервиса Скорозвон позволяет</h2>
+                            <ul id="previewBenefitsList">
+                                <li>Сделать звонки на каждый номер из базы</li>
+                                <li>Повысить дозваниваемость на 70% и контактность базы — на 60%</li>
+                                <li>Увеличить количество разговоров 1 сотрудника от 150-250 в день</li>
+                                <li>Оптимизировать бюджет на оплату рабочего времени сотрудников</li>
+                                <li>Увеличить скорость обработки базы в 3 раза</li>
+                            </ul>
+                        </section>
+                    </div>
+
+                    <section class="proposal-manager" id="managerSection">
+                        <div class="manager-card">
+                            <img id="managerPhoto" src="" alt="" style="display: none;">
+                            <div class="manager-info">
+                                <div class="manager-name" id="managerName"></div>
+                                <div class="manager-position">Ваш персональный менеджер</div>
+                                <div class="manager-contacts" id="managerContacts"></div>
+                            </div>
+                            <div class="manager-logo">
+                                <img src="logo-dark.png?v=2" alt="Скорозвон" class="logo-img" onerror="this.style.display='none'">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
