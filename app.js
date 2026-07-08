@@ -912,6 +912,18 @@ function updateSpecialOffer() {
     `).join("");
 }
 
+function getIcon(name) {
+    const icons = {
+        email: `<svg viewBox="0 0 24 24" width="14" height="14" class="contact-icon"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`,
+        phone: `<svg viewBox="0 0 24 24" width="14" height="14" class="contact-icon"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>`,
+        whatsapp: `<svg viewBox="0 0 24 24" width="14" height="14" class="contact-icon"><path d="M16.6 14.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.5.1-.1.2-.6.8-.7.9-.1.1-.2.2-.4 0-.2-.1-.8-.3-1.5-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4.1-.1.2-.2.3-.3.1-.1.2-.2.2-.3.1-.1.1-.2 0-.3-.1-.1-.5-.7-.7-.9-.2-.2-.4-.2-.5-.2h-.4c-.2 0-.4.1-.6.3-.2.2-.7.7-.7 1.7s.7 1.9.8 2.1c.1.1 1.4 2.1 3.3 2.9 1.9.8 1.9.5 2.2.5.3-.1 1-.4 1.1-.8.2-.4.2-.8.2-.9-.1-.1-.2-.2-.4-.3zM12 2C6.5 2 2 6.5 2 12c0 2.3.7 4.4 2 6.1L2 22l3.9-1c1.6 1.2 3.7 1.9 5.9 1.9 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-2.1 0-4-.7-5.6-1.8l-.4-.3-2.4.6.6-2.4-.3-.4C2.8 13.7 2 11.9 2 10c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8z"/></svg>`,
+        max: `<svg viewBox="0 0 24 24" width="14" height="14" class="contact-icon"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 16V8h2.5l2 4.5 2-4.5H16v8h-1.5v-5.5L12.5 16H11l-2-5.5V16H7z" fill="white"/></svg>`,
+        telegram: `<svg viewBox="0 0 24 24" width="14" height="14" class="contact-icon"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.29l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.9-.74 1.12-1.5.7L12.6 16.2l-1.99 1.99c-.23.23-.42.42-.83.42z"/></svg>`,
+        manual: `<svg viewBox="0 0 24 24" width="14" height="14" class="contact-icon"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`
+    };
+    return icons[name] || "";
+}
+
 function updateManagerBlock() {
     const manager = getManager(state.managerId);
     const managerSection = document.getElementById("managerSection");
@@ -937,29 +949,25 @@ function updateManagerBlock() {
     const shared = adminData.sharedContacts;
     const contactItems = [];
 
-    contactItems.push(`<a href="mailto:${manager.email}" class="manager-contact manager-contact-link">${manager.email}</a>`);
+    contactItems.push(`<a href="mailto:${manager.email}" class="manager-contact manager-contact-link">${getIcon("email")}${manager.email}</a>`);
 
     shared.phones.forEach(phone => {
         const cleanPhone = phone.replace(/\s/g, "");
-        contactItems.push(`<a href="tel:${cleanPhone}" class="manager-contact manager-contact-link">${phone}</a>`);
+        contactItems.push(`<a href="tel:${cleanPhone}" class="manager-contact manager-contact-link">${getIcon("phone")}${phone}</a>`);
     });
 
     contactItems.push(`
-        <span class="manager-contact">
-            <span>WA / MAX: ${shared.whatsapp}</span>
+        <span class="manager-contact manager-contact-row">
+            <span class="manager-contact-item">${getIcon("whatsapp")}${shared.whatsapp}</span>
+            <span class="manager-contact-item">${getIcon("max")}MAX</span>
+            <a href="${shared.telegramLink}" target="_blank" class="manager-contact-item manager-contact-link">${getIcon("telegram")}${shared.telegram}</a>
             <span class="contact-note">${shared.whatsappNote}</span>
         </span>
     `);
 
     contactItems.push(`
-        <a href="${shared.telegramLink}" target="_blank" class="manager-contact manager-contact-link">
-            TG: ${shared.telegram}
-        </a>
-    `);
-
-    contactItems.push(`
         <a href="${shared.manual.url}" target="_blank" class="manager-contact manager-contact-link manager-contact-manual">
-            ${shared.manual.label}
+            ${getIcon("manual")}${shared.manual.label}
         </a>
     `);
 
