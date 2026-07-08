@@ -527,7 +527,7 @@ function populateFeatures() {
         let quantityInput = "";
         if (feature.period === "monthly_per_guest") {
             quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
+                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;"
                     <label>
                         <span>Количество гостевых доступов</span>
                         <input type="number" min="1" value="1" data-feature-quantity="${feature.id}">
@@ -538,7 +538,7 @@ function populateFeatures() {
 
         if (feature.price === null) {
             quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
+                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;"
                     <label>
                         <span>Стоимость, ₽</span>
                         <input type="number" min="0" step="1000" value="" placeholder="Укажите стоимость" data-feature-custom-price="${feature.id}">
@@ -552,7 +552,6 @@ function populateFeatures() {
                 <input type="checkbox" value="${feature.id}" data-type="feature">
                 <div class="item-info">
                     <div class="item-name">${feature.name}</div>
-                    <div class="item-desc">${feature.description}</div>
                 </div>
                 <div class="item-price">${priceLabel}</div>
             </label>
