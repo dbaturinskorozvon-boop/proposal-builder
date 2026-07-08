@@ -782,8 +782,13 @@ section p {
     gap: 2px;
 }
 
-.manager-contact a {
+.manager-contact-link {
     color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.manager-contact-link:hover {
     text-decoration: none;
 }
 
@@ -791,6 +796,11 @@ section p {
     font-size: 10px;
     color: var(--text-muted);
     line-height: 1.3;
+}
+
+.manager-contact-manual {
+    margin-top: 8px;
+    font-weight: 500;
 }
 
 .manager-logo {

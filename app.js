@@ -937,28 +937,30 @@ function updateManagerBlock() {
     const shared = adminData.sharedContacts;
     const contactItems = [];
 
-    contactItems.push(`<a href="mailto:${manager.email}" class="manager-contact">${manager.email}</a>`);
+    contactItems.push(`<a href="mailto:${manager.email}" class="manager-contact manager-contact-link">${manager.email}</a>`);
 
     shared.phones.forEach(phone => {
         const cleanPhone = phone.replace(/\s/g, "");
-        contactItems.push(`<a href="tel:${cleanPhone}" class="manager-contact">${phone}</a>`);
+        contactItems.push(`<a href="tel:${cleanPhone}" class="manager-contact manager-contact-link">${phone}</a>`);
     });
 
     contactItems.push(`
         <span class="manager-contact">
-            WA / MAX: ${shared.whatsapp}
+            <span>WA / MAX: ${shared.whatsapp}</span>
             <span class="contact-note">${shared.whatsappNote}</span>
         </span>
     `);
 
     contactItems.push(`
-        <span class="manager-contact">
-            TG: <a href="${shared.telegramLink}" target="_blank">${shared.telegram}</a>
-        </span>
+        <a href="${shared.telegramLink}" target="_blank" class="manager-contact manager-contact-link">
+            TG: ${shared.telegram}
+        </a>
     `);
 
     contactItems.push(`
-        <a href="${shared.manual.url}" target="_blank" class="manager-contact">${shared.manual.label}</a>
+        <a href="${shared.manual.url}" target="_blank" class="manager-contact manager-contact-link manager-contact-manual">
+            ${shared.manual.label}
+        </a>
     `);
 
     contacts.innerHTML = contactItems.join("");
