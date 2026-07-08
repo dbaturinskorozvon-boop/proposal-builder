@@ -591,7 +591,7 @@ function bindEvents() {
 
     document.getElementById("clientOrgForm").addEventListener("input", e => {
         state.clientOrgForm = e.target.value;
-        document.getElementById("previewOrgForm").textContent = state.clientOrgForm || "ООО";
+        document.getElementById("previewOrgForm").textContent = state.clientOrgForm;
         fitHeaderTitle();
     });
 
