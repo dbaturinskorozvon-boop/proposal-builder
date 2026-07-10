@@ -335,6 +335,7 @@ const state = {
     showDiscoveryTariffs: true,
     showCalculation: false,
     showClassicRobot: false,
+    showAiRobot: false,
     selectedSpecialOffer: "",
     selectedBonuses: [],
     clientProblemId: "",
@@ -896,6 +897,14 @@ function bindEvents() {
         });
     }
 
+    const aiRobotToggle = document.getElementById("aiRobotToggle");
+    if (aiRobotToggle) {
+        aiRobotToggle.addEventListener("change", e => {
+            state.showAiRobot = e.target.checked;
+            updatePreviewForTab();
+        });
+    }
+
     document.getElementById("printProposal").addEventListener("click", printProposal);
     document.getElementById("downloadPdf").addEventListener("click", printProposal);
 
@@ -1058,6 +1067,7 @@ function updatePreviewForTab() {
     const discoverySection = document.getElementById("discoveryTariffsPreviewSection");
     const calculationSection = document.getElementById("calculationPreviewSection");
     const classicRobotSection = document.getElementById("classicRobotPreviewSection");
+    const aiRobotSection = document.getElementById("aiRobotPreviewSection");
     const managerSection = document.getElementById("managerSection");
     const header = document.querySelector(".proposal-header");
 
@@ -1071,6 +1081,7 @@ function updatePreviewForTab() {
         if (discoverySection) discoverySection.style.display = state.showDiscoveryTariffs ? "block" : "none";
         if (calculationSection) calculationSection.style.display = state.showCalculation ? "block" : "none";
         if (classicRobotSection) classicRobotSection.style.display = state.showClassicRobot ? "block" : "none";
+        if (aiRobotSection) aiRobotSection.style.display = state.showAiRobot ? "block" : "none";
     } else {
         if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
         if (specialOfferSection) specialOfferSection.style.display = state.selectedSpecialOffer ? "block" : "none";
@@ -1081,6 +1092,7 @@ function updatePreviewForTab() {
         if (discoverySection) discoverySection.style.display = "none";
         if (calculationSection) calculationSection.style.display = "none";
         if (classicRobotSection) classicRobotSection.style.display = "none";
+        if (aiRobotSection) aiRobotSection.style.display = "none";
     }
 
     if (managerSection) managerSection.style.display = "";
@@ -1113,6 +1125,9 @@ function syncDiscoveryClientFields() {
 
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) classicRobotToggle.checked = state.showClassicRobot;
+
+    const aiRobotToggle = document.getElementById("aiRobotToggle");
+    if (aiRobotToggle) aiRobotToggle.checked = state.showAiRobot;
 }
 
 function getIcon(name) {

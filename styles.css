@@ -367,6 +367,18 @@ body {
     color: var(--text);
 }
 
+.proposal-ai-robot {
+    margin-bottom: 24px;
+    page-break-inside: avoid;
+}
+
+.proposal-ai-robot h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--text);
+}
+
 .classic-robot-table {
     border: 1px solid var(--border);
     border-radius: 10px;
