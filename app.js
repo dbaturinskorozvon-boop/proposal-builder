@@ -333,6 +333,7 @@ const state = {
     featureQuantities: {},
     selectedDiscovery: {},
     showDiscoveryTariffs: true,
+    showClassicRobot: false,
     selectedSpecialOffer: "",
     selectedBonuses: [],
     clientProblemId: "",
@@ -878,6 +879,14 @@ function bindEvents() {
         });
     }
 
+    const classicRobotToggle = document.getElementById("classicRobotToggle");
+    if (classicRobotToggle) {
+        classicRobotToggle.addEventListener("change", e => {
+            state.showClassicRobot = e.target.checked;
+            updatePreviewForTab();
+        });
+    }
+
     document.getElementById("printProposal").addEventListener("click", printProposal);
     document.getElementById("downloadPdf").addEventListener("click", printProposal);
 
@@ -1038,6 +1047,7 @@ function updatePreviewForTab() {
     const twoColumns = document.querySelector(".two-columns");
 
     const discoverySection = document.getElementById("discoveryTariffsPreviewSection");
+    const classicRobotSection = document.getElementById("classicRobotPreviewSection");
     const managerSection = document.getElementById("managerSection");
     const header = document.querySelector(".proposal-header");
 
@@ -1049,6 +1059,7 @@ function updatePreviewForTab() {
         if (aboutSection) aboutSection.style.display = "none";
         if (twoColumns) twoColumns.style.display = "none";
         if (discoverySection) discoverySection.style.display = state.showDiscoveryTariffs ? "block" : "none";
+        if (classicRobotSection) classicRobotSection.style.display = state.showClassicRobot ? "block" : "none";
     } else {
         if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
         if (specialOfferSection) specialOfferSection.style.display = state.selectedSpecialOffer ? "block" : "none";
@@ -1057,6 +1068,7 @@ function updatePreviewForTab() {
         if (aboutSection) aboutSection.style.display = "block";
         if (twoColumns) twoColumns.style.display = "grid";
         if (discoverySection) discoverySection.style.display = "none";
+        if (classicRobotSection) classicRobotSection.style.display = "none";
     }
 
     if (managerSection) managerSection.style.display = "";
@@ -1083,6 +1095,9 @@ function syncDiscoveryClientFields() {
 
     const discoveryTariffsToggle = document.getElementById("discoveryTariffsToggle");
     if (discoveryTariffsToggle) discoveryTariffsToggle.checked = state.showDiscoveryTariffs;
+
+    const classicRobotToggle = document.getElementById("classicRobotToggle");
+    if (classicRobotToggle) classicRobotToggle.checked = state.showClassicRobot;
 }
 
 function getIcon(name) {
