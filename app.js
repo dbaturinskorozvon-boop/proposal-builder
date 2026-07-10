@@ -101,6 +101,15 @@ const adminData = {
         }
     ],
 
+    discoveryTariffs: [
+        { id: "start", name: "Старт", minutes: "6 000 мин", rate: "15 ₽/мин", price: "90 000 ₽", isCustom: false },
+        { id: "basic", name: "Базовый", minutes: "10 000 мин", rate: "14 ₽/мин", price: "140 000 ₽", isCustom: false },
+        { id: "business", name: "Бизнес", minutes: "15 000 мин", rate: "13 ₽/мин", price: "195 000 ₽", isCustom: false },
+        { id: "scale", name: "Скейл", minutes: "25 000 мин", rate: "12 ₽/мин", price: "300 000 ₽", isCustom: false },
+        { id: "enterprise", name: "Энтерпрайз", minutes: "50 000 мин", rate: "10 ₽/мин", price: "500 000 ₽", isCustom: false },
+        { id: "custom", name: "Custom", minutes: "от 70 000 мин", rate: "от 9 ₽/мин", price: "по договорённости", isCustom: true }
+    ],
+
     tariffs: {
         operatorLicense: {
             basic: {
@@ -331,6 +340,7 @@ const state = {
     selectedFeatures: [],
     featureQuantities: {},
     selectedDiscovery: {},
+    selectedDiscoveryTariff: "",
     selectedSpecialOffer: "",
     selectedBonuses: [],
     clientProblemId: "",
@@ -479,6 +489,7 @@ function init() {
     populateSpecialOffers();
     populateFeatures();
     populateDiscovery();
+    populateDiscoveryTariffs();
     populateBonuses();
     populateClientLogos();
     bindEvents();
@@ -589,6 +600,36 @@ function populateDiscovery() {
             </div>
         `;
         container.appendChild(wrapper);
+    });
+}
+
+function populateDiscoveryTariffs() {
+    const container = document.getElementById("discoveryTariffsTable");
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="discovery-tariffs-row discovery-tariffs-header">
+            <div class="tariff-col-name">Пакет</div>
+            <div class="tariff-col-minutes">Минут / мес</div>
+            <div class="tariff-col-rate">Ставка</div>
+            <div class="tariff-col-price">Цена / мес</div>
+        </div>
+        ${adminData.discoveryTariffs.map(tariff => `
+            <label class="discovery-tariffs-row ${tariff.isCustom ? 'tariff-custom' : ''} ${tariff.id === state.selectedDiscoveryTariff ? 'selected' : ''}">
+                <input type="radio" name="discoveryTariff" value="${tariff.id}" ${tariff.id === state.selectedDiscoveryTariff ? 'checked' : ''}>
+                <div class="tariff-col-name">${tariff.name}</div>
+                <div class="tariff-col-minutes">${tariff.minutes}</div>
+                <div class="tariff-col-rate">${tariff.rate}</div>
+                <div class="tariff-col-price">${tariff.price}</div>
+            </label>
+        `).join("")}
+    `;
+
+    container.querySelectorAll('input[name="discoveryTariff"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            state.selectedDiscoveryTariff = radio.value;
+            populateDiscoveryTariffs();
+        });
     });
 }
 
