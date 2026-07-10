@@ -917,6 +917,11 @@ function bindEvents() {
     document.getElementById("printProposal").addEventListener("click", printProposal);
     document.getElementById("downloadPdf").addEventListener("click", printProposal);
 
+    const downloadJpeg = document.getElementById("downloadJpeg");
+    if (downloadJpeg) {
+        downloadJpeg.addEventListener("click", saveAsJpeg);
+    }
+
     state.customProblem = state.customProblem || "";
     state.validUntil = state.validUntil || addDays(state.date, 14);
 
@@ -1441,6 +1446,50 @@ function printProposal() {
 
 function downloadPdf() {
     window.print();
+}
+
+function saveAsJpeg() {
+    const proposal = document.getElementById("proposalPreview");
+    if (!proposal) return;
+    if (typeof html2canvas === "undefined") {
+        alert("Библиотека html2canvas не загружена. Попробуйте обновить страницу.");
+        return;
+    }
+
+    const scale = 2;
+    const pageWidth = proposal.offsetWidth;
+    const pageHeight = Math.round(pageWidth * 1.4142);
+
+    html2canvas(proposal, {
+        scale: scale,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false
+    }).then(canvas => {
+        const totalHeight = canvas.height;
+        const pageCount = Math.ceil(totalHeight / (pageHeight * scale));
+
+        for (let i = 0; i < pageCount; i++) {
+            const startY = i * pageHeight * scale;
+            const chunkHeight = Math.min(pageHeight * scale, totalHeight - startY);
+            const pageCanvas = document.createElement("canvas");
+            pageCanvas.width = canvas.width;
+            pageCanvas.height = chunkHeight;
+            const ctx = pageCanvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+            ctx.drawImage(canvas, 0, startY, canvas.width, chunkHeight, 0, 0, canvas.width, chunkHeight);
+
+            const link = document.createElement("a");
+            link.download = `КП_страница_${i + 1}.jpg`;
+            link.href = pageCanvas.toDataURL("image/jpeg", 0.95);
+            link.click();
+        }
+    }).catch(err => {
+        console.error("JPEG export error:", err);
+        alert("Не удалось сохранить JPEG. Попробуйте еще раз.");
+    });
 }
 
 function fitHeaderTitle() {
