@@ -17,8 +17,16 @@
                 <p class="subtitle">Соберите коммерческое предложение за пару минут</p>
             </div>
 
-            <div class="form-section" id="commonClientSection">
-                <h2>1. Менеджер и клиент</h2>
+            <div class="proposal-tabs">
+                <button class="tab-button active" data-tab="kor2">КОР-2</button>
+                <button class="tab-button" data-tab="discovery">Дискавери</button>
+                <button class="tab-button disabled" data-tab="active" disabled>Активные <span class="soon-badge">СКОРО</span></button>
+                <button class="tab-button disabled" data-tab="service" disabled>Сервисные <span class="soon-badge">СКОРО</span></button>
+            </div>
+
+            <div class="tab-content active" data-tab="kor2">
+                <div class="form-section">
+                    <h2>1. Менеджер и клиент</h2>
                 <label>
                     <span>Менеджер</span>
                     <select id="managerSelect">
@@ -43,36 +51,28 @@
                 </label>
             </div>
 
-            <div class="proposal-tabs">
-                <button class="tab-button active" data-tab="kor2">КОР-2</button>
-                <button class="tab-button" data-tab="discovery">Дискавери</button>
-                <button class="tab-button disabled" data-tab="active" disabled>Активные <span class="soon-badge">СКОРО</span></button>
-                <button class="tab-button disabled" data-tab="service" disabled>Сервисные <span class="soon-badge">СКОРО</span></button>
+            <div class="form-section">
+                <h2>2. Задача клиента</h2>
+                <select id="clientProblemSelect">
+                    <option value="">Не выбрано</option>
+                    <option value="custom">Свой вариант</option>
+                </select>
+                <div id="customProblemWrapper" style="display: none; margin-top: 12px;">
+                    <textarea id="customProblemText" rows="3" placeholder="Опишите задачу клиента"></textarea>
+                </div>
+                <p class="field-hint">Задачи настраиваются в админке</p>
             </div>
 
-            <div class="tab-content active" data-tab="kor2">
-                <div class="form-section">
-                    <h2>1. Задача клиента</h2>
-                    <select id="clientProblemSelect">
-                        <option value="">Не выбрано</option>
-                        <option value="custom">Свой вариант</option>
-                    </select>
-                    <div id="customProblemWrapper" style="display: none; margin-top: 12px;">
-                        <textarea id="customProblemText" rows="3" placeholder="Опишите задачу клиента"></textarea>
-                    </div>
-                    <p class="field-hint">Задачи настраиваются в админке</p>
-                </div>
+            <div class="form-section">
+                <h2>3. Спецпредложение</h2>
+                <select id="specialOfferSelect">
+                    <option value="">Не выбрано</option>
+                </select>
+                <p class="field-hint">Выберите акционный пакет для клиента</p>
+            </div>
 
-                <div class="form-section">
-                    <h2>2. Спецпредложение</h2>
-                    <select id="specialOfferSelect">
-                        <option value="">Не выбрано</option>
-                    </select>
-                    <p class="field-hint">Выберите акционный пакет для клиента</p>
-                </div>
-
-                <div class="form-section" id="skorozvonSection">
-                    <h2>3. Тарификация</h2>
+            <div class="form-section" id="skorozvonSection">
+                <h2>4. Тарификация</h2>
                 <label>
                     <span>Тариф</span>
                     <select id="tariffSelect">
@@ -132,57 +132,25 @@
             </div>
 
             <div class="form-section" id="featuresSection">
-                <h2>4. Дополнительные фичи</h2>
+                <h2>5. Дополнительные фичи</h2>
                 <div id="featuresList" class="checkbox-list"></div>
             </div>
 
+            <div class="form-section" id="discoverySection" style="display: none;">
+                <h2>6. Дискавери-продукты</h2>
+                <div id="discoveryList" class="checkbox-list"></div>
+            </div>
+
             <div class="form-section">
-                <h2>5. Бонусы</h2>
+                <h2>7. Бонусы</h2>
                 <div id="bonusesList" class="checkbox-list"></div>
             </div>
             </div>
 
             <div class="tab-content" data-tab="discovery">
-                <div class="form-section discovery-tariffs-section">
-                    <h2>2. Тарифы</h2>
-
-                    <div class="discovery-tariff-intro">
-                        <h3>Тарифы Скорозвон — оплата только за минуты</h3>
-                        <p>Один платёж в месяц. В цену уже включены разработка агента, RAG, отладка и запуск за 10–14 дней. Без скрытых счетов.</p>
-                        <p class="discovery-tariff-sub">Чем больше пакет — тем ниже ставка минуты. Минимальный месячный платёж — 90 000 ₽</p>
-                    </div>
-
-                    <div class="discovery-tariffs-table" id="discoveryTariffsTable"></div>
-
-                    <div class="discovery-tariff-info">
-                        <div class="discovery-tariff-info-box">
-                            <h4>В стоимость пакета входит</h4>
-                            <ul id="discoveryIncludesList">
-                                <li>Разработка и настройка голосового AI-агента</li>
-                                <li>RAG-база знаний по материалам клиента</li>
-                                <li>Подключение SIP-телефонии или запуск через Скорозвон</li>
-                                <li>Тестирование 50–150 кейсов и базовая отладка</li>
-                                <li>Дашборд и ежедневная отчётность</li>
-                                <li>Гарантия запуска агента за 10–14 календарных дней</li>
-                            </ul>
-                        </div>
-                        <div class="discovery-tariff-info-box">
-                            <h4>Условия</h4>
-                            <ul id="discoveryConditionsList">
-                                <li>Тарификация — с момента вывода агента на линию</li>
-                                <li>Перерасход — по ставке текущего пакета</li>
-                                <li>До 10% неиспользованных минут переносятся на следующий месяц при продлении тарифа</li>
-                                <li>Со 2-го месяца — продление пакета или апгрейд в больший</li>
-                                <li>Если запуск не состоялся по причинам клиента — стоимость не возвращается</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="discovery-tariff-extra-box">
-                        <h4>Оплачивается отдельно</h4>
-                        <p>Кастомные интеграции с CRM по запросу — от 20 000 ₽ за интеграцию.</p>
-                        <p>Финальная стоимость рассчитывается на этапе коммерческого предложения.</p>
-                    </div>
+                <div class="form-section placeholder-section">
+                    <h2>Дискавери</h2>
+                    <p>Здесь будет конструктор для Дискавери-продуктов.</p>
                 </div>
             </div>
 
