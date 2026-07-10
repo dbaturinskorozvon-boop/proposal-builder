@@ -275,6 +275,86 @@ body {
     line-height: 1.5;
 }
 
+.proposal-calculation {
+    margin-bottom: 24px;
+    page-break-inside: avoid;
+}
+
+.proposal-calculation h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--text);
+}
+
+.calculation-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--white);
+    margin-bottom: 16px;
+    page-break-inside: avoid;
+}
+
+.calculation-card:last-child {
+    margin-bottom: 0;
+}
+
+.calculation-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.calculation-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+}
+
+.calculation-table td {
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.calculation-table tr:last-child td {
+    border-bottom: none;
+}
+
+.calculation-table .calculation-price {
+    text-align: right;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    padding-left: 16px;
+}
+
+.calculation-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.calculation-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.calculation-total-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+}
 .proposal-classic-robot {
     margin-bottom: 24px;
     page-break-inside: avoid;

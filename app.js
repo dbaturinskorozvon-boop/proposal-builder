@@ -333,6 +333,7 @@ const state = {
     featureQuantities: {},
     selectedDiscovery: {},
     showDiscoveryTariffs: true,
+    showCalculation: false,
     showClassicRobot: false,
     selectedSpecialOffer: "",
     selectedBonuses: [],
@@ -879,6 +880,14 @@ function bindEvents() {
         });
     }
 
+    const calculationToggle = document.getElementById("calculationToggle");
+    if (calculationToggle) {
+        calculationToggle.addEventListener("change", e => {
+            state.showCalculation = e.target.checked;
+            updatePreviewForTab();
+        });
+    }
+
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) {
         classicRobotToggle.addEventListener("change", e => {
@@ -1047,6 +1056,7 @@ function updatePreviewForTab() {
     const twoColumns = document.querySelector(".two-columns");
 
     const discoverySection = document.getElementById("discoveryTariffsPreviewSection");
+    const calculationSection = document.getElementById("calculationPreviewSection");
     const classicRobotSection = document.getElementById("classicRobotPreviewSection");
     const managerSection = document.getElementById("managerSection");
     const header = document.querySelector(".proposal-header");
@@ -1059,6 +1069,7 @@ function updatePreviewForTab() {
         if (aboutSection) aboutSection.style.display = "none";
         if (twoColumns) twoColumns.style.display = "none";
         if (discoverySection) discoverySection.style.display = state.showDiscoveryTariffs ? "block" : "none";
+        if (calculationSection) calculationSection.style.display = state.showCalculation ? "block" : "none";
         if (classicRobotSection) classicRobotSection.style.display = state.showClassicRobot ? "block" : "none";
     } else {
         if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
@@ -1068,6 +1079,7 @@ function updatePreviewForTab() {
         if (aboutSection) aboutSection.style.display = "block";
         if (twoColumns) twoColumns.style.display = "grid";
         if (discoverySection) discoverySection.style.display = "none";
+        if (calculationSection) calculationSection.style.display = "none";
         if (classicRobotSection) classicRobotSection.style.display = "none";
     }
 
@@ -1095,6 +1107,9 @@ function syncDiscoveryClientFields() {
 
     const discoveryTariffsToggle = document.getElementById("discoveryTariffsToggle");
     if (discoveryTariffsToggle) discoveryTariffsToggle.checked = state.showDiscoveryTariffs;
+
+    const calculationToggle = document.getElementById("calculationToggle");
+    if (calculationToggle) calculationToggle.checked = state.showCalculation;
 
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) classicRobotToggle.checked = state.showClassicRobot;
