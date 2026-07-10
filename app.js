@@ -780,6 +780,20 @@ function bindEvents() {
         }
     });
 
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (btn.disabled) return;
+
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            btn.classList.add('active');
+            const tabId = btn.dataset.tab;
+            const content = document.querySelector(`.tab-content[data-tab="${tabId}"]`);
+            if (content) content.classList.add('active');
+        });
+    });
+
     document.getElementById("printProposal").addEventListener("click", printProposal);
     document.getElementById("downloadPdf").addEventListener("click", printProposal);
 

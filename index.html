@@ -17,8 +17,16 @@
                 <p class="subtitle">Соберите коммерческое предложение за пару минут</p>
             </div>
 
-            <div class="form-section">
-                <h2>1. Менеджер и клиент</h2>
+            <div class="proposal-tabs">
+                <button class="tab-button active" data-tab="kor2">КОР-2</button>
+                <button class="tab-button" data-tab="discovery">Дискавери</button>
+                <button class="tab-button disabled" data-tab="active" disabled>Активные <span class="soon-badge">СКОРО</span></button>
+                <button class="tab-button disabled" data-tab="service" disabled>Сервисные <span class="soon-badge">СКОРО</span></button>
+            </div>
+
+            <div class="tab-content active" data-tab="kor2">
+                <div class="form-section">
+                    <h2>1. Менеджер и клиент</h2>
                 <label>
                     <span>Менеджер</span>
                     <select id="managerSelect">
@@ -137,9 +145,28 @@
                 <h2>7. Бонусы</h2>
                 <div id="bonusesList" class="checkbox-list"></div>
             </div>
+            </div>
 
+            <div class="tab-content" data-tab="discovery">
+                <div class="form-section placeholder-section">
+                    <h2>Дискавери</h2>
+                    <p>Здесь будет конструктор для Дискавери-продуктов.</p>
+                </div>
+            </div>
 
+            <div class="tab-content" data-tab="active">
+                <div class="form-section placeholder-section disabled-placeholder">
+                    <h2>Активные</h2>
+                    <p>Раздел в разработке. <span class="soon-badge">СКОРО</span></p>
+                </div>
+            </div>
 
+            <div class="tab-content" data-tab="service">
+                <div class="form-section placeholder-section disabled-placeholder">
+                    <h2>Сервисные</h2>
+                    <p>Раздел в разработке. <span class="soon-badge">СКОРО</span></p>
+                </div>
+            </div>
 
             <div class="sidebar-footer">
                 <button class="btn-primary" id="downloadPdf">Скачать PDF</button>
