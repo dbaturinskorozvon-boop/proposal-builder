@@ -379,6 +379,34 @@ body {
     color: var(--text);
 }
 
+.proposal-ai-calculation {
+    margin-bottom: 24px;
+    page-break-inside: avoid;
+}
+
+.proposal-ai-calculation h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--text);
+}
+
+.ai-calculation-disclaimer {
+    border: 1px solid var(--primary);
+    border-radius: 12px;
+    padding: 16px;
+    background: #FFF5F4;
+    margin-top: 16px;
+    page-break-inside: avoid;
+}
+
+.ai-calculation-disclaimer p {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    font-weight: 500;
+}
+
 .classic-robot-table {
     border: 1px solid var(--border);
     border-radius: 10px;

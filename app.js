@@ -336,6 +336,7 @@ const state = {
     showCalculation: false,
     showClassicRobot: false,
     showAiRobot: false,
+    showAiRobotCalculation: false,
     selectedSpecialOffer: "",
     selectedBonuses: [],
     clientProblemId: "",
@@ -905,6 +906,14 @@ function bindEvents() {
         });
     }
 
+    const aiRobotCalculationToggle = document.getElementById("aiRobotCalculationToggle");
+    if (aiRobotCalculationToggle) {
+        aiRobotCalculationToggle.addEventListener("change", e => {
+            state.showAiRobotCalculation = e.target.checked;
+            updatePreviewForTab();
+        });
+    }
+
     document.getElementById("printProposal").addEventListener("click", printProposal);
     document.getElementById("downloadPdf").addEventListener("click", printProposal);
 
@@ -1068,6 +1077,7 @@ function updatePreviewForTab() {
     const calculationSection = document.getElementById("calculationPreviewSection");
     const classicRobotSection = document.getElementById("classicRobotPreviewSection");
     const aiRobotSection = document.getElementById("aiRobotPreviewSection");
+    const aiRobotCalculationSection = document.getElementById("aiRobotCalculationPreviewSection");
     const managerSection = document.getElementById("managerSection");
     const header = document.querySelector(".proposal-header");
 
@@ -1082,6 +1092,7 @@ function updatePreviewForTab() {
         if (calculationSection) calculationSection.style.display = state.showCalculation ? "block" : "none";
         if (classicRobotSection) classicRobotSection.style.display = state.showClassicRobot ? "block" : "none";
         if (aiRobotSection) aiRobotSection.style.display = state.showAiRobot ? "block" : "none";
+        if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = state.showAiRobotCalculation ? "block" : "none";
     } else {
         if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
         if (specialOfferSection) specialOfferSection.style.display = state.selectedSpecialOffer ? "block" : "none";
@@ -1093,6 +1104,7 @@ function updatePreviewForTab() {
         if (calculationSection) calculationSection.style.display = "none";
         if (classicRobotSection) classicRobotSection.style.display = "none";
         if (aiRobotSection) aiRobotSection.style.display = "none";
+        if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = "none";
     }
 
     if (managerSection) managerSection.style.display = "";
@@ -1128,6 +1140,9 @@ function syncDiscoveryClientFields() {
 
     const aiRobotToggle = document.getElementById("aiRobotToggle");
     if (aiRobotToggle) aiRobotToggle.checked = state.showAiRobot;
+
+    const aiRobotCalculationToggle = document.getElementById("aiRobotCalculationToggle");
+    if (aiRobotCalculationToggle) aiRobotCalculationToggle.checked = state.showAiRobotCalculation;
 }
 
 function getIcon(name) {
