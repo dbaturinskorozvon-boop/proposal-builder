@@ -148,9 +148,40 @@
             </div>
 
             <div class="tab-content" data-tab="discovery">
-                <div class="form-section placeholder-section">
-                    <h2>Дискавери</h2>
-                    <p>Здесь будет конструктор для Дискавери-продуктов.</p>
+                <div class="form-section">
+                    <h2>1. Менеджер и клиент</h2>
+                    <label>
+                        <span>Менеджер</span>
+                        <select id="discoveryManagerSelect">
+                            <option value="">Выберите менеджера</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Форма организации</span>
+                        <input type="text" id="discoveryClientOrgForm" placeholder="ООО, ИП, ЗАО..." value="ООО">
+                    </label>
+                    <label>
+                        <span>Название компании</span>
+                        <input type="text" id="discoveryClientName" placeholder="Ромашка">
+                    </label>
+                    <label>
+                        <span>Дата создания</span>
+                        <input type="date" id="discoveryProposalDate">
+                    </label>
+                    <label>
+                        <span>Действует до</span>
+                        <input type="date" id="discoveryValidUntilDate">
+                    </label>
+                </div>
+
+                <div class="form-section">
+                    <h2>2. Тарифы</h2>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="discoveryTariffsToggle">
+                        <div class="item-info">
+                            <div class="item-name">Показать блок тарифов</div>
+                        </div>
+                    </label>
                 </div>
             </div>
 
@@ -204,6 +235,86 @@
                         <h2 id="previewSpecialOfferTitle"></h2>
                         <p id="previewSpecialOfferDescription"></p>
                         <div id="previewSpecialOfferBonuses"></div>
+                    </section>
+
+                    <section class="proposal-discovery-tariffs" id="discoveryTariffsPreviewSection" style="display: none;">
+                        <h2>Тарифы Скорозвон — оплата только за минуты</h2>
+                        <p class="discovery-tariffs-lead">Один платёж в месяц. В цену уже включены разработка агента, RAG, отладка и запуск за 10–14 дней. Без скрытых счетов.</p>
+                        <p class="discovery-tariffs-sub">Чем больше пакет — тем ниже ставка минуты. Минимальный месячный платёж — 90 000 ₽</p>
+
+                        <div class="discovery-tariffs-table-preview" id="discoveryTariffsTablePreview">
+                            <div class="discovery-tariffs-row discovery-tariffs-header">
+                                <div class="tariff-col-name">Пакет</div>
+                                <div class="tariff-col-minutes">Минут / мес</div>
+                                <div class="tariff-col-rate">Ставка</div>
+                                <div class="tariff-col-price">Цена / мес</div>
+                            </div>
+                            <div class="discovery-tariffs-row">
+                                <div class="tariff-col-name">Старт</div>
+                                <div class="tariff-col-minutes">6 000 мин</div>
+                                <div class="tariff-col-rate">15 ₽/мин</div>
+                                <div class="tariff-col-price">90 000 ₽</div>
+                            </div>
+                            <div class="discovery-tariffs-row">
+                                <div class="tariff-col-name">Базовый</div>
+                                <div class="tariff-col-minutes">10 000 мин</div>
+                                <div class="tariff-col-rate">14 ₽/мин</div>
+                                <div class="tariff-col-price">140 000 ₽</div>
+                            </div>
+                            <div class="discovery-tariffs-row">
+                                <div class="tariff-col-name">Бизнес</div>
+                                <div class="tariff-col-minutes">15 000 мин</div>
+                                <div class="tariff-col-rate">13 ₽/мин</div>
+                                <div class="tariff-col-price">195 000 ₽</div>
+                            </div>
+                            <div class="discovery-tariffs-row">
+                                <div class="tariff-col-name">Скейл</div>
+                                <div class="tariff-col-minutes">25 000 мин</div>
+                                <div class="tariff-col-rate">12 ₽/мин</div>
+                                <div class="tariff-col-price">300 000 ₽</div>
+                            </div>
+                            <div class="discovery-tariffs-row">
+                                <div class="tariff-col-name">Энтерпрайз</div>
+                                <div class="tariff-col-minutes">50 000 мин</div>
+                                <div class="tariff-col-rate">10 ₽/мин</div>
+                                <div class="tariff-col-price">500 000 ₽</div>
+                            </div>
+                            <div class="discovery-tariffs-row tariff-custom">
+                                <div class="tariff-col-name">Custom</div>
+                                <div class="tariff-col-minutes">от 70 000 мин</div>
+                                <div class="tariff-col-rate">от 9 ₽/мин</div>
+                                <div class="tariff-col-price">по договорённости</div>
+                            </div>
+                        </div>
+
+                        <div class="discovery-tariffs-info">
+                            <div class="discovery-tariffs-info-box">
+                                <h3>В стоимость пакета входит</h3>
+                                <ul>
+                                    <li>Разработка и настройка голосового AI-агента</li>
+                                    <li>RAG-база знаний по материалам клиента</li>
+                                    <li>Подключение SIP-телефонии или запуск через Скорозвон</li>
+                                    <li>Тестирование 50–150 кейсов и базовая отладка</li>
+                                    <li>Дашборд и ежедневная отчётность</li>
+                                    <li>Гарантия запуска агента за 10–14 календарных дней</li>
+                                </ul>
+                            </div>
+                            <div class="discovery-tariffs-info-box">
+                                <h3>Условия</h3>
+                                <ul>
+                                    <li>Тарификация — с момента вывода агента на линию</li>
+                                    <li>Перерасход — по ставке текущего пакета</li>
+                                    <li>До 10% неиспользованных минут переносятся на следующий месяц при продлении тарифа</li>
+                                    <li>Со 2-го месяца — продление пакета или апгрейд в больший</li>
+                                    <li>Если запуск не состоялся по причинам клиента — стоимость не возвращается</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="discovery-tariffs-extra">
+                            <h3>Оплачивается отдельно</h3>
+                            <p>Кастомные интеграции с CRM по запросу — от 20 000 ₽ за интеграцию. Финальная стоимость рассчитывается на этапе коммерческого предложения.</p>
+                        </div>
                     </section>
 
                     <section class="proposal-calc">

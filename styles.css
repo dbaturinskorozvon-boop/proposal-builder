@@ -135,6 +135,152 @@ body {
     padding: 40px 24px;
 }
 
+.proposal-discovery-tariffs {
+    margin-bottom: 24px;
+    page-break-inside: avoid;
+}
+
+.proposal-discovery-tariffs h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.discovery-tariffs-lead {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.discovery-tariffs-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.discovery-tariffs-table-preview {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: var(--white);
+}
+
+.discovery-tariffs-table-preview .discovery-tariffs-row {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 0.9fr 1.1fr;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.discovery-tariffs-table-preview .discovery-tariffs-row:last-child {
+    border-bottom: none;
+}
+
+.discovery-tariffs-table-preview .discovery-tariffs-header {
+    background: var(--brand-dark);
+    color: var(--white);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.discovery-tariffs-table-preview .tariff-col-name {
+    font-weight: 600;
+}
+
+.discovery-tariffs-table-preview .tariff-col-price {
+    font-weight: 700;
+    text-align: right;
+}
+
+.discovery-tariffs-table-preview .tariff-custom {
+    color: var(--text-muted);
+}
+
+.discovery-tariffs-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.discovery-tariffs-info-box {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--white);
+    page-break-inside: avoid;
+}
+
+.discovery-tariffs-info-box h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.discovery-tariffs-info-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.discovery-tariffs-info-box li {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    position: relative;
+    padding-left: 18px;
+}
+
+.discovery-tariffs-info-box li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.discovery-tariffs-info-box:last-child li::before {
+    content: "•";
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.discovery-tariffs-extra {
+    border: 1px solid #F5C6A8;
+    border-radius: 12px;
+    padding: 16px;
+    background: #FFF8F2;
+    page-break-inside: avoid;
+}
+
+.discovery-tariffs-extra h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #D35400;
+}
+
+.discovery-tariffs-extra p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+@media (max-width: 1100px) {
+    .discovery-tariffs-info {
+        grid-template-columns: 1fr;
+    }
+}
+
 .placeholder-section h2 {
     margin-bottom: 12px;
 }

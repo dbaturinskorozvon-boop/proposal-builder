@@ -331,6 +331,7 @@ const state = {
     selectedFeatures: [],
     featureQuantities: {},
     selectedDiscovery: {},
+    showDiscoveryTariffs: false,
     selectedSpecialOffer: "",
     selectedBonuses: [],
     clientProblemId: "",
@@ -475,6 +476,7 @@ function calculate() {
 
 function init() {
     populateManagers();
+    populateDiscoveryManagers();
     populateClientProblems();
     populateSpecialOffers();
     populateFeatures();
@@ -487,6 +489,17 @@ function init() {
 
 function populateManagers() {
     const select = document.getElementById("managerSelect");
+    adminData.managers.forEach(manager => {
+        const option = document.createElement("option");
+        option.value = manager.id;
+        option.textContent = manager.name;
+        select.appendChild(option);
+    });
+}
+
+function populateDiscoveryManagers() {
+    const select = document.getElementById("discoveryManagerSelect");
+    if (!select) return;
     adminData.managers.forEach(manager => {
         const option = document.createElement("option");
         option.value = manager.id;
@@ -615,17 +628,23 @@ function populateClientLogos() {
 function bindEvents() {
     document.getElementById("managerSelect").addEventListener("change", e => {
         state.managerId = e.target.value;
+        const discoveryManagerSelect = document.getElementById("discoveryManagerSelect");
+        if (discoveryManagerSelect) discoveryManagerSelect.value = state.managerId;
         updateManagerBlock();
     });
 
     document.getElementById("clientOrgForm").addEventListener("input", e => {
         state.clientOrgForm = e.target.value;
+        const discoveryClientOrgForm = document.getElementById("discoveryClientOrgForm");
+        if (discoveryClientOrgForm) discoveryClientOrgForm.value = state.clientOrgForm;
         document.getElementById("previewOrgForm").textContent = state.clientOrgForm;
         fitHeaderTitle();
     });
 
     document.getElementById("clientName").addEventListener("input", e => {
         state.clientName = e.target.value;
+        const discoveryClientName = document.getElementById("discoveryClientName");
+        if (discoveryClientName) discoveryClientName.value = state.clientName;
         document.getElementById("previewClientName").textContent = state.clientName || "__________";
         fitHeaderTitle();
     });
@@ -634,11 +653,17 @@ function bindEvents() {
         state.date = e.target.value;
         state.validUntil = addDays(state.date, 14);
         document.getElementById("validUntilDate").value = state.validUntil;
+        const discoveryProposalDate = document.getElementById("discoveryProposalDate");
+        if (discoveryProposalDate) discoveryProposalDate.value = state.date;
+        const discoveryValidUntilDate = document.getElementById("discoveryValidUntilDate");
+        if (discoveryValidUntilDate) discoveryValidUntilDate.value = state.validUntil;
         updateDate();
     });
 
     document.getElementById("validUntilDate").addEventListener("change", e => {
         state.validUntil = e.target.value;
+        const discoveryValidUntilDate = document.getElementById("discoveryValidUntilDate");
+        if (discoveryValidUntilDate) discoveryValidUntilDate.value = state.validUntil;
         updateDate();
     });
 
@@ -791,8 +816,69 @@ function bindEvents() {
             const tabId = btn.dataset.tab;
             const content = document.querySelector(`.tab-content[data-tab="${tabId}"]`);
             if (content) content.classList.add('active');
+
+            syncDiscoveryClientFields();
+            updateDiscoveryPreview();
         });
     });
+
+    const discoveryManagerSelect = document.getElementById("discoveryManagerSelect");
+    if (discoveryManagerSelect) {
+        discoveryManagerSelect.addEventListener("change", e => {
+            state.managerId = e.target.value;
+            document.getElementById("managerSelect").value = state.managerId;
+            updateManagerBlock();
+        });
+    }
+
+    const discoveryClientOrgForm = document.getElementById("discoveryClientOrgForm");
+    if (discoveryClientOrgForm) {
+        discoveryClientOrgForm.addEventListener("input", e => {
+            state.clientOrgForm = e.target.value;
+            document.getElementById("clientOrgForm").value = state.clientOrgForm;
+            document.getElementById("previewOrgForm").textContent = state.clientOrgForm;
+            fitHeaderTitle();
+        });
+    }
+
+    const discoveryClientName = document.getElementById("discoveryClientName");
+    if (discoveryClientName) {
+        discoveryClientName.addEventListener("input", e => {
+            state.clientName = e.target.value;
+            document.getElementById("clientName").value = state.clientName;
+            document.getElementById("previewClientName").textContent = state.clientName || "__________";
+            fitHeaderTitle();
+        });
+    }
+
+    const discoveryProposalDate = document.getElementById("discoveryProposalDate");
+    if (discoveryProposalDate) {
+        discoveryProposalDate.addEventListener("change", e => {
+            state.date = e.target.value;
+            document.getElementById("proposalDate").value = state.date;
+            state.validUntil = addDays(state.date, 14);
+            document.getElementById("validUntilDate").value = state.validUntil;
+            document.getElementById("discoveryValidUntilDate").value = state.validUntil;
+            updateDate();
+        });
+    }
+
+    const discoveryValidUntilDate = document.getElementById("discoveryValidUntilDate");
+    if (discoveryValidUntilDate) {
+        discoveryValidUntilDate.addEventListener("change", e => {
+            state.validUntil = e.target.value;
+            document.getElementById("validUntilDate").value = state.validUntil;
+            updateDate();
+        });
+    }
+
+    const discoveryTariffsToggle = document.getElementById("discoveryTariffsToggle");
+    if (discoveryTariffsToggle) {
+        discoveryTariffsToggle.addEventListener("change", e => {
+            state.showDiscoveryTariffs = e.target.checked;
+            updateDiscoveryPreview();
+        });
+    }
 
     document.getElementById("printProposal").addEventListener("click", printProposal);
     document.getElementById("downloadPdf").addEventListener("click", printProposal);
@@ -802,6 +888,8 @@ function bindEvents() {
 
     document.getElementById("proposalDate").value = state.date;
     document.getElementById("validUntilDate").value = state.validUntil;
+    document.getElementById("discoveryProposalDate").value = state.date;
+    document.getElementById("discoveryValidUntilDate").value = state.validUntil;
 }
 
 function updateProposalType() {
@@ -930,6 +1018,29 @@ function updateSpecialOffer() {
             </ul>
         </div>
     `).join("");
+}
+
+function updateDiscoveryPreview() {
+    const section = document.getElementById("discoveryTariffsPreviewSection");
+    if (!section) return;
+    section.style.display = state.showDiscoveryTariffs ? "block" : "none";
+}
+
+function syncDiscoveryClientFields() {
+    const discoveryManagerSelect = document.getElementById("discoveryManagerSelect");
+    if (discoveryManagerSelect) discoveryManagerSelect.value = state.managerId;
+
+    const discoveryClientOrgForm = document.getElementById("discoveryClientOrgForm");
+    if (discoveryClientOrgForm) discoveryClientOrgForm.value = state.clientOrgForm;
+
+    const discoveryClientName = document.getElementById("discoveryClientName");
+    if (discoveryClientName) discoveryClientName.value = state.clientName;
+
+    const discoveryProposalDate = document.getElementById("discoveryProposalDate");
+    if (discoveryProposalDate) discoveryProposalDate.value = state.date;
+
+    const discoveryValidUntilDate = document.getElementById("discoveryValidUntilDate");
+    if (discoveryValidUntilDate) discoveryValidUntilDate.value = state.validUntil;
 }
 
 function getIcon(name) {
@@ -1260,6 +1371,8 @@ function updateUI() {
     updateSpecialOffer();
     updateBonuses();
     updateCalculations();
+    updateDiscoveryPreview();
+    syncDiscoveryClientFields();
     fitHeaderTitle();
 }
 
