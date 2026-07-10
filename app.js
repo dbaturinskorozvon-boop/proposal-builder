@@ -315,6 +315,7 @@ const adminData = {
 const state = {
     proposalType: "skorozvon",
     managerId: "",
+    discoveryManagerId: "",
     clientName: "",
     clientOrgForm: "ООО",
     date: new Date().toISOString().split("T")[0],
@@ -331,7 +332,7 @@ const state = {
     selectedFeatures: [],
     featureQuantities: {},
     selectedDiscovery: {},
-    showDiscoveryTariffs: false,
+    showDiscoveryTariffs: true,
     selectedSpecialOffer: "",
     selectedBonuses: [],
     clientProblemId: "",
@@ -628,8 +629,6 @@ function populateClientLogos() {
 function bindEvents() {
     document.getElementById("managerSelect").addEventListener("change", e => {
         state.managerId = e.target.value;
-        const discoveryManagerSelect = document.getElementById("discoveryManagerSelect");
-        if (discoveryManagerSelect) discoveryManagerSelect.value = state.managerId;
         updateManagerBlock();
     });
 
@@ -818,15 +817,14 @@ function bindEvents() {
             if (content) content.classList.add('active');
 
             syncDiscoveryClientFields();
-            updateDiscoveryPreview();
+            updatePreviewForTab();
         });
     });
 
     const discoveryManagerSelect = document.getElementById("discoveryManagerSelect");
     if (discoveryManagerSelect) {
         discoveryManagerSelect.addEventListener("change", e => {
-            state.managerId = e.target.value;
-            document.getElementById("managerSelect").value = state.managerId;
+            state.discoveryManagerId = e.target.value;
             updateManagerBlock();
         });
     }
@@ -876,7 +874,7 @@ function bindEvents() {
     if (discoveryTariffsToggle) {
         discoveryTariffsToggle.addEventListener("change", e => {
             state.showDiscoveryTariffs = e.target.checked;
-            updateDiscoveryPreview();
+            updatePreviewForTab();
         });
     }
 
@@ -1026,9 +1024,50 @@ function updateDiscoveryPreview() {
     section.style.display = state.showDiscoveryTariffs ? "block" : "none";
 }
 
+function updatePreviewForTab() {
+    const activeTabButton = document.querySelector('.tab-button.active');
+    const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
+
+    const isDiscovery = activeTab === 'discovery';
+
+    const problemSection = document.getElementById("problemSection");
+    const specialOfferSection = document.getElementById("specialOfferSection");
+    const calcSection = document.querySelector(".proposal-calc");
+    const bonusesSection = document.getElementById("bonusesSection");
+    const aboutSection = document.querySelector(".proposal-about");
+    const twoColumns = document.querySelector(".two-columns");
+
+    const discoverySection = document.getElementById("discoveryTariffsPreviewSection");
+    const managerSection = document.getElementById("managerSection");
+    const header = document.querySelector(".proposal-header");
+
+    if (isDiscovery) {
+        if (problemSection) problemSection.style.display = "none";
+        if (specialOfferSection) specialOfferSection.style.display = "none";
+        if (calcSection) calcSection.style.display = "none";
+        if (bonusesSection) bonusesSection.style.display = "none";
+        if (aboutSection) aboutSection.style.display = "none";
+        if (twoColumns) twoColumns.style.display = "none";
+        if (discoverySection) discoverySection.style.display = state.showDiscoveryTariffs ? "block" : "none";
+    } else {
+        if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
+        if (specialOfferSection) specialOfferSection.style.display = state.selectedSpecialOffer ? "block" : "none";
+        if (calcSection) calcSection.style.display = "block";
+        if (bonusesSection) bonusesSection.style.display = "block";
+        if (aboutSection) aboutSection.style.display = "block";
+        if (twoColumns) twoColumns.style.display = "grid";
+        if (discoverySection) discoverySection.style.display = "none";
+    }
+
+    if (managerSection) managerSection.style.display = "";
+    if (header) header.style.display = "";
+
+    updateManagerBlock();
+}
+
 function syncDiscoveryClientFields() {
     const discoveryManagerSelect = document.getElementById("discoveryManagerSelect");
-    if (discoveryManagerSelect) discoveryManagerSelect.value = state.managerId;
+    if (discoveryManagerSelect) discoveryManagerSelect.value = state.discoveryManagerId;
 
     const discoveryClientOrgForm = document.getElementById("discoveryClientOrgForm");
     if (discoveryClientOrgForm) discoveryClientOrgForm.value = state.clientOrgForm;
@@ -1041,6 +1080,9 @@ function syncDiscoveryClientFields() {
 
     const discoveryValidUntilDate = document.getElementById("discoveryValidUntilDate");
     if (discoveryValidUntilDate) discoveryValidUntilDate.value = state.validUntil;
+
+    const discoveryTariffsToggle = document.getElementById("discoveryTariffsToggle");
+    if (discoveryTariffsToggle) discoveryTariffsToggle.checked = state.showDiscoveryTariffs;
 }
 
 function getIcon(name) {
@@ -1053,7 +1095,10 @@ function getIcon(name) {
 }
 
 function updateManagerBlock() {
-    const manager = getManager(state.managerId);
+    const activeTabButton = document.querySelector('.tab-button.active');
+    const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
+    const managerId = activeTab === 'discovery' ? state.discoveryManagerId : state.managerId;
+    const manager = getManager(managerId);
     const managerSection = document.getElementById("managerSection");
     const photo = document.getElementById("managerPhoto");
     const name = document.getElementById("managerName");
@@ -1371,7 +1416,7 @@ function updateUI() {
     updateSpecialOffer();
     updateBonuses();
     updateCalculations();
-    updateDiscoveryPreview();
+    updatePreviewForTab();
     syncDiscoveryClientFields();
     fitHeaderTitle();
 }
