@@ -1018,7 +1018,6 @@ section p {
 .license-table .row-label {
     text-align: left;
     font-weight: 600;
-    background: var(--white);
 }
 
 .license-table tr:last-child td {
