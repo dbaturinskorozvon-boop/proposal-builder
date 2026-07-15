@@ -948,7 +948,7 @@ function bindEvents() {
     }
 
     document.getElementById("printProposal").addEventListener("click", printProposal);
-    document.getElementById("downloadPdf").addEventListener("click", printProposal);
+    document.getElementById("downloadPdf").addEventListener("click", downloadPdf);
 
     state.customProblem = state.customProblem || "";
     state.validUntil = state.validUntil || addDays(state.date, 14);
@@ -1481,8 +1481,67 @@ function printProposal() {
     window.print();
 }
 
-function downloadPdf() {
-    window.print();
+async function downloadPdf() {
+    const btn = document.getElementById("downloadPdf");
+    const originalText = btn.textContent;
+    btn.textContent = "Генерация PDF...";
+    btn.disabled = true;
+
+    try {
+        const source = document.getElementById("proposalPreview");
+        const container = document.getElementById("pdfExportContainer");
+        container.innerHTML = "";
+
+        const clone = source.cloneNode(true);
+        clone.style.width = "210mm";
+        clone.style.minHeight = "auto";
+        clone.style.height = "auto";
+        clone.style.boxShadow = "none";
+        clone.style.position = "relative";
+        clone.style.left = "0";
+        clone.style.top = "0";
+        clone.style.transform = "none";
+        container.appendChild(clone);
+
+        await document.fonts.ready;
+
+        const canvas = await html2canvas(clone, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: "#FFFFFF",
+            logging: false,
+            windowWidth: clone.scrollWidth,
+            windowHeight: clone.scrollHeight
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+
+        const pxPerMm = imgWidth / 210;
+        const pdfWidth = 210;
+        const pdfHeight = imgHeight / pxPerMm;
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: [pdfWidth, pdfHeight]
+        });
+
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+        const clientName = document.getElementById("clientNameInput")?.value?.trim() || "client";
+        const safeName = clientName.replace(/[^a-zA-Z0-9а-яА-Я\-_]/g, "_").substring(0, 40);
+        pdf.save(`КП_Скорозвон_${safeName}.pdf`);
+    } catch (err) {
+        console.error("PDF generation failed:", err);
+        alert("Не удалось сгенерировать PDF. Попробуйте через Печать / PDF.");
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
 }
 
 function fitHeaderTitle() {
