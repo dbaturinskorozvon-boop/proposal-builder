@@ -88,9 +88,13 @@ body {
     text-overflow: ellipsis;
 }
 
-.tab-button:hover:not(:disabled) {
+.tab-button:hover:not(:disabled):not(.active) {
     border-color: var(--primary);
     color: var(--primary);
+}
+
+.tab-button.active:hover {
+    color: var(--white);
 }
 
 .tab-button.active {
