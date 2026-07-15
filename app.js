@@ -414,6 +414,7 @@ function calculate() {
     }
 
     let featuresMonthly = 0;
+    let featuresOneTime = 0;
     state.selectedFeatures.forEach(featureId => {
         const feature = adminData.features.find(f => f.id === featureId);
         if (feature) {
@@ -425,8 +426,7 @@ function calculate() {
                 featuresMonthly += feature.price * qty;
             } else if (feature.period === "dedicated") {
                 const customPrice = parseInt(state.featureQuantities[feature.id]) || feature.price;
-                const months = parseInt(state.featureQuantities[`${feature.id}-months`]) || feature.defaultMonths;
-                featuresMonthly += Math.round(customPrice / months);
+                featuresOneTime += customPrice;
             } else {
                 featuresMonthly += feature.price;
             }
@@ -451,7 +451,7 @@ function calculate() {
     });
 
     const monthlyTotal = licenseMonthly + minutesMonthly + moduleMonthly + incomingMonthly + incomingAtcMonthly + featuresMonthly + discoveryMonthly;
-    const periodTotal = licensePeriod + (minutesMonthly + moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcSetup + incomingAtcFirstMonth + incomingAtcPeriodMonthly + atcTotal + discoveryOneTime;
+    const periodTotal = licensePeriod + (minutesMonthly + moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcSetup + incomingAtcFirstMonth + incomingAtcPeriodMonthly + atcTotal + discoveryOneTime + featuresOneTime;
 
     return {
         licensePricePerPeriod,
@@ -467,6 +467,7 @@ function calculate() {
         incomingAtcPeriodMonthly,
         atcTotal,
         featuresMonthly,
+        featuresOneTime,
         discoveryMonthly,
         discoveryOneTime,
         monthlyTotal,
@@ -544,7 +545,7 @@ function populateFeatures() {
         } else if (feature.period === "monthly_per_guest") {
             priceLabel = `${formatPrice(feature.price)}/мес за гостя`;
         } else if (feature.period === "monthly_per_admin") {
-            priceLabel = `${formatPrice(feature.price)}/мес за администратора`;
+            priceLabel = `${formatPrice(feature.price)}/мес за админ`;
         } else if (feature.period === "dedicated") {
             priceLabel = `${formatPrice(feature.price)} за ${feature.defaultMonths} мес`;
         } else {
@@ -554,7 +555,7 @@ function populateFeatures() {
         let quantityInput = "";
         if (feature.period === "monthly_per_guest") {
             quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;"
+                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
                     <label>
                         <span>Количество гостевых доступов</span>
                         <input type="number" min="1" value="1" data-feature-quantity="${feature.id}">
@@ -565,7 +566,7 @@ function populateFeatures() {
 
         if (feature.period === "monthly_per_admin") {
             quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;"
+                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
                     <label>
                         <span>Количество администраторов</span>
                         <input type="number" min="1" value="1" data-feature-quantity="${feature.id}">
@@ -576,12 +577,12 @@ function populateFeatures() {
 
         if (feature.period === "dedicated") {
             quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;"
-                    <label>
+                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
+                    <label class="feature-quantity-label">
                         <span>Стоимость, ₽</span>
                         <input type="number" min="0" step="1000" value="${feature.price}" data-feature-custom-price="${feature.id}">
                     </label>
-                    <label style="margin-top: 8px;"
+                    <label class="feature-quantity-label" style="margin-top: 8px;">
                         <span>Количество месяцев</span>
                         <input type="number" min="1" step="1" value="${feature.defaultMonths}" data-feature-months="${feature.id}-months">
                     </label>
@@ -591,8 +592,8 @@ function populateFeatures() {
 
         if (feature.price === null) {
             quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;"
-                    <label>
+                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
+                    <label class="feature-quantity-label">
                         <span>Стоимость, ₽</span>
                         <input type="number" min="0" step="1000" value="" placeholder="Укажите стоимость" data-feature-custom-price="${feature.id}">
                     </label>
@@ -1375,9 +1376,8 @@ function updateCalculations() {
             } else if (feature.period === "dedicated") {
                 const customPrice = parseInt(state.featureQuantities[feature.id]) || feature.price;
                 const months = parseInt(state.featureQuantities[`${feature.id}-months`]) || feature.defaultMonths;
-                const monthlyPrice = Math.round(customPrice / months);
-                priceText = `${formatPrice(monthlyPrice)}/мес`;
-                descText = `${formatPrice(customPrice)} за ${months} ${declineWord(months, "месяц", "месяца", "месяцев")}`;
+                priceText = `${formatPrice(customPrice)}`;
+                descText = `за ${months} ${declineWord(months, "месяц", "месяца", "месяцев")}`;
             } else {
                 priceText = `${formatPrice(feature.price)}/мес`;
             }

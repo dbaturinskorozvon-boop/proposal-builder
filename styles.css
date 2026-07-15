@@ -568,6 +568,10 @@ label span {
     color: var(--text);
 }
 
+.feature-quantity-label span {
+    font-size: 12px;
+}
+
 input, select, textarea {
     width: 100%;
     padding: 10px 12px;
