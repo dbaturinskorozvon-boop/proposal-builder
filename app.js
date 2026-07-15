@@ -1505,6 +1505,21 @@ async function downloadPdf() {
 
         await document.fonts.ready;
 
+        const cloneRect = clone.getBoundingClientRect();
+        const links = [];
+        clone.querySelectorAll("a[href]").forEach(link => {
+            const href = link.getAttribute("href");
+            if (!href || href === "#") return;
+            const rect = link.getBoundingClientRect();
+            links.push({
+                url: href,
+                left: rect.left - cloneRect.left,
+                top: rect.top - cloneRect.top,
+                width: rect.width,
+                height: rect.height
+            });
+        });
+
         const canvas = await html2canvas(clone, {
             scale: 4,
             useCORS: true,
@@ -1519,9 +1534,9 @@ async function downloadPdf() {
         const imgWidth = canvas.width;
         const imgHeight = canvas.height;
 
-        const pxPerMm = imgWidth / 210;
+        const pxPerMm = clone.scrollWidth / 210;
         const pdfWidth = 210;
-        const pdfHeight = imgHeight / pxPerMm;
+        const pdfHeight = clone.scrollHeight / pxPerMm;
 
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF({
@@ -1531,6 +1546,10 @@ async function downloadPdf() {
         });
 
         pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+
+        links.forEach(link => {
+            pdf.link(link.left / pxPerMm, link.top / pxPerMm, link.width / pxPerMm, link.height / pxPerMm, { url: link.url });
+        });
 
         const clientName = document.getElementById("clientNameInput")?.value?.trim() || "client";
         const safeName = clientName.replace(/[^a-zA-Z0-9а-яА-Я\-_]/g, "_").substring(0, 40);
