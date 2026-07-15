@@ -137,6 +137,7 @@ body {
 
 .proposal-discovery-tariffs {
     margin-bottom: 24px;
+    page-break-inside: avoid;
 }
 
 .proposal-discovery-tariffs h2 {
@@ -276,6 +277,7 @@ body {
 
 .proposal-calculation {
     margin-bottom: 24px;
+    page-break-inside: avoid;
 }
 
 .proposal-calculation h2 {
@@ -355,6 +357,7 @@ body {
 }
 .proposal-classic-robot {
     margin-bottom: 24px;
+    page-break-inside: avoid;
 }
 
 .proposal-classic-robot h2 {
@@ -366,6 +369,7 @@ body {
 
 .proposal-ai-robot {
     margin-bottom: 24px;
+    page-break-inside: avoid;
 }
 
 .proposal-ai-robot h2 {
@@ -377,6 +381,7 @@ body {
 
 .proposal-ai-calculation {
     margin-bottom: 24px;
+    page-break-inside: avoid;
 }
 
 .proposal-ai-calculation h2 {
@@ -414,8 +419,6 @@ body {
     display: grid;
     grid-template-columns: 95px repeat(7, 1fr);
     border-bottom: 1px solid var(--border);
-    break-inside: avoid;
-    page-break-inside: avoid;
 }
 
 .classic-row:last-child {
@@ -499,12 +502,7 @@ body {
         grid-template-columns: 85px repeat(7, 1fr);
     }
 
-.classic-row.classic-header {
-    break-after: avoid;
-    page-break-after: avoid;
-}
-
-.classic-cell {
+    .classic-cell {
         padding: 6px 4px;
         font-size: 9px;
     }
@@ -692,9 +690,6 @@ input:focus, select:focus, textarea:focus {
     background: var(--white);
     position: sticky;
     bottom: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }
 
 .btn-primary, .btn-secondary {
@@ -705,11 +700,10 @@ input:focus, select:focus, textarea:focus {
     font-weight: 700;
     cursor: pointer;
     transition: all 0.15s;
-    width: 100%;
-    text-align: center;
 }
 
 .btn-primary {
+    width: 100%;
     background: var(--primary);
     color: var(--white);
 }
@@ -1471,7 +1465,7 @@ section p {
 @media print {
     @page {
         size: A4 portrait;
-        margin: 0;
+        margin: 20mm;
     }
 
     * {
@@ -1491,8 +1485,7 @@ section p {
     }
 
     .sidebar,
-    .preview-toolbar,
-    .sidebar-footer {
+    .preview-toolbar {
         display: none !important;
     }
 
@@ -1510,12 +1503,11 @@ section p {
 
     .proposal-page {
         box-shadow: none;
-        width: 210mm;
-        min-height: 297mm;
-        padding: 20mm;
+        width: 170mm;
+        min-height: 257mm;
+        padding: 0;
         margin: 0 auto;
         background: white;
-        overflow: visible;
     }
 
     .proposal-manager,
@@ -1523,30 +1515,9 @@ section p {
     .calc-total,
     .bonus-card,
     .manager-card,
-    .proposal-validity,
-    .calculation-card,
-    .discovery-tariffs-info-box,
-    .discovery-tariffs-extra,
-    .ai-calculation-disclaimer,
-    .classic-row,
-    .discovery-tariffs-row {
+    .proposal-validity {
         break-inside: avoid;
         page-break-inside: avoid;
-    }
-
-    .classic-row.classic-header,
-    .discovery-tariffs-header {
-        break-after: avoid;
-        page-break-after: avoid;
-    }
-
-    .proposal-classic-robot,
-    .proposal-ai-robot,
-    .proposal-discovery-tariffs,
-    .proposal-calculation,
-    .proposal-ai-calculation {
-        break-inside: auto;
-        page-break-inside: auto;
     }
 }
 
