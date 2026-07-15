@@ -1506,7 +1506,7 @@ async function downloadPdf() {
         await document.fonts.ready;
 
         const canvas = await html2canvas(clone, {
-            scale: 3,
+            scale: 4,
             useCORS: true,
             allowTaint: true,
             backgroundColor: "#FFFFFF",
@@ -1515,7 +1515,7 @@ async function downloadPdf() {
             windowHeight: clone.scrollHeight
         });
 
-        const imgData = canvas.toDataURL("image/png");
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
         const imgWidth = canvas.width;
         const imgHeight = canvas.height;
 
@@ -1530,7 +1530,7 @@ async function downloadPdf() {
             format: [pdfWidth, pdfHeight]
         });
 
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
 
         const clientName = document.getElementById("clientNameInput")?.value?.trim() || "client";
         const safeName = clientName.replace(/[^a-zA-Z0-9а-яА-Я\-_]/g, "_").substring(0, 40);
