@@ -1506,7 +1506,7 @@ async function downloadPdf() {
         await document.fonts.ready;
 
         const canvas = await html2canvas(clone, {
-            scale: 2,
+            scale: 3,
             useCORS: true,
             allowTaint: true,
             backgroundColor: "#FFFFFF",
