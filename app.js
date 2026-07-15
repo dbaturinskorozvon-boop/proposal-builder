@@ -164,28 +164,21 @@ const adminData = {
             id: "auto_redial",
             name: "Автоперезвон по пропущенным",
             description: "Автоматический перезвон клиентам, которые не дозвонились",
-            price: 500,
+            price: 1000,
             period: "monthly"
         },
         {
             id: "whispering",
             name: "Суфлирование",
             description: "Подсказки оператору во время разговора в реальном времени",
-            price: 700,
-            period: "monthly"
+            price: 1000,
+            period: "monthly_per_admin"
         },
         {
             id: "sip_uri",
             name: "SIP URI",
             description: "Подключение по SIP URI для интеграции с телефонией",
-            price: 300,
-            period: "monthly"
-        },
-        {
-            id: "script_builder",
-            name: "Расширенный конструктор скриптов",
-            description: "Сложные скрипты разговора с ветвлениями",
-            price: 800,
+            price: 2000,
             period: "monthly"
         },
         {
@@ -234,8 +227,9 @@ const adminData = {
             id: "dedicated_server",
             name: "Выделенный сервер",
             description: "Индивидуальный сервер для повышенной стабильности и безопасности",
-            price: null,
-            period: "quote"
+            price: 540000,
+            period: "dedicated",
+            defaultMonths: 6
         }
     ],
 
@@ -426,9 +420,13 @@ function calculate() {
             if (feature.price === null) {
                 const customPrice = parseInt(state.featureQuantities[feature.id]) || 0;
                 featuresMonthly += customPrice;
-            } else if (feature.period === "monthly_per_guest") {
+            } else if (feature.period === "monthly_per_guest" || feature.period === "monthly_per_admin") {
                 const qty = parseInt(state.featureQuantities[feature.id]) || 1;
                 featuresMonthly += feature.price * qty;
+            } else if (feature.period === "dedicated") {
+                const customPrice = parseInt(state.featureQuantities[feature.id]) || feature.price;
+                const months = parseInt(state.featureQuantities[`${feature.id}-months`]) || feature.defaultMonths;
+                featuresMonthly += Math.round(customPrice / months);
             } else {
                 featuresMonthly += feature.price;
             }
@@ -544,7 +542,11 @@ function populateFeatures() {
         if (feature.price === null) {
             priceLabel = "по запросу";
         } else if (feature.period === "monthly_per_guest") {
-            priceLabel = `${formatPrice(feature.price)}₽/мес за гостя`;
+            priceLabel = `${formatPrice(feature.price)}/мес за гостя`;
+        } else if (feature.period === "monthly_per_admin") {
+            priceLabel = `${formatPrice(feature.price)}/мес за администратора`;
+        } else if (feature.period === "dedicated") {
+            priceLabel = `${formatPrice(feature.price)} за ${feature.defaultMonths} мес`;
         } else {
             priceLabel = `${formatPrice(feature.price)}/мес`;
         }
@@ -556,6 +558,32 @@ function populateFeatures() {
                     <label>
                         <span>Количество гостевых доступов</span>
                         <input type="number" min="1" value="1" data-feature-quantity="${feature.id}">
+                    </label>
+                </div>
+            `;
+        }
+
+        if (feature.period === "monthly_per_admin") {
+            quantityInput = `
+                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;"
+                    <label>
+                        <span>Количество администраторов</span>
+                        <input type="number" min="1" value="1" data-feature-quantity="${feature.id}">
+                    </label>
+                </div>
+            `;
+        }
+
+        if (feature.period === "dedicated") {
+            quantityInput = `
+                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;"
+                    <label>
+                        <span>Стоимость, ₽</span>
+                        <input type="number" min="0" step="1000" value="${feature.price}" data-feature-custom-price="${feature.id}">
+                    </label>
+                    <label style="margin-top: 8px;"
+                        <span>Количество месяцев</span>
+                        <input type="number" min="1" step="1" value="${feature.defaultMonths}" data-feature-months="${feature.id}-months">
                     </label>
                 </div>
             `;
@@ -769,6 +797,10 @@ function bindEvents() {
         }
         if (e.target.dataset.featureCustomPrice) {
             state.featureQuantities[e.target.dataset.featureCustomPrice] = e.target.value;
+            updateCalculations();
+        }
+        if (e.target.dataset.featureMonths) {
+            state.featureQuantities[e.target.dataset.featureMonths] = e.target.value;
             updateCalculations();
         }
     });
@@ -1336,6 +1368,16 @@ function updateCalculations() {
                 const qty = parseInt(state.featureQuantities[feature.id]) || 1;
                 priceText = `${formatPrice(feature.price * qty)}/мес`;
                 descText = `${qty} ${declineWord(qty, "гостевой доступ", "гостевых доступа", "гостевых доступов")}`;
+            } else if (feature.period === "monthly_per_admin") {
+                const qty = parseInt(state.featureQuantities[feature.id]) || 1;
+                priceText = `${formatPrice(feature.price * qty)}/мес`;
+                descText = `${qty} ${declineWord(qty, "администратор", "администратора", "администраторов")}`;
+            } else if (feature.period === "dedicated") {
+                const customPrice = parseInt(state.featureQuantities[feature.id]) || feature.price;
+                const months = parseInt(state.featureQuantities[`${feature.id}-months`]) || feature.defaultMonths;
+                const monthlyPrice = Math.round(customPrice / months);
+                priceText = `${formatPrice(monthlyPrice)}/мес`;
+                descText = `${formatPrice(customPrice)} за ${months} ${declineWord(months, "месяц", "месяца", "месяцев")}`;
             } else {
                 priceText = `${formatPrice(feature.price)}/мес`;
             }
