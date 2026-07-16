@@ -1263,7 +1263,8 @@ function updateCalculations() {
         const pricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][period];
         const isDailyPeriod = period === "daily";
         const months = isDailyPeriod ? 1 : parseInt(period);
-        const total = operators * pricePerPeriod * months;
+        const totalDays = isDailyPeriod ? 30 : months;
+        const total = operators * pricePerPeriod * totalDays;
 
         document.getElementById(perLicenseIds[index]).textContent = formatLicensePrice(pricePerPeriod, period);
         document.getElementById(totalIds[index]).textContent = formatPrice(total);
