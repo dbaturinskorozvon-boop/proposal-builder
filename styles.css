@@ -1216,7 +1216,7 @@ section p {
     background: var(--accent-bg);
     border-radius: 12px;
     padding: 24px;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .manager-card .manager-photo {
