@@ -974,7 +974,7 @@ function updateProposalType() {
     if (state.proposalType === "skorozvon") {
         skorozvonSection.style.display = "block";
         calcSection.style.display = "block";
-        bonusesSection.style.display = "block";
+        bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
         aboutSection.style.display = "block";
         twoColumns.style.display = "grid";
         discoverySection.style.display = "none";
@@ -990,7 +990,7 @@ function updateProposalType() {
     } else {
         skorozvonSection.style.display = "block";
         calcSection.style.display = "block";
-        bonusesSection.style.display = "block";
+        bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
         aboutSection.style.display = "block";
         twoColumns.style.display = "grid";
         discoverySection.style.display = "block";
@@ -1130,7 +1130,7 @@ function updatePreviewForTab() {
         if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
         if (specialOfferSection) specialOfferSection.style.display = state.selectedSpecialOffer ? "block" : "none";
         if (calcSection) calcSection.style.display = "block";
-        if (bonusesSection) bonusesSection.style.display = "block";
+        if (bonusesSection) bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
         if (aboutSection) aboutSection.style.display = "block";
         if (twoColumns) twoColumns.style.display = "grid";
         if (discoverySection) discoverySection.style.display = "none";
