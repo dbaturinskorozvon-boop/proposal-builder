@@ -1266,7 +1266,7 @@ function updateCalculations() {
         const total = operators * perLicensePrice;
 
         document.getElementById(perLicenseIds[index]).textContent = formatPrice(perLicensePrice) + "/мес";
-        document.getElementById(totalIds[index]).textContent = formatPrice(total);
+        document.getElementById(totalIds[index]).textContent = formatPrice(total) + "/мес";
     });
 
     document.getElementById("licenseRowLabel").textContent = `Итого за ${operators} ${declineWord(operators, "лицензию", "лицензии", "лицензий")}`;
