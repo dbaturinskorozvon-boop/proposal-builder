@@ -451,7 +451,8 @@ function calculate() {
     });
 
     const monthlyTotal = licenseMonthly + minutesMonthly + moduleMonthly + incomingMonthly + incomingAtcMonthly + featuresMonthly + discoveryMonthly;
-    const periodTotal = licensePeriod + (minutesMonthly + moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcSetup + incomingAtcFirstMonth + incomingAtcPeriodMonthly + atcTotal + discoveryOneTime + featuresOneTime;
+    const servicesPeriodTotal = (minutesMonthly + moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcSetup + incomingAtcFirstMonth + incomingAtcPeriodMonthly + atcTotal + discoveryOneTime + featuresOneTime;
+    const periodTotal = licensePeriod + servicesPeriodTotal;
 
     return {
         licensePricePerPeriod,
@@ -471,6 +472,7 @@ function calculate() {
         discoveryMonthly,
         discoveryOneTime,
         monthlyTotal,
+        servicesPeriodTotal,
         periodTotal,
         minutesPricePerMin,
         periodMonths,
@@ -1278,6 +1280,8 @@ function updateCalculations() {
         "12": "12 месяцев"
     };
     document.getElementById("previewPeriodLabel").textContent = periodLabels[state.period] || state.period;
+    document.getElementById("previewLicensePeriodLabel").textContent = periodLabels[state.period] || state.period;
+    document.getElementById("previewLicenseTotal").textContent = formatPrice(calc.licensePeriod) + " ₽";
 
     const calcDetailsList = document.getElementById("calcDetailsList");
     calcDetailsList.innerHTML = "";
@@ -1416,7 +1420,7 @@ function updateCalculations() {
         calcDetailsList.innerHTML = `<div class="calc-detail-item"><div class="calc-detail-name">Дополнительные услуги не выбраны</div></div>`;
     }
 
-    document.getElementById("previewCalcTotal").textContent = formatPrice(calc.periodTotal);
+    document.getElementById("previewCalcTotal").textContent = formatPrice(calc.servicesPeriodTotal) + " ₽";
 
     updateDiscoveryPreview();
 }
