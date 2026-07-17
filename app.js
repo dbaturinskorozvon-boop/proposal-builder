@@ -1262,11 +1262,10 @@ function updateCalculations() {
     periods.forEach((period, index) => {
         const pricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][period];
         const isDailyPeriod = period === "daily";
-        const months = isDailyPeriod ? 1 : parseInt(period);
-        const totalDays = isDailyPeriod ? 30 : months;
-        const total = operators * pricePerPeriod * totalDays;
+        const perLicensePrice = isDailyPeriod ? pricePerPeriod * 30 : pricePerPeriod;
+        const total = operators * perLicensePrice;
 
-        document.getElementById(perLicenseIds[index]).textContent = formatLicensePrice(pricePerPeriod, period);
+        document.getElementById(perLicenseIds[index]).textContent = formatPrice(perLicensePrice) + "/мес";
         document.getElementById(totalIds[index]).textContent = formatPrice(total);
     });
 
