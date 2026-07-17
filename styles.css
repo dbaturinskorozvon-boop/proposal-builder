@@ -990,6 +990,8 @@ section p {
     padding: 14px 12px;
     text-align: center;
     vertical-align: middle;
+    hyphens: none;
+    word-break: normal;
 }
 
 .license-table th:first-child {
