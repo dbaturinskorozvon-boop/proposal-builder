@@ -368,8 +368,7 @@ function renderCalcDetailPrice(monthlyPrice, periodMonths, isOneTime = false) {
     if (isOneTime) {
         return `
             <div class="calc-detail-price">
-                <div class="calc-detail-price-monthly"></div>
-                <div class="calc-detail-price-period">
+                <div class="calc-detail-price-period no-divider">
                     <div class="calc-detail-price-value">${formatPrice(monthlyPrice)}</div>
                 </div>
             </div>

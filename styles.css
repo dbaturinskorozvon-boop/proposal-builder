@@ -1181,6 +1181,11 @@ section p {
     min-width: 80px;
 }
 
+.calc-detail-price-period.no-divider {
+    border-left: none;
+    padding-left: 0;
+}
+
 .calc-detail-price-label {
     font-size: 10px;
     color: var(--text-muted);
