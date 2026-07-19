@@ -352,6 +352,32 @@ function formatDayPrice(value) {
     return Math.round(value).toLocaleString("ru-RU") + " ₽ в день";
 }
 
+function renderCalcDetailPrice(monthlyPrice, periodMonths, isOneTime = false) {
+    if (isOneTime) {
+        return `
+            <div class="calc-detail-price">
+                <div class="calc-detail-price-period">
+                    <div class="calc-detail-price-value">${formatPrice(monthlyPrice)}</div>
+                </div>
+            </div>
+        `;
+    }
+    const periodPrice = monthlyPrice * periodMonths;
+    const periodLabel = periodMonths === 1 ? "за 1 месяц" : `за ${periodMonths} ${declineWord(periodMonths, "месяц", "месяца", "месяцев")}`;
+    return `
+        <div class="calc-detail-price">
+            <div class="calc-detail-price-monthly">
+                <div class="calc-detail-price-label">в месяц</div>
+                <div class="calc-detail-price-value">${formatPrice(monthlyPrice)}</div>
+            </div>
+            <div class="calc-detail-price-period">
+                <div class="calc-detail-price-label">${periodLabel}</div>
+                <div class="calc-detail-price-value">${formatPrice(periodPrice)}</div>
+            </div>
+        </div>
+    `;
+}
+
 function getManager(id) {
     return adminData.managers.find(m => String(m.id) === String(id));
 }
@@ -1412,7 +1438,7 @@ function updateCalculations() {
                         <div class="calc-detail-name">${telephonyName}</div>
                         <div class="calc-detail-desc">${minutes.toLocaleString("ru-RU")} минут, ${rate} ₽/мин (${periodType})</div>
                     </div>
-                    <div class="calc-detail-price">${formatPrice(calc.telephonyMonthly)}/мес</div>
+                    ${renderCalcDetailPrice(calc.telephonyMonthly, calc.periodMonths)}
                 </div>
             `;
 
@@ -1423,7 +1449,7 @@ function updateCalculations() {
                             <div class="calc-detail-name">Карусель номеров</div>
                             <div class="calc-detail-desc">Автоматическая смена номеров при исходящем обзвоне</div>
                         </div>
-                        <div class="calc-detail-price">${formatPrice(calc.internodCarouselMonthly)}/мес</div>
+                        ${renderCalcDetailPrice(calc.internodCarouselMonthly, calc.periodMonths)}
                     </div>
                 `;
             }
@@ -1438,23 +1464,16 @@ function updateCalculations() {
                             <div class="calc-detail-name">${title}</div>
                             <div class="calc-detail-desc">${numbersCount} ${numbersWord}, прием входящих бесплатно</div>
                         </div>
-                        <div class="calc-detail-price">${formatPrice(calc.internodNumbersMonthly)}/мес</div>
+                        ${renderCalcDetailPrice(calc.internodNumbersMonthly, calc.periodMonths)}
                     </div>
                 `;
             }
         }
 
         if (state.incomingAtcType === "incoming_atc") {
-            const firstMonthTotal = calc.incomingAtcSetup + calc.incomingAtcFirstMonth;
-            const secondMonthTotal = calc.incomingAtcSetup + calc.incomingAtcMonthly;
             const periodMonths = calc.periodMonths;
-
-            let priceText;
-            if (periodMonths <= 1) {
-                priceText = `${formatPrice(firstMonthTotal)}`;
-            } else {
-                priceText = `${formatPrice(firstMonthTotal)} в первый месяц, ${formatPrice(secondMonthTotal)} в последующие`;
-            }
+            const periodTotal = calc.incomingAtcSetup + calc.incomingAtcFirstMonth + calc.incomingAtcPeriodMonthly;
+            const monthlyAvg = periodTotal / Math.max(1, periodMonths);
 
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
@@ -1462,19 +1481,30 @@ function updateCalculations() {
                         <div class="calc-detail-name">Входящая линия АТС</div>
                         <div class="calc-detail-desc">Подключение + ежемесячная плата</div>
                     </div>
-                    <div class="calc-detail-price">${priceText}</div>
+                    ${renderCalcDetailPrice(monthlyAvg, periodMonths)}
                 </div>
             `;
         }
 
         if (state.incomingNumbers > 0) {
+            const monthly = calc.incomingSetup + calc.incomingMonthly;
+            const periodTotal = calc.incomingSetup + calc.incomingMonthly * calc.periodMonths;
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
                     <div>
                         <div class="calc-detail-name">Входящие номера</div>
                         <div class="calc-detail-desc">${state.incomingNumbers} ${declineWord(state.incomingNumbers, "номер", "номера", "номеров")}, подключение + ежемесячная плата</div>
                     </div>
-                    <div class="calc-detail-price">${formatPrice(calc.incomingSetup + calc.incomingMonthly)}/мес</div>
+                    <div class="calc-detail-price">
+                        <div class="calc-detail-price-monthly">
+                            <div class="calc-detail-price-label">в месяц</div>
+                            <div class="calc-detail-price-value">${formatPrice(monthly)}</div>
+                        </div>
+                        <div class="calc-detail-price-period">
+                            <div class="calc-detail-price-label">за ${calc.periodMonths} ${declineWord(calc.periodMonths, "месяц", "месяца", "месяцев")}</div>
+                            <div class="calc-detail-price-value">${formatPrice(periodTotal)}</div>
+                        </div>
+                    </div>
                 </div>
             `;
         }
@@ -1487,7 +1517,7 @@ function updateCalculations() {
                         <div class="calc-detail-name">Подключение АТС</div>
                         <div class="calc-detail-desc">${atc.name}, ${state.atcCount} ${declineWord(state.atcCount, "подключение", "подключения", "подключений")}</div>
                     </div>
-                    <div class="calc-detail-price">${formatPrice(calc.atcTotal)}</div>
+                    ${renderCalcDetailPrice(calc.atcTotal, calc.periodMonths, true)}
                 </div>
             `;
         }
@@ -1496,27 +1526,27 @@ function updateCalculations() {
     state.selectedFeatures.forEach(featureId => {
         const feature = adminData.features.find(f => f.id === featureId);
         if (feature) {
-            let priceText = "";
+            let monthlyPrice = 0;
+            let isOneTime = false;
             let descText = feature.description;
 
             if (feature.price === null) {
-                const customPrice = parseInt(state.featureQuantities[feature.id]) || 0;
-                priceText = `${formatPrice(customPrice)}/мес`;
+                monthlyPrice = parseInt(state.featureQuantities[feature.id]) || 0;
             } else if (feature.period === "monthly_per_guest") {
                 const qty = parseInt(state.featureQuantities[feature.id]) || 1;
-                priceText = `${formatPrice(feature.price * qty)}/мес`;
+                monthlyPrice = feature.price * qty;
                 descText = `${qty} ${declineWord(qty, "гостевой доступ", "гостевых доступа", "гостевых доступов")}`;
             } else if (feature.period === "monthly_per_admin") {
                 const qty = parseInt(state.featureQuantities[feature.id]) || 1;
-                priceText = `${formatPrice(feature.price * qty)}/мес`;
+                monthlyPrice = feature.price * qty;
                 descText = `${qty} ${declineWord(qty, "администратор", "администратора", "администраторов")}`;
             } else if (feature.period === "dedicated") {
-                const customPrice = parseInt(state.featureQuantities[feature.id]) || feature.price;
+                monthlyPrice = parseInt(state.featureQuantities[feature.id]) || feature.price;
+                isOneTime = true;
                 const months = parseInt(state.featureQuantities[`${feature.id}-months`]) || feature.defaultMonths;
-                priceText = `${formatPrice(customPrice)}`;
                 descText = `за ${months} ${declineWord(months, "месяц", "месяца", "месяцев")}`;
             } else {
-                priceText = `${formatPrice(feature.price)}/мес`;
+                monthlyPrice = feature.price;
             }
 
             calcDetailsList.innerHTML += `
@@ -1525,7 +1555,7 @@ function updateCalculations() {
                         <div class="calc-detail-name">${feature.name}</div>
                         <div class="calc-detail-desc">${descText}</div>
                     </div>
-                    <div class="calc-detail-price">${priceText}</div>
+                    ${renderCalcDetailPrice(monthlyPrice, calc.periodMonths, isOneTime)}
                 </div>
             `;
         }
@@ -1543,7 +1573,7 @@ function updateCalculations() {
                         <div class="calc-detail-name">${product.name}</div>
                         <div class="calc-detail-desc">${option.name}</div>
                     </div>
-                    <div class="calc-detail-price">${formatPrice(option.price)}${isOneTime ? "" : "/мес"}</div>
+                    ${renderCalcDetailPrice(option.price, calc.periodMonths, isOneTime)}
                 </div>
             `;
         }

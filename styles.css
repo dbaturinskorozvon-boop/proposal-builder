@@ -1146,6 +1146,35 @@ section p {
     font-weight: 700;
     white-space: nowrap;
     margin-left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.calc-detail-price-monthly,
+.calc-detail-price-period {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.calc-detail-price-period {
+    border-left: 1px solid var(--border);
+    padding-left: 12px;
+    min-width: 80px;
+}
+
+.calc-detail-price-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.calc-detail-price-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
 }
 
 .calc-summary-row {
