@@ -356,6 +356,7 @@ function renderCalcDetailPrice(monthlyPrice, periodMonths, isOneTime = false) {
     if (isOneTime) {
         return `
             <div class="calc-detail-price">
+                <div class="calc-detail-price-monthly"></div>
                 <div class="calc-detail-price-period">
                     <div class="calc-detail-price-value">${formatPrice(monthlyPrice)}</div>
                 </div>
@@ -363,15 +364,12 @@ function renderCalcDetailPrice(monthlyPrice, periodMonths, isOneTime = false) {
         `;
     }
     const periodPrice = monthlyPrice * periodMonths;
-    const periodLabel = periodMonths === 1 ? "за 1 месяц" : `за ${periodMonths} ${declineWord(periodMonths, "месяц", "месяца", "месяцев")}`;
     return `
         <div class="calc-detail-price">
             <div class="calc-detail-price-monthly">
-                <div class="calc-detail-price-label">в месяц</div>
                 <div class="calc-detail-price-value">${formatPrice(monthlyPrice)}</div>
             </div>
             <div class="calc-detail-price-period">
-                <div class="calc-detail-price-label">${periodLabel}</div>
                 <div class="calc-detail-price-value">${formatPrice(periodPrice)}</div>
             </div>
         </div>
@@ -1422,6 +1420,15 @@ function updateCalculations() {
     };
     document.getElementById("previewPeriodLabel").textContent = periodLabels[state.period] || state.period;
 
+    const periodHeaderLabels = {
+        "daily": "за 30 дней",
+        "3": "за 3 месяца",
+        "6": "за 6 месяцев",
+        "12": "за 12 месяцев"
+    };
+    const periodHeaderLabel = document.getElementById("periodPriceHeader");
+    if (periodHeaderLabel) periodHeaderLabel.textContent = periodHeaderLabels[state.period] || `за ${state.period}`;
+
     const calcDetailsList = document.getElementById("calcDetailsList");
     calcDetailsList.innerHTML = "";
 
@@ -1497,11 +1504,9 @@ function updateCalculations() {
                     </div>
                     <div class="calc-detail-price">
                         <div class="calc-detail-price-monthly">
-                            <div class="calc-detail-price-label">в месяц</div>
                             <div class="calc-detail-price-value">${formatPrice(monthly)}</div>
                         </div>
                         <div class="calc-detail-price-period">
-                            <div class="calc-detail-price-label">за ${calc.periodMonths} ${declineWord(calc.periodMonths, "месяц", "месяца", "месяцев")}</div>
                             <div class="calc-detail-price-value">${formatPrice(periodTotal)}</div>
                         </div>
                     </div>
