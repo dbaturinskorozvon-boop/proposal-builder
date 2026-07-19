@@ -1480,7 +1480,7 @@ function updateCalculations() {
         if (state.incomingAtcType === "incoming_atc") {
             const periodMonths = calc.periodMonths;
             const periodTotal = calc.incomingAtcSetup + calc.incomingAtcFirstMonth + calc.incomingAtcPeriodMonthly;
-            const monthlyAvg = periodTotal / Math.max(1, periodMonths);
+            const regularMonthly = calc.incomingAtcSetup + calc.incomingAtcMonthly;
 
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
@@ -1488,7 +1488,14 @@ function updateCalculations() {
                         <div class="calc-detail-name">Входящая линия АТС</div>
                         <div class="calc-detail-desc">Подключение + ежемесячная плата</div>
                     </div>
-                    ${renderCalcDetailPrice(monthlyAvg, periodMonths)}
+                    <div class="calc-detail-price">
+                        <div class="calc-detail-price-monthly">
+                            <div class="calc-detail-price-value">${formatPrice(regularMonthly)}</div>
+                        </div>
+                        <div class="calc-detail-price-period">
+                            <div class="calc-detail-price-value">${formatPrice(periodTotal)}</div>
+                        </div>
+                    </div>
                 </div>
             `;
         }
