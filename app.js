@@ -318,7 +318,10 @@ const state = {
     period: "3",
     operatorsCount: 3,
     minutesCount: 1000,
-    moduleType: "standard",
+    telephonyType: "none",
+    internodCarousel: false,
+    internodNumbers: false,
+    internodNumbersCount: 1,
     incomingNumbers: 0,
     incomingAtcType: "none",
     atcType: "none",
@@ -366,14 +369,15 @@ function getMinutesPrice(minutes) {
     return tier ? tier.pricePerMin : adminData.tariffs.minutes.tiers[adminData.tariffs.minutes.tiers.length - 1].pricePerMin;
 }
 
-function getModulePrice(moduleType, minutes) {
-    if (moduleType === "none") return 0;
-    const module = adminData.tariffs.modules[moduleType];
-    if (minutes <= module.fixedThreshold) {
-        return module.fixedPrice;
-    }
-    const tier = module.tiers.find(t => minutes >= t.min && minutes <= t.max);
-    return minutes * (tier ? tier.pricePerMin : module.tiers[module.tiers.length - 1].pricePerMin);
+function getTelephonyPrice(telephonyType, minutes) {
+    if (telephonyType === "none") return 0;
+    if (telephonyType === "internod") return minutes * 2.15 * 1.4;
+    return 0;
+}
+
+function getTelephonyRate(telephonyType) {
+    if (telephonyType === "internod") return 2.15;
+    return 0;
 }
 
 function getLicensePricePerPeriod(tariff, period) {
@@ -402,7 +406,10 @@ function calculate() {
 
     const minutesPricePerMin = getMinutesPrice(minutes);
     const minutesMonthly = minutes * minutesPricePerMin;
-    const moduleMonthly = getModulePrice(state.moduleType, minutes);
+    const telephonyMonthly = getTelephonyPrice(state.telephonyType, minutes);
+    const internodCarouselMonthly = state.internodCarousel ? 3000 : 0;
+    const internodNumbersMonthly = state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
+    const moduleMonthly = telephonyMonthly + internodCarouselMonthly + internodNumbersMonthly;
     const incomingSetup = incomingNumbers > 0 ? adminData.tariffs.incomingNumber.setup : 0;
     const incomingMonthly = incomingNumbers > 0 ? incomingNumbers * adminData.tariffs.incomingNumber.monthly : 0;
 
@@ -462,6 +469,9 @@ function calculate() {
         licenseMonthly,
         licensePeriod,
         minutesMonthly,
+        telephonyMonthly,
+        internodCarouselMonthly,
+        internodNumbersMonthly,
         moduleMonthly,
         incomingSetup,
         incomingMonthly,
@@ -723,8 +733,27 @@ function bindEvents() {
         updateCalculations();
     });
 
-    document.getElementById("moduleSelect").addEventListener("change", e => {
-        state.moduleType = e.target.value;
+    document.getElementById("telephonySelect").addEventListener("change", e => {
+        state.telephonyType = e.target.value;
+        const internodOptions = document.getElementById("internodOptions");
+        if (internodOptions) {
+            internodOptions.style.display = state.telephonyType === "internod" ? "block" : "none";
+        }
+        updateCalculations();
+    });
+
+    document.getElementById("internodCarousel").addEventListener("change", e => {
+        state.internodCarousel = e.target.checked;
+        updateCalculations();
+    });
+
+    document.getElementById("internodNumbers").addEventListener("change", e => {
+        state.internodNumbers = e.target.checked;
+        updateCalculations();
+    });
+
+    document.getElementById("internodNumbersCount").addEventListener("input", e => {
+        state.internodNumbersCount = e.target.value;
         updateCalculations();
     });
 
@@ -1308,14 +1337,49 @@ function updateCalculations() {
             `;
         }
 
-        if (state.moduleType !== "none") {
+        if (state.telephonyType !== "none") {
+            if (state.telephonyType === "internod") {
+                calcDetailsList.innerHTML += `
+                    <div class="calc-detail-item">
+                        <div>
+                            <div class="calc-detail-name">Партнерская телефония</div>
+                            <div class="calc-detail-desc">${parseInt(state.minutesCount).toLocaleString("ru-RU")} минут, ${getTelephonyRate("internod")} ₽/мин (поминутная)</div>
+                        </div>
+                        <div class="calc-detail-price">${formatPrice(calc.telephonyMonthly)}/мес</div>
+                    </div>
+                `;
+            } else {
+                calcDetailsList.innerHTML += `
+                    <div class="calc-detail-item">
+                        <div>
+                            <div class="calc-detail-name">Телефония</div>
+                            <div class="calc-detail-desc">${state.telephonyType}</div>
+                        </div>
+                        <div class="calc-detail-price">${formatPrice(calc.telephonyMonthly)}/мес</div>
+                    </div>
+                `;
+            }
+        }
+
+        if (state.internodCarousel) {
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
                     <div>
-                        <div class="calc-detail-name">${adminData.tariffs.modules[state.moduleType].name}</div>
-                        <div class="calc-detail-desc">Модуль управления дозваниваемостью</div>
+                        <div class="calc-detail-name">Карусель номеров</div>
                     </div>
-                    <div class="calc-detail-price">${formatPrice(calc.moduleMonthly)}/мес</div>
+                    <div class="calc-detail-price">${formatPrice(calc.internodCarouselMonthly)}/мес</div>
+                </div>
+            `;
+        }
+
+        if (state.internodNumbers) {
+            calcDetailsList.innerHTML += `
+                <div class="calc-detail-item">
+                    <div>
+                        <div class="calc-detail-name">Продажа номеров</div>
+                        <div class="calc-detail-desc">${state.internodNumbersCount} номеров, прием входящих бесплатно</div>
+                    </div>
+                    <div class="calc-detail-price">${formatPrice(calc.internodNumbersMonthly)}/мес</div>
                 </div>
             `;
         }
