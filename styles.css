@@ -995,16 +995,16 @@ section p {
 }
 
 .license-card-header {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--text);
     margin-bottom: 12px;
-    min-height: 36px;
+    min-height: 34px;
 }
 
 .license-card-price {
-    font-size: 20px;
-    font-weight: 800;
+    font-size: 16px;
+    font-weight: 700;
     color: var(--text);
     line-height: 1.2;
     margin-bottom: 6px;

@@ -338,7 +338,11 @@ const state = {
 };
 
 function formatPrice(value) {
-    return Math.round(value).toLocaleString("ru-RU") + " ₽";
+    return formatNumber(value) + " ₽";
+}
+
+function formatNumber(value) {
+    return Math.round(value).toLocaleString("ru-RU");
 }
 
 function formatDayPrice(value) {
@@ -1274,10 +1278,10 @@ function updateCalculations() {
         const paymentTotal = totalMonthly * months;
         const benefit = Math.max(0, (dailyTotalMonthly - totalMonthly) * months);
 
-        document.getElementById(cardTotalIds[index]).textContent = formatPrice(totalMonthly) + " ₽/мес";
-        document.getElementById(cardPerUserIds[index]).textContent = formatPrice(perLicenseMonthly) + " ₽ за 1 пользователя";
-        document.getElementById(cardPaymentIds[index]).textContent = formatPrice(paymentTotal) + " ₽";
-        document.getElementById(cardBenefitIds[index]).textContent = isDailyPeriod ? "Базовая цена" : `Выгода ${formatPrice(benefit)} ₽`;
+        document.getElementById(cardTotalIds[index]).textContent = formatNumber(totalMonthly) + " ₽/мес";
+        document.getElementById(cardPerUserIds[index]).textContent = formatNumber(perLicenseMonthly) + " ₽ за 1 пользователя";
+        document.getElementById(cardPaymentIds[index]).textContent = formatNumber(paymentTotal) + " ₽";
+        document.getElementById(cardBenefitIds[index]).textContent = isDailyPeriod ? "Базовая цена" : `Выгода ${formatNumber(benefit)} ₽`;
     });
 
     const periodLabels = {
