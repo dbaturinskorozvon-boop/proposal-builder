@@ -358,6 +358,13 @@ function formatDayPrice(value) {
 }
 
 function renderCalcDetailPrice(monthlyPrice, periodMonths, isOneTime = false) {
+    if (monthlyPrice === 0) {
+        return `
+            <div class="calc-detail-price">
+                <div class="calc-detail-price-free">Бесплатно</div>
+            </div>
+        `;
+    }
     if (isOneTime) {
         return `
             <div class="calc-detail-price">

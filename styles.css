@@ -1194,6 +1194,14 @@ section p {
     color: var(--text);
 }
 
+.calc-detail-price-free {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 80px;
+    text-align: right;
+}
+
 .calc-summary-row {
     display: flex;
     justify-content: space-between;
