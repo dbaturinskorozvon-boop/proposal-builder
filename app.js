@@ -1421,6 +1421,7 @@ function updateCalculations() {
                     <div class="calc-detail-item">
                         <div>
                             <div class="calc-detail-name">Карусель номеров</div>
+                            <div class="calc-detail-desc">Автоматическая смена номеров при исходящем обзвоне</div>
                         </div>
                         <div class="calc-detail-price">${formatPrice(calc.internodCarouselMonthly)}/мес</div>
                     </div>
