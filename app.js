@@ -1406,30 +1406,6 @@ function updateCalculations() {
             const periodType = getTelephonyPeriodType(state.telephonyType);
             const telephonyName = getTelephonyName(state.telephonyType);
 
-            let subItemsHtml = "";
-            if (state.telephonyType === "internod") {
-                if (state.internodCarousel) {
-                    subItemsHtml += `
-                        <div class="calc-detail-subitem">
-                            <div class="calc-detail-subitem-name">Карусель номеров</div>
-                            <div class="calc-detail-subitem-price">${formatPrice(calc.internodCarouselMonthly)}/мес</div>
-                        </div>
-                    `;
-                }
-                if (state.internodNumbers) {
-                    const numbersCount = parseInt(state.internodNumbersCount) || 1;
-                    const title = numbersCount === 1 ? "Телефонный номер" : "Телефонные номера";
-                    const numbersWord = declineWord(numbersCount, "номер", "номера", "номеров");
-                    subItemsHtml += `
-                        <div class="calc-detail-subitem">
-                            <div class="calc-detail-subitem-name">${title}</div>
-                            <div class="calc-detail-subitem-desc">${numbersCount} ${numbersWord}, прием входящих бесплатно</div>
-                            <div class="calc-detail-subitem-price">${formatPrice(calc.internodNumbersMonthly)}/мес</div>
-                        </div>
-                    `;
-                }
-            }
-
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
                     <div>
@@ -1438,8 +1414,33 @@ function updateCalculations() {
                     </div>
                     <div class="calc-detail-price">${formatPrice(calc.telephonyMonthly)}/мес</div>
                 </div>
-                ${subItemsHtml ? `<div class="calc-detail-subitems">${subItemsHtml}</div>` : ""}
             `;
+
+            if (state.telephonyType === "internod" && state.internodCarousel) {
+                calcDetailsList.innerHTML += `
+                    <div class="calc-detail-item">
+                        <div>
+                            <div class="calc-detail-name">Карусель номеров</div>
+                        </div>
+                        <div class="calc-detail-price">${formatPrice(calc.internodCarouselMonthly)}/мес</div>
+                    </div>
+                `;
+            }
+
+            if (state.telephonyType === "internod" && state.internodNumbers) {
+                const numbersCount = parseInt(state.internodNumbersCount) || 1;
+                const title = numbersCount === 1 ? "Телефонный номер" : "Телефонные номера";
+                const numbersWord = declineWord(numbersCount, "номер", "номера", "номеров");
+                calcDetailsList.innerHTML += `
+                    <div class="calc-detail-item">
+                        <div>
+                            <div class="calc-detail-name">${title}</div>
+                            <div class="calc-detail-desc">${numbersCount} ${numbersWord}, прием входящих бесплатно</div>
+                        </div>
+                        <div class="calc-detail-price">${formatPrice(calc.internodNumbersMonthly)}/мес</div>
+                    </div>
+                `;
+            }
         }
 
         if (state.incomingAtcType === "incoming_atc") {

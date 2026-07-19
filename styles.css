@@ -673,6 +673,23 @@ input:focus, select:focus, textarea:focus {
     white-space: nowrap;
 }
 
+.internod-suboptions {
+    margin-top: 12px;
+    padding: 12px;
+    padding-left: 24px;
+    border-left: 2px solid var(--primary);
+    background: rgba(232, 74, 60, 0.03);
+    border-radius: 0 8px 8px 0;
+}
+
+.internod-suboptions .checkbox-item {
+    margin-bottom: 8px;
+}
+
+.internod-suboptions .checkbox-item:last-child {
+    margin-bottom: 0;
+}
+
 .discovery-form-item {
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -1129,39 +1146,6 @@ section p {
     font-weight: 700;
     white-space: nowrap;
     margin-left: 16px;
-}
-
-.calc-detail-subitems {
-    padding-left: 16px;
-    margin-bottom: 8px;
-}
-
-.calc-detail-subitem {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0 8px 12px;
-    border-left: 2px solid var(--border);
-    font-size: 12px;
-    gap: 4px;
-}
-
-.calc-detail-subitem-name {
-    color: var(--text);
-    font-weight: 500;
-}
-
-.calc-detail-subitem-desc {
-    color: var(--text-muted);
-    font-size: 11px;
-    width: 100%;
-}
-
-.calc-detail-subitem-price {
-    color: var(--text);
-    font-weight: 600;
-    white-space: nowrap;
 }
 
 .calc-summary-row {

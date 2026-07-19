@@ -107,7 +107,11 @@
                         <option value="md_max">МД Максимальный</option>
                     </select>
                 </label>
-                <div id="internodOptions" style="display: none; margin-top: 12px;">
+                <label>
+                    <span>Количество минут в месяц</span>
+                    <input type="number" id="minutesCount" min="0" step="100" value="1000">
+                </label>
+                <div id="internodOptions" class="internod-suboptions" style="display: none;">
                     <label class="checkbox-item">
                         <input type="checkbox" id="internodCarousel" data-type="internod-option">
                         <div class="item-info">
@@ -127,10 +131,6 @@
                         <input type="number" id="internodNumbersCount" min="1" value="1">
                     </label>
                 </div>
-                <label>
-                    <span>Количество минут в месяц</span>
-                    <input type="number" id="minutesCount" min="0" step="100" value="1000">
-                </label>
                 <label>
                     <span>Количество входящих номеров</span>
                     <input type="number" id="incomingNumbers" min="0" value="0">
