@@ -1725,7 +1725,7 @@ async function downloadPdf() {
             pdf.link(link.left / pxPerMm, link.top / pxPerMm, link.width / pxPerMm, link.height / pxPerMm, { url: link.url });
         });
 
-        const clientName = document.getElementById("clientNameInput")?.value?.trim() || "Клиент";
+        const clientName = document.getElementById("clientName")?.value?.trim() || "Клиент";
         const safeName = clientName.replace(/[^a-zA-Z0-9а-яА-Я\-_]/g, "_").substring(0, 60);
         pdf.save(`КП для ${safeName} | Скорозвон.pdf`);
     } catch (err) {
