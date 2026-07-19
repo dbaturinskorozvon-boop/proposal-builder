@@ -148,6 +148,12 @@ const adminData = {
         setup: 1000,
         monthly: 500
     },
+    incomingAtcFixed: {
+        1: 1500,
+        3: 2500,
+        6: 4000,
+        12: 7000
+    },
         minutes: {
             tiers: [
                 { min: 0, max: 1999, pricePerMin: 2.2 },
@@ -511,9 +517,8 @@ function calculate() {
     const incomingSetup = incomingNumbers > 0 ? adminData.tariffs.incomingNumber.setup : 0;
     const incomingMonthly = incomingNumbers > 0 ? incomingNumbers * adminData.tariffs.incomingNumber.monthly : 0;
 
-    const incomingAtcSetup = state.incomingAtcType === "incoming_atc" ? adminData.tariffs.incomingNumber.setup : 0;
-    const incomingAtcMonthly = state.incomingAtcType === "incoming_atc" ? adminData.tariffs.incomingNumber.monthly : 0;
-    const incomingAtcPeriodMonthly = periodMonths * incomingAtcMonthly;
+    const incomingAtcFixedPrice = state.incomingAtcType === "incoming_atc" ? (adminData.tariffs.incomingAtcFixed[periodMonths] || 1500) : 0;
+    const incomingAtcMonthly = state.incomingAtcType === "incoming_atc" ? 1500 : 0;
 
     let atcTotal = 0;
     if (state.atcType !== "none") {
@@ -559,7 +564,7 @@ function calculate() {
     });
 
     const monthlyTotal = licenseMonthly + moduleMonthly + incomingMonthly + incomingAtcMonthly + featuresMonthly + discoveryMonthly;
-    const periodTotal = licensePeriod + (moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcSetup + incomingAtcPeriodMonthly + atcTotal + discoveryOneTime + featuresOneTime;
+    const periodTotal = licensePeriod + (moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcFixedPrice + atcTotal + discoveryOneTime + featuresOneTime;
 
     return {
         licensePricePerPeriod,
@@ -572,9 +577,8 @@ function calculate() {
         moduleMonthly,
         incomingSetup,
         incomingMonthly,
-        incomingAtcSetup,
+        incomingAtcFixedPrice,
         incomingAtcMonthly,
-        incomingAtcPeriodMonthly,
         atcTotal,
         featuresMonthly,
         featuresOneTime,
@@ -1475,8 +1479,6 @@ function updateCalculations() {
         }
 
         if (state.incomingAtcType === "incoming_atc") {
-            const periodTotal = calc.incomingAtcSetup + calc.incomingAtcPeriodMonthly;
-
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
                     <div>
@@ -1488,7 +1490,7 @@ function updateCalculations() {
                             <div class="calc-detail-price-value">${formatPrice(calc.incomingAtcMonthly)}</div>
                         </div>
                         <div class="calc-detail-price-period">
-                            <div class="calc-detail-price-value">${formatPrice(periodTotal)}</div>
+                            <div class="calc-detail-price-value">${formatPrice(calc.incomingAtcFixedPrice)}</div>
                         </div>
                     </div>
                 </div>
