@@ -461,8 +461,8 @@ function calculate() {
         }
     });
 
-    const monthlyTotal = licenseMonthly + minutesMonthly + moduleMonthly + incomingMonthly + incomingAtcMonthly + featuresMonthly + discoveryMonthly;
-    const periodTotal = licensePeriod + (minutesMonthly + moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcSetup + incomingAtcFirstMonth + incomingAtcPeriodMonthly + atcTotal + discoveryOneTime + featuresOneTime;
+    const monthlyTotal = licenseMonthly + moduleMonthly + incomingMonthly + incomingAtcMonthly + featuresMonthly + discoveryMonthly;
+    const periodTotal = licensePeriod + (moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcSetup + incomingAtcFirstMonth + incomingAtcPeriodMonthly + atcTotal + discoveryOneTime + featuresOneTime;
 
     return {
         licensePricePerPeriod,
@@ -1325,18 +1325,6 @@ function updateCalculations() {
     calcDetailsList.innerHTML = "";
 
     if (state.proposalType !== "discovery") {
-        if (state.minutesCount > 0) {
-            calcDetailsList.innerHTML += `
-                <div class="calc-detail-item">
-                    <div>
-                        <div class="calc-detail-name">Пакет минут</div>
-                        <div class="calc-detail-desc">${parseInt(state.minutesCount).toLocaleString("ru-RU")} минут, ${calc.minutesPricePerMin} ₽/мин</div>
-                    </div>
-                    <div class="calc-detail-price">${formatPrice(calc.minutesMonthly)}/мес</div>
-                </div>
-            `;
-        }
-
         if (state.telephonyType !== "none") {
             if (state.telephonyType === "internod") {
                 calcDetailsList.innerHTML += `
@@ -1373,11 +1361,14 @@ function updateCalculations() {
         }
 
         if (state.internodNumbers) {
+            const numbersCount = parseInt(state.internodNumbersCount) || 1;
+            const title = numbersCount === 1 ? "Телефонный номер" : "Телефонные номера";
+            const numbersWord = declineWord(numbersCount, "номер", "номера", "номеров");
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
                     <div>
-                        <div class="calc-detail-name">Продажа номеров</div>
-                        <div class="calc-detail-desc">${state.internodNumbersCount} номеров, прием входящих бесплатно</div>
+                        <div class="calc-detail-name">${title}</div>
+                        <div class="calc-detail-desc">${numbersCount} ${numbersWord}, прием входящих бесплатно</div>
                     </div>
                     <div class="calc-detail-price">${formatPrice(calc.internodNumbersMonthly)}/мес</div>
                 </div>
