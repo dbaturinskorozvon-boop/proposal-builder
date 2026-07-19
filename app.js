@@ -1030,7 +1030,7 @@ function updateDate() {
         const days = daysBetween(state.date, state.validUntil);
         const daysWord = declineWord(days, "день", "дня", "дней");
         validitySection.style.display = "block";
-        validityText.textContent = `Предложение действительно ${days} ${daysWord} — до ${validUntilStr}.`;
+        validityText.textContent = `Предложение действительно ${days} ${daysWord} — до ${validUntilStr}`;
     } else {
         validitySection.style.display = "none";
     }
