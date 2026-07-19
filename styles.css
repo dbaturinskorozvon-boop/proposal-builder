@@ -1136,7 +1136,7 @@ section p {
 .calc-detail-item {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     padding: 10px 0;
     border-bottom: 1px solid var(--border);
     font-size: 13px;
