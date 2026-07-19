@@ -372,12 +372,87 @@ function getMinutesPrice(minutes) {
 function getTelephonyPrice(telephonyType, minutes) {
     if (telephonyType === "none") return 0;
     if (telephonyType === "internod") return minutes * 2.15 * 1.4;
-    return 0;
+    if (telephonyType === "md_basic") return minutes * 0.25 * 1.4;
+
+    const tiers = {
+        md_extended: [
+            { min: 0, max: 1999, price: 3.2, minPrice: 6000 },
+            { min: 2000, max: 9999, price: 2.2 },
+            { min: 10000, max: 39999, price: 1.7 },
+            { min: 40000, max: 59999, price: 1.6 },
+            { min: 60000, max: 79999, price: 1.4 },
+            { min: 80000, max: 119999, price: 1.3 },
+            { min: 120000, max: 399999, price: 0.8 },
+            { min: 400000, max: Infinity, price: 0.6 }
+        ],
+        md_max: [
+            { min: 0, max: 1999, price: 3.5, minPrice: 7000 },
+            { min: 2000, max: 9999, price: 2.5 },
+            { min: 10000, max: 39999, price: 2.0 },
+            { min: 40000, max: 59999, price: 1.8 },
+            { min: 60000, max: 79999, price: 1.6 },
+            { min: 80000, max: 119999, price: 1.5 },
+            { min: 120000, max: 399999, price: 1.0 },
+            { min: 400000, max: Infinity, price: 0.8 }
+        ]
+    };
+
+    const typeTiers = tiers[telephonyType];
+    if (!typeTiers) return 0;
+
+    const tier = typeTiers.find(t => minutes >= t.min && minutes <= t.max);
+    if (!tier) return 0;
+
+    if (tier.minPrice) return Math.max(tier.minPrice, minutes * tier.price);
+    return minutes * tier.price;
 }
 
-function getTelephonyRate(telephonyType) {
+function getTelephonyRate(telephonyType, minutes) {
     if (telephonyType === "internod") return 2.15;
-    return 0;
+    if (telephonyType === "md_basic") return 0.25;
+
+    const tiers = {
+        md_extended: [
+            { min: 0, max: 1999, rate: 3.2 },
+            { min: 2000, max: 9999, rate: 2.2 },
+            { min: 10000, max: 39999, rate: 1.7 },
+            { min: 40000, max: 59999, rate: 1.6 },
+            { min: 60000, max: 79999, rate: 1.4 },
+            { min: 80000, max: 119999, rate: 1.3 },
+            { min: 120000, max: 399999, rate: 0.8 },
+            { min: 400000, max: Infinity, rate: 0.6 }
+        ],
+        md_max: [
+            { min: 0, max: 1999, rate: 3.5 },
+            { min: 2000, max: 9999, rate: 2.5 },
+            { min: 10000, max: 39999, rate: 2.0 },
+            { min: 40000, max: 59999, rate: 1.8 },
+            { min: 60000, max: 79999, rate: 1.6 },
+            { min: 80000, max: 119999, rate: 1.5 },
+            { min: 120000, max: 399999, rate: 1.0 },
+            { min: 400000, max: Infinity, rate: 0.8 }
+        ]
+    };
+
+    const typeTiers = tiers[telephonyType];
+    if (!typeTiers) return 0;
+    const tier = typeTiers.find(t => minutes >= t.min && minutes <= t.max);
+    return tier ? tier.rate : 0;
+}
+
+function getTelephonyName(telephonyType) {
+    const names = {
+        internod: "Партнерская телефония",
+        md_basic: "Модуль дозвона: базовый",
+        md_extended: "Модуль дозвона: расширенный",
+        md_max: "Модуль дозвона: максимальный"
+    };
+    return names[telephonyType] || "Телефония";
+}
+
+function getTelephonyPeriodType(telephonyType) {
+    if (telephonyType === "internod" || telephonyType === "md_basic") return "поминутная";
+    return "посекундно";
 }
 
 function getLicensePricePerPeriod(tariff, period) {
@@ -407,8 +482,8 @@ function calculate() {
     const minutesPricePerMin = getMinutesPrice(minutes);
     const minutesMonthly = minutes * minutesPricePerMin;
     const telephonyMonthly = getTelephonyPrice(state.telephonyType, minutes);
-    const internodCarouselMonthly = state.internodCarousel ? 3000 : 0;
-    const internodNumbersMonthly = state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
+    const internodCarouselMonthly = state.telephonyType === "internod" && state.internodCarousel ? 3000 : 0;
+    const internodNumbersMonthly = state.telephonyType === "internod" && state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
     const moduleMonthly = telephonyMonthly + internodCarouselMonthly + internodNumbersMonthly;
     const incomingSetup = incomingNumbers > 0 ? adminData.tariffs.incomingNumber.setup : 0;
     const incomingMonthly = incomingNumbers > 0 ? incomingNumbers * adminData.tariffs.incomingNumber.monthly : 0;
@@ -1326,52 +1401,44 @@ function updateCalculations() {
 
     if (state.proposalType !== "discovery") {
         if (state.telephonyType !== "none") {
+            const minutes = parseInt(state.minutesCount) || 0;
+            const rate = getTelephonyRate(state.telephonyType, minutes);
+            const periodType = getTelephonyPeriodType(state.telephonyType);
+            const telephonyName = getTelephonyName(state.telephonyType);
+
+            let subItemsHtml = "";
             if (state.telephonyType === "internod") {
-                calcDetailsList.innerHTML += `
-                    <div class="calc-detail-item">
-                        <div>
-                            <div class="calc-detail-name">Партнерская телефония</div>
-                            <div class="calc-detail-desc">${parseInt(state.minutesCount).toLocaleString("ru-RU")} минут, ${getTelephonyRate("internod")} ₽/мин (поминутная)</div>
+                if (state.internodCarousel) {
+                    subItemsHtml += `
+                        <div class="calc-detail-subitem">
+                            <div class="calc-detail-subitem-name">Карусель номеров</div>
+                            <div class="calc-detail-subitem-price">${formatPrice(calc.internodCarouselMonthly)}/мес</div>
                         </div>
-                        <div class="calc-detail-price">${formatPrice(calc.telephonyMonthly)}/мес</div>
-                    </div>
-                `;
-            } else {
-                calcDetailsList.innerHTML += `
-                    <div class="calc-detail-item">
-                        <div>
-                            <div class="calc-detail-name">Телефония</div>
-                            <div class="calc-detail-desc">${state.telephonyType}</div>
+                    `;
+                }
+                if (state.internodNumbers) {
+                    const numbersCount = parseInt(state.internodNumbersCount) || 1;
+                    const title = numbersCount === 1 ? "Телефонный номер" : "Телефонные номера";
+                    const numbersWord = declineWord(numbersCount, "номер", "номера", "номеров");
+                    subItemsHtml += `
+                        <div class="calc-detail-subitem">
+                            <div class="calc-detail-subitem-name">${title}</div>
+                            <div class="calc-detail-subitem-desc">${numbersCount} ${numbersWord}, прием входящих бесплатно</div>
+                            <div class="calc-detail-subitem-price">${formatPrice(calc.internodNumbersMonthly)}/мес</div>
                         </div>
-                        <div class="calc-detail-price">${formatPrice(calc.telephonyMonthly)}/мес</div>
-                    </div>
-                `;
+                    `;
+                }
             }
-        }
 
-        if (state.internodCarousel) {
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
                     <div>
-                        <div class="calc-detail-name">Карусель номеров</div>
+                        <div class="calc-detail-name">${telephonyName}</div>
+                        <div class="calc-detail-desc">${minutes.toLocaleString("ru-RU")} минут, ${rate} ₽/мин (${periodType})</div>
                     </div>
-                    <div class="calc-detail-price">${formatPrice(calc.internodCarouselMonthly)}/мес</div>
+                    <div class="calc-detail-price">${formatPrice(calc.telephonyMonthly)}/мес</div>
                 </div>
-            `;
-        }
-
-        if (state.internodNumbers) {
-            const numbersCount = parseInt(state.internodNumbersCount) || 1;
-            const title = numbersCount === 1 ? "Телефонный номер" : "Телефонные номера";
-            const numbersWord = declineWord(numbersCount, "номер", "номера", "номеров");
-            calcDetailsList.innerHTML += `
-                <div class="calc-detail-item">
-                    <div>
-                        <div class="calc-detail-name">${title}</div>
-                        <div class="calc-detail-desc">${numbersCount} ${numbersWord}, прием входящих бесплатно</div>
-                    </div>
-                    <div class="calc-detail-price">${formatPrice(calc.internodNumbersMonthly)}/мес</div>
-                </div>
+                ${subItemsHtml ? `<div class="calc-detail-subitems">${subItemsHtml}</div>` : ""}
             `;
         }
 

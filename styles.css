@@ -1131,6 +1131,39 @@ section p {
     margin-left: 16px;
 }
 
+.calc-detail-subitems {
+    padding-left: 16px;
+    margin-bottom: 8px;
+}
+
+.calc-detail-subitem {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0 8px 12px;
+    border-left: 2px solid var(--border);
+    font-size: 12px;
+    gap: 4px;
+}
+
+.calc-detail-subitem-name {
+    color: var(--text);
+    font-weight: 500;
+}
+
+.calc-detail-subitem-desc {
+    color: var(--text-muted);
+    font-size: 11px;
+    width: 100%;
+}
+
+.calc-detail-subitem-price {
+    color: var(--text);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
 .calc-summary-row {
     display: flex;
     justify-content: space-between;
