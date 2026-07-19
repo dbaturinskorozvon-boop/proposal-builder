@@ -1265,11 +1265,12 @@ function updateCalculations() {
         const perLicensePrice = isDailyPeriod ? pricePerPeriod * 30 : pricePerPeriod;
         const total = operators * perLicensePrice;
 
-        document.getElementById(perLicenseIds[index]).textContent = formatPrice(perLicensePrice) + "/мес";
+        document.getElementById(perLicenseIds[index]).textContent = formatPrice(perLicensePrice) + " ₽ за 1 пользователя";
         document.getElementById(totalIds[index]).textContent = formatPrice(total) + "/мес";
     });
 
-    document.getElementById("licenseRowLabel").textContent = `Итого за ${operators} ${declineWord(operators, "лицензию", "лицензии", "лицензий")}`;
+    document.getElementById("licenseRowLabel").textContent = "Стоимость за 1 пользователя";
+    document.getElementById("licenseTotalRowLabel").textContent = `Стоимость ${operators} ${declineWord(operators, "лицензии", "лицензий", "лицензий")} в месяц`;
 
     const periodLabels = {
         "daily": "30 дней",
