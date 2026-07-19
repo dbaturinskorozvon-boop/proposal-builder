@@ -1286,6 +1286,17 @@ section p {
     padding-left: 0;
 }
 
+.proposal-advantages h2,
+.proposal-benefits h2,
+.proposal-advantages li,
+.proposal-benefits li {
+    hyphens: none;
+    word-break: normal;
+    word-wrap: normal;
+    overflow-wrap: normal;
+    text-wrap: pretty;
+}
+
 .proposal-advantages li,
 .proposal-benefits li {
     padding: 7px 0 7px 20px;
