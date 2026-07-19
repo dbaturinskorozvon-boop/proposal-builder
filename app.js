@@ -1725,9 +1725,9 @@ async function downloadPdf() {
             pdf.link(link.left / pxPerMm, link.top / pxPerMm, link.width / pxPerMm, link.height / pxPerMm, { url: link.url });
         });
 
-        const clientName = document.getElementById("clientNameInput")?.value?.trim() || "client";
-        const safeName = clientName.replace(/[^a-zA-Z0-9а-яА-Я\-_]/g, "_").substring(0, 40);
-        pdf.save(`КП_Скорозвон_${safeName}.pdf`);
+        const clientName = document.getElementById("clientNameInput")?.value?.trim() || "Клиент";
+        const safeName = clientName.replace(/[^a-zA-Z0-9а-яА-Я\-_]/g, "_").substring(0, 60);
+        pdf.save(`КП для ${safeName} | Скорозвон.pdf`);
     } catch (err) {
         console.error("PDF generation failed:", err);
         alert("Не удалось сгенерировать PDF. Попробуйте через Печать / PDF.");
