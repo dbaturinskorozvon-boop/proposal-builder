@@ -980,86 +980,73 @@ section p {
 .license-cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 12px;
 }
 
 .license-card {
     background: var(--white);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 20px;
+    padding: 16px 12px;
     display: flex;
     flex-direction: column;
     position: relative;
+    min-width: 0;
 }
 
 .license-card-header {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--text);
-    margin-bottom: 16px;
-    min-height: 40px;
+    margin-bottom: 12px;
+    min-height: 36px;
 }
 
 .license-card-price {
-    display: flex;
-    align-items: baseline;
-    gap: 2px;
-    margin-bottom: 8px;
-}
-
-.license-card-price-value {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 800;
     color: var(--text);
-    line-height: 1;
-}
-
-.license-card-price-currency {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-}
-
-.license-card-price-period {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-muted);
+    line-height: 1.2;
+    margin-bottom: 6px;
+    white-space: nowrap;
 }
 
 .license-card-per-user {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-muted);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    white-space: nowrap;
 }
 
 .license-card-divider {
     height: 1px;
     background: var(--border);
-    margin: 8px 0 16px;
+    margin: 8px 0 12px;
 }
 
 .license-card-payment-label {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-secondary);
     margin-bottom: 4px;
 }
 
 .license-card-payment-value {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--text);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    white-space: nowrap;
 }
 
 .license-card-benefit {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: var(--text-muted);
-    padding: 6px 10px;
+    padding: 5px 8px;
     border-radius: 20px;
     display: inline-block;
     align-self: flex-start;
+    white-space: nowrap;
 }
 
 .license-card-benefit-positive {
@@ -1074,16 +1061,22 @@ section p {
 
 .license-card-badge {
     position: absolute;
-    top: -12px;
+    top: -10px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--primary);
     color: var(--white);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 20px;
     white-space: nowrap;
+}
+
+.license-card-price-value,
+.license-card-price-currency,
+.license-card-price-period {
+    display: none;
 }
 
 .license-table,
