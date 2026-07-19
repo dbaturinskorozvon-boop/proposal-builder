@@ -1258,6 +1258,7 @@ function updateCalculations() {
     const tariffName = adminData.tariffs.operatorLicense[state.tariff].name;
 
     document.getElementById("previewTariffName").textContent = `Тариф «${tariffName}» · ${operators} ${declineWord(operators, "лицензия", "лицензии", "лицензий")}`;
+    document.getElementById("previewLicenseCaption").textContent = `Тариф «${tariffName}» для ${operators} ${declineWord(operators, "пользователя", "пользователей", "пользователей")}`;
 
     const periods = ["daily", "3", "6", "12"];
     const cardTotalIds = ["cardDailyTotal", "card3mTotal", "card6mTotal", "card12mTotal"];
