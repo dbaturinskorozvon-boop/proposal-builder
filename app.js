@@ -1253,23 +1253,32 @@ function updateCalculations() {
     const operators = parseInt(state.operatorsCount) || 0;
     const tariffName = adminData.tariffs.operatorLicense[state.tariff].name;
 
-    document.getElementById("previewTariffName").textContent = `Тариф «${tariffName}»`;
+    document.getElementById("previewTariffName").textContent = `Тариф «${tariffName}» · ${operators} ${declineWord(operators, "лицензия", "лицензии", "лицензий")}`;
 
     const periods = ["daily", "3", "6", "12"];
-    const perLicenseIds = ["priceDailyPerLicense", "price3mPerLicense", "price6mPerLicense", "price12mPerLicense"];
-    const totalIds = ["priceDailyTotal", "price3mTotal", "price6mTotal", "price12mTotal"];
+    const cardTotalIds = ["cardDailyTotal", "card3mTotal", "card6mTotal", "card12mTotal"];
+    const cardPerUserIds = ["cardDailyPerUser", "card3mPerUser", "card6mPerUser", "card12mPerUser"];
+    const cardPaymentIds = ["cardDailyPayment", "card3mPayment", "card6mPayment", "card12mPayment"];
+    const cardBenefitIds = ["cardDailyBenefit", "card3mBenefit", "card6mBenefit", "card12mBenefit"];
+
+    const dailyPricePerPeriod = adminData.tariffs.operatorLicense[state.tariff].daily;
+    const dailyPerLicenseMonthly = dailyPricePerPeriod * 30;
+    const dailyTotalMonthly = operators * dailyPerLicenseMonthly;
 
     periods.forEach((period, index) => {
         const pricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][period];
         const isDailyPeriod = period === "daily";
-        const perLicensePrice = isDailyPeriod ? pricePerPeriod * 30 : pricePerPeriod;
-        const total = operators * perLicensePrice;
+        const months = isDailyPeriod ? 1 : parseInt(period);
+        const perLicenseMonthly = isDailyPeriod ? pricePerPeriod * 30 : pricePerPeriod;
+        const totalMonthly = operators * perLicenseMonthly;
+        const paymentTotal = totalMonthly * months;
+        const benefit = Math.max(0, (dailyTotalMonthly - totalMonthly) * months);
 
-        document.getElementById(perLicenseIds[index]).textContent = formatPrice(perLicensePrice) + "/мес";
-        document.getElementById(totalIds[index]).textContent = formatPrice(total) + "/мес";
+        document.getElementById(cardTotalIds[index]).textContent = formatPrice(totalMonthly);
+        document.getElementById(cardPerUserIds[index]).textContent = formatPrice(perLicenseMonthly) + " ₽ за 1 пользователя";
+        document.getElementById(cardPaymentIds[index]).textContent = formatPrice(paymentTotal) + " ₽";
+        document.getElementById(cardBenefitIds[index]).textContent = isDailyPeriod ? "Базовая цена" : `Выгода ${formatPrice(benefit)} ₽`;
     });
-
-    document.getElementById("licenseRowLabel").textContent = `Итого за ${operators} ${declineWord(operators, "лицензию", "лицензии", "лицензий")}`;
 
     const periodLabels = {
         "daily": "30 дней",

@@ -878,33 +878,65 @@
                                 <span>1. Оплата лицензий в сервисе</span>
                                 <span class="license-tariff-name" id="previewTariffName">Тариф «Профессиональный»</span>
                             </div>
-                            <table class="license-table">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Ежедневно<br>(30 дней)</th>
-                                        <th>3 месяца</th>
-                                        <th>6 месяцев</th>
-                                        <th>12 месяцев</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="row-label">Стоимость лицензии<br>за&nbsp;1&nbsp;пользователя</td>
-                                        <td id="priceDailyPerLicense">150 ₽ в день</td>
-                                        <td id="price3mPerLicense">2 300 ₽/мес</td>
-                                        <td id="price6mPerLicense">2 000 ₽/мес</td>
-                                        <td id="price12mPerLicense">1 800 ₽/мес</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="row-label" id="licenseRowLabel">Итого за 2 лицензии</td>
-                                        <td id="priceDailyTotal">9 000</td>
-                                        <td id="price3mTotal">13 800</td>
-                                        <td id="price6mTotal">24 000</td>
-                                        <td id="price12mTotal">43 200</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+
+                            <div class="license-cards" id="licenseCards">
+                                <div class="license-card" data-period="daily">
+                                    <div class="license-card-header">Ежедневно<br>(30 дней)</div>
+                                    <div class="license-card-price">
+                                        <span class="license-card-price-value" id="cardDailyTotal">13 500</span>
+                                        <span class="license-card-price-currency">₽</span>
+                                        <span class="license-card-price-period">/мес</span>
+                                    </div>
+                                    <div class="license-card-per-user" id="cardDailyPerUser">4 500 ₽ за 1 пользователя</div>
+                                    <div class="license-card-divider"></div>
+                                    <div class="license-card-payment-label">Итого к оплате:</div>
+                                    <div class="license-card-payment-value" id="cardDailyPayment">13 500 ₽</div>
+                                    <div class="license-card-benefit" id="cardDailyBenefit">Базовая цена</div>
+                                </div>
+
+                                <div class="license-card" data-period="3">
+                                    <div class="license-card-header">3 месяца</div>
+                                    <div class="license-card-price">
+                                        <span class="license-card-price-value" id="card3mTotal">8 700</span>
+                                        <span class="license-card-price-currency">₽</span>
+                                        <span class="license-card-price-period">/мес</span>
+                                    </div>
+                                    <div class="license-card-per-user" id="card3mPerUser">2 900 ₽ за 1 пользователя</div>
+                                    <div class="license-card-divider"></div>
+                                    <div class="license-card-payment-label">Итого за 3 месяца:</div>
+                                    <div class="license-card-payment-value" id="card3mPayment">26 100 ₽</div>
+                                    <div class="license-card-benefit license-card-benefit-positive" id="card3mBenefit">Выгода 14 400 ₽</div>
+                                </div>
+
+                                <div class="license-card" data-period="6">
+                                    <div class="license-card-header">6 месяцев</div>
+                                    <div class="license-card-price">
+                                        <span class="license-card-price-value" id="card6mTotal">7 800</span>
+                                        <span class="license-card-price-currency">₽</span>
+                                        <span class="license-card-price-period">/мес</span>
+                                    </div>
+                                    <div class="license-card-per-user" id="card6mPerUser">2 600 ₽ за 1 пользователя</div>
+                                    <div class="license-card-divider"></div>
+                                    <div class="license-card-payment-label">Итого за 6 месяцев:</div>
+                                    <div class="license-card-payment-value" id="card6mPayment">46 800 ₽</div>
+                                    <div class="license-card-benefit license-card-benefit-positive" id="card6mBenefit">Выгода 34 200 ₽</div>
+                                </div>
+
+                                <div class="license-card license-card-best" data-period="12">
+                                    <div class="license-card-badge">Самый выгодный</div>
+                                    <div class="license-card-header">12 месяцев</div>
+                                    <div class="license-card-price">
+                                        <span class="license-card-price-value" id="card12mTotal">7 200</span>
+                                        <span class="license-card-price-currency">₽</span>
+                                        <span class="license-card-price-period">/мес</span>
+                                    </div>
+                                    <div class="license-card-per-user" id="card12mPerUser">2 400 ₽ за 1 пользователя</div>
+                                    <div class="license-card-divider"></div>
+                                    <div class="license-card-payment-label">Итого за год:</div>
+                                    <div class="license-card-payment-value" id="card12mPayment">86 400 ₽</div>
+                                    <div class="license-card-benefit license-card-benefit-positive" id="card12mBenefit">Выгода 75 600 ₽</div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="calc-details" id="calcDetails">

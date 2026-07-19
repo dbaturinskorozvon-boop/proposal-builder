@@ -961,8 +961,10 @@ section p {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
-    font-size: 13px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
 }
 
 .license-table-caption span:first-child {
@@ -975,60 +977,121 @@ section p {
     font-weight: 500;
 }
 
-.license-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    font-size: 13px;
-    border-radius: 10px;
-    overflow: hidden;
+.license-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.license-card {
+    background: var(--white);
     border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
-.license-table th, .license-table td {
-    border: 1px solid var(--border);
-    padding: 14px 12px;
-    text-align: center;
-    vertical-align: middle;
-    hyphens: none;
-    word-break: normal;
-}
-
-.license-table th:first-child {
-    border-top-left-radius: 10px;
-}
-
-.license-table th:last-child {
-    border-top-right-radius: 10px;
-}
-
-.license-table tr:last-child td:first-child {
-    border-bottom-left-radius: 10px;
-}
-
-.license-table tr:last-child td:last-child {
-    border-bottom-right-radius: 10px;
-}
-
-.license-table th {
-    background: #E8F4FD;
+.license-card-header {
+    font-size: 15px;
     font-weight: 700;
     color: var(--text);
+    margin-bottom: 16px;
+    min-height: 40px;
+}
+
+.license-card-price {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.license-card-price-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+}
+
+.license-card-price-currency {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.license-card-price-period {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.license-card-per-user {
     font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
 }
 
-.license-table td {
-    color: var(--text);
+.license-card-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0 16px;
 }
 
-.license-table .row-label {
-    text-align: left;
-    font-weight: 600;
+.license-card-payment-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
 }
 
-.license-table tr:last-child td {
+.license-card-payment-value {
+    font-size: 18px;
     font-weight: 700;
-    background: #F8F9FC;
+    color: var(--text);
+    margin-bottom: 12px;
+}
+
+.license-card-benefit {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 6px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.license-card-benefit-positive {
+    background: #E6F7EF;
+    color: #2D9D5C;
+}
+
+.license-card-best {
+    border: 2px solid var(--primary);
+    background: #FFF8F7;
+}
+
+.license-card-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.license-table,
+.license-table thead,
+.license-table tbody,
+.license-table th,
+.license-table td {
+    display: none;
 }
 
 .calc-details {
