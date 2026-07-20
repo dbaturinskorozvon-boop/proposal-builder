@@ -409,37 +409,42 @@ function getTelephonyPrice(telephonyType, minutes) {
     if (telephonyType === "internod") return minutes * 2.15 * 1.4;
     if (telephonyType === "md_basic") return minutes * 0.25 * 1.4;
 
-    const tiers = {
-        md_extended: [
-            { min: 0, max: 1999, price: 3.2, minPrice: 6000 },
-            { min: 2000, max: 9999, price: 2.2 },
-            { min: 10000, max: 39999, price: 1.7 },
-            { min: 40000, max: 59999, price: 1.6 },
-            { min: 60000, max: 79999, price: 1.4 },
-            { min: 80000, max: 119999, price: 1.3 },
-            { min: 120000, max: 399999, price: 0.8 },
-            { min: 400000, max: Infinity, price: 0.6 }
-        ],
-        md_max: [
-            { min: 0, max: 1999, price: 3.5, minPrice: 7000 },
-            { min: 2000, max: 9999, price: 2.5 },
-            { min: 10000, max: 39999, price: 2.0 },
-            { min: 40000, max: 59999, price: 1.8 },
-            { min: 60000, max: 79999, price: 1.6 },
-            { min: 80000, max: 119999, price: 1.5 },
-            { min: 120000, max: 399999, price: 1.0 },
-            { min: 400000, max: Infinity, price: 0.8 }
-        ]
+    const tariffs = {
+        md_extended: {
+            minPrice: 6000,
+            tiers: [
+                { min: 0, max: 1999, price: 3.2 },
+                { min: 2000, max: 9999, price: 2.2 },
+                { min: 10000, max: 39999, price: 1.7 },
+                { min: 40000, max: 59999, price: 1.6 },
+                { min: 60000, max: 79999, price: 1.4 },
+                { min: 80000, max: 119999, price: 1.3 },
+                { min: 120000, max: 399999, price: 0.8 },
+                { min: 400000, max: Infinity, price: 0.6 }
+            ]
+        },
+        md_max: {
+            minPrice: 7000,
+            tiers: [
+                { min: 0, max: 1999, price: 3.5 },
+                { min: 2000, max: 9999, price: 2.5 },
+                { min: 10000, max: 39999, price: 2.0 },
+                { min: 40000, max: 59999, price: 1.8 },
+                { min: 60000, max: 79999, price: 1.6 },
+                { min: 80000, max: 119999, price: 1.5 },
+                { min: 120000, max: 399999, price: 1.0 },
+                { min: 400000, max: Infinity, price: 0.8 }
+            ]
+        }
     };
 
-    const typeTiers = tiers[telephonyType];
-    if (!typeTiers) return 0;
+    const tariff = tariffs[telephonyType];
+    if (!tariff) return 0;
 
-    const tier = typeTiers.find(t => minutes >= t.min && minutes <= t.max);
+    const tier = tariff.tiers.find(t => minutes >= t.min && minutes <= t.max);
     if (!tier) return 0;
 
-    if (tier.minPrice) return Math.max(tier.minPrice, minutes * tier.price);
-    return minutes * tier.price;
+    return Math.max(tariff.minPrice, minutes * tier.price);
 }
 
 function getTelephonyRate(telephonyType, minutes) {
