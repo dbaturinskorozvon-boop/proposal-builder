@@ -511,7 +511,8 @@ function calculate() {
     const periodMonths = isDaily ? 1 : parseInt(state.period);
 
     const licensePricePerPeriod = getLicensePricePerPeriod(state.tariff, state.period);
-    const licenseMonthly = operators * licensePricePerPeriod;
+    const dailyMultiplier = state.period === "daily" ? 30 : 1;
+    const licenseMonthly = operators * licensePricePerPeriod * dailyMultiplier;
     const licensePeriod = licenseMonthly * periodMonths;
 
     const minutesPricePerMin = getMinutesPrice(minutes);
