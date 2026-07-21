@@ -1620,13 +1620,6 @@ function updateCalculations() {
 
     document.getElementById("previewCalcTotal").textContent = formatPrice(calc.periodTotal);
 
-    const tariffName = adminData.tariffs.operatorLicense[state.tariff].name;
-    const additionalTotal = calc.periodTotal - calc.licensePeriod;
-    document.getElementById("summaryTariffName").textContent = tariffName;
-    document.getElementById("summaryLicenseTotal").textContent = formatPrice(calc.licensePeriod);
-    document.getElementById("summaryAdditionalTotal").textContent = formatPrice(additionalTotal);
-    document.getElementById("summaryAdditionalRow").style.display = additionalTotal > 0 ? "" : "none";
-
     updateDiscoveryPreview();
 }
 
