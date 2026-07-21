@@ -321,6 +321,7 @@ const state = {
     tariff: "pro",
     period: "3",
     operatorsCount: 3,
+    startAmount: 15000,
     minutesCount: 1000,
     telephonyType: "none",
     internodBilling: "per_minute",
@@ -855,6 +856,11 @@ function bindEvents() {
     document.getElementById("operatorsCount").addEventListener("input", e => {
         state.operatorsCount = e.target.value;
         updateCalculations();
+    });
+
+    document.getElementById("startAmountInput").addEventListener("input", e => {
+        state.startAmount = parseInt(e.target.value) || 0;
+        updateStartAmount();
     });
 
     document.getElementById("minutesCount").addEventListener("input", e => {
@@ -1797,9 +1803,23 @@ function fitHeaderTitle() {
     }
 }
 
+function updateStartAmount() {
+    const card = document.getElementById("startAmountCard");
+    const valueEl = document.getElementById("startAmountValue");
+    if (!card || !valueEl) return;
+    const amount = parseInt(state.startAmount) || 0;
+    if (amount > 0) {
+        card.style.display = "";
+        valueEl.textContent = formatPrice(amount);
+    } else {
+        card.style.display = "none";
+    }
+}
+
 function updateUI() {
     updateDate();
     updateClientPreview();
+    updateStartAmount();
     updateManagerBlock();
     updateProblem();
     updateSpecialOffer();

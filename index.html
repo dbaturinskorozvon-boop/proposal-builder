@@ -89,6 +89,10 @@
                         <option value="12">12 месяцев</option>
                     </select>
                 </label>
+                <label>
+                    <span>Для старта работы (₽)</span>
+                    <input type="number" id="startAmountInput" min="0" step="1000" value="15000">
+                </label>
             </div>
 
             <div class="form-section" id="featuresSection">
@@ -976,6 +980,21 @@
                                 </div>
                             </div>
                             <div class="calc-summary-value" id="previewCalcTotal">0 ₽</div>
+                        </div>
+
+                        <div class="start-amount-card" id="startAmountCard">
+                            <div class="start-amount-icon">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8BC34A" stroke-width="1.8" stroke-linecap="round">
+                                    <rect x="2" y="5" width="20" height="14" rx="2.5"/>
+                                    <line x1="2" y1="10" x2="22" y2="10"/>
+                                    <line x1="6" y1="15" x2="10" y2="15"/>
+                                </svg>
+                            </div>
+                            <div class="start-amount-text">
+                                <div class="start-amount-title">Для старта работы</div>
+                                <div class="start-amount-desc">Рекомендуемая сумма для внесения на баланс. Этого хватит на первое время работы.</div>
+                            </div>
+                            <div class="start-amount-value" id="startAmountValue"></div>
                         </div>
                     </section>
 
