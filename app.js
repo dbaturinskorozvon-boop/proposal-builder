@@ -1553,7 +1553,7 @@ function updateCalculations() {
                 <div class="calc-detail-item">
                     <div>
                         <div class="calc-detail-name">Подключение АТС</div>
-                        <div class="calc-detail-desc">${atc.name}, ${state.atcCount} ${declineWord(state.atcCount, "подключение", "подключения", "подключений")}</div>
+                        <div class="calc-detail-desc">${atc.name}, ${state.atcCount} ${declineWord(state.atcCount, "подключение", "подключения", "подключений")}. Единоразово</div>
                     </div>
                     ${renderCalcDetailPrice(calc.atcTotal, calc.periodMonths, true)}
                 </div>
