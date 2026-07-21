@@ -112,6 +112,21 @@
                     <input type="number" id="minutesCount" min="0" step="100" value="1000">
                 </label>
                 <div id="internodOptions" class="internod-suboptions" style="display: none;">
+                    <label>
+                        <span>Тарификация минут</span>
+                        <select id="internodBillingSelect">
+                            <option value="per_minute">Поминутная (× 1,4)</option>
+                            <option value="per_second">Посекундная</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Стоимость минуты</span>
+                        <select id="internodRateSelect">
+                            <option value="1.95">1,95 ₽/мин</option>
+                            <option value="2">2,00 ₽/мин</option>
+                            <option value="2.15" selected>2,15 ₽/мин</option>
+                        </select>
+                    </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="internodCarousel" data-type="internod-option">
                         <div class="item-info">

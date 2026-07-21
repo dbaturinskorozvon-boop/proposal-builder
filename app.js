@@ -324,6 +324,8 @@ const state = {
     operatorsCount: 3,
     minutesCount: 1000,
     telephonyType: "none",
+    internodBilling: "per_minute",
+    internodRate: 2.15,
     internodCarousel: false,
     internodNumbers: false,
     internodNumbersCount: 1,
@@ -406,7 +408,11 @@ function getMinutesPrice(minutes) {
 
 function getTelephonyPrice(telephonyType, minutes) {
     if (telephonyType === "none") return 0;
-    if (telephonyType === "internod") return minutes * 2.15 * 1.4;
+    if (telephonyType === "internod") {
+        const rate = state.internodRate || 2.15;
+        if (state.internodBilling === "per_second") return minutes * rate;
+        return minutes * rate * 1.4;
+    }
     if (telephonyType === "md_basic") return minutes * 0.25 * 1.4;
 
     const tariffs = {
@@ -448,7 +454,7 @@ function getTelephonyPrice(telephonyType, minutes) {
 }
 
 function getTelephonyRate(telephonyType, minutes) {
-    if (telephonyType === "internod") return 2.15;
+    if (telephonyType === "internod") return state.internodRate || 2.15;
     if (telephonyType === "md_basic") return 0.25;
 
     const tiers = {
@@ -491,7 +497,8 @@ function getTelephonyName(telephonyType) {
 }
 
 function getTelephonyPeriodType(telephonyType) {
-    if (telephonyType === "internod" || telephonyType === "md_basic") return "поминутная";
+    if (telephonyType === "internod") return state.internodBilling === "per_second" ? "посекундная" : "поминутная";
+    if (telephonyType === "md_basic") return "поминутная";
     return "посекундно";
 }
 
@@ -851,6 +858,16 @@ function bindEvents() {
         if (internodOptions) {
             internodOptions.style.display = state.telephonyType === "internod" ? "block" : "none";
         }
+        updateCalculations();
+    });
+
+    document.getElementById("internodBillingSelect").addEventListener("change", e => {
+        state.internodBilling = e.target.value;
+        updateCalculations();
+    });
+
+    document.getElementById("internodRateSelect").addEventListener("change", e => {
+        state.internodRate = parseFloat(e.target.value);
         updateCalculations();
     });
 
