@@ -1527,7 +1527,7 @@ function updateCalculations() {
         }
 
         if (state.incomingNumbers > 0) {
-            const monthly = calc.incomingMonthly;
+            const monthly = calc.incomingSetup + calc.incomingMonthly;
             const periodTotal = calc.incomingSetup + calc.incomingMonthly * calc.periodMonths;
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
