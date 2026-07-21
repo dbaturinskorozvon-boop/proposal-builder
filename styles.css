@@ -1240,7 +1240,8 @@ section p {
 
 .calc-summary-line-name {
     color: var(--text-muted);
-    min-width: 170px;
+    width: 200px;
+    flex-shrink: 0;
 }
 
 .calc-summary-line-value {
