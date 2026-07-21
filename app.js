@@ -316,7 +316,6 @@ const state = {
     managerId: "",
     discoveryManagerId: "",
     clientName: "",
-    clientOrgForm: "ООО",
     date: new Date().toISOString().split("T")[0],
     validUntil: "",
     tariff: "pro",
@@ -357,6 +356,25 @@ function formatNumber(value) {
 
 function formatDayPrice(value) {
     return Math.round(value).toLocaleString("ru-RU") + " ₽ в день";
+}
+
+const ORG_FORMS = ["ООО", "ИП", "АО", "ПАО", "ЗАО", "ОАО", "НКО", "ГУП", "МУП", "ФГБУ", "АНО"];
+
+function formatClientCompany(raw) {
+    const value = (raw || "").trim().replace(/[«»"']/g, "").replace(/\s+/g, " ").trim();
+    if (!value) return null;
+    const parts = value.split(" ");
+    const first = parts[0].toUpperCase().replace(/[.,]/g, "");
+    if (ORG_FORMS.includes(first) && parts.length > 1) {
+        return `${parts[0].toUpperCase()} «${parts.slice(1).join(" ")}»`;
+    }
+    return `«${value}»`;
+}
+
+function updateClientPreview() {
+    const company = formatClientCompany(state.clientName);
+    const line = document.getElementById("previewClientNameLine");
+    if (line) line.textContent = company ? `для компании ${company}` : "";
 }
 
 function renderCalcDetailPrice(monthlyPrice, periodMonths, isOneTime = false) {
@@ -798,19 +816,11 @@ function bindEvents() {
         updateManagerBlock();
     });
 
-    document.getElementById("clientOrgForm").addEventListener("input", e => {
-        state.clientOrgForm = e.target.value;
-        const discoveryClientOrgForm = document.getElementById("discoveryClientOrgForm");
-        if (discoveryClientOrgForm) discoveryClientOrgForm.value = state.clientOrgForm;
-        document.getElementById("previewOrgForm").textContent = state.clientOrgForm;
-        fitHeaderTitle();
-    });
-
     document.getElementById("clientName").addEventListener("input", e => {
         state.clientName = e.target.value;
         const discoveryClientName = document.getElementById("discoveryClientName");
         if (discoveryClientName) discoveryClientName.value = state.clientName;
-        document.getElementById("previewClientName").textContent = state.clientName || "__________";
+        updateClientPreview();
         fitHeaderTitle();
     });
 
@@ -1028,22 +1038,12 @@ function bindEvents() {
         });
     }
 
-    const discoveryClientOrgForm = document.getElementById("discoveryClientOrgForm");
-    if (discoveryClientOrgForm) {
-        discoveryClientOrgForm.addEventListener("input", e => {
-            state.clientOrgForm = e.target.value;
-            document.getElementById("clientOrgForm").value = state.clientOrgForm;
-            document.getElementById("previewOrgForm").textContent = state.clientOrgForm;
-            fitHeaderTitle();
-        });
-    }
-
     const discoveryClientName = document.getElementById("discoveryClientName");
     if (discoveryClientName) {
         discoveryClientName.addEventListener("input", e => {
             state.clientName = e.target.value;
             document.getElementById("clientName").value = state.clientName;
-            document.getElementById("previewClientName").textContent = state.clientName || "__________";
+            updateClientPreview();
             fitHeaderTitle();
         });
     }
@@ -1311,9 +1311,6 @@ function updatePreviewForTab() {
 function syncDiscoveryClientFields() {
     const discoveryManagerSelect = document.getElementById("discoveryManagerSelect");
     if (discoveryManagerSelect) discoveryManagerSelect.value = state.discoveryManagerId;
-
-    const discoveryClientOrgForm = document.getElementById("discoveryClientOrgForm");
-    if (discoveryClientOrgForm) discoveryClientOrgForm.value = state.clientOrgForm;
 
     const discoveryClientName = document.getElementById("discoveryClientName");
     if (discoveryClientName) discoveryClientName.value = state.clientName;
@@ -1796,6 +1793,7 @@ function fitHeaderTitle() {
 
 function updateUI() {
     updateDate();
+    updateClientPreview();
     updateManagerBlock();
     updateProblem();
     updateSpecialOffer();
