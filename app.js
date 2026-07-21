@@ -533,8 +533,8 @@ function calculate() {
     const internodCarouselMonthly = state.telephonyType === "internod" && state.internodCarousel ? 3000 : 0;
     const internodNumbersMonthly = state.telephonyType === "internod" && state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
     const moduleMonthly = telephonyMonthly + internodCarouselMonthly + internodNumbersMonthly;
-    const incomingSetup = incomingNumbers > 0 ? adminData.tariffs.incomingNumber.setup : 0;
-    const incomingMonthly = incomingNumbers > 0 ? incomingNumbers * adminData.tariffs.incomingNumber.monthly : 0;
+    const incomingSetup = incomingNumbers * adminData.tariffs.incomingNumber.setup;
+    const incomingMonthly = incomingNumbers * adminData.tariffs.incomingNumber.monthly;
 
     const incomingAtcFixedPrice = state.incomingAtcType === "incoming_atc" ? (adminData.tariffs.incomingAtcFixed[periodMonths] || 1500) : 0;
     const incomingAtcMonthly = state.incomingAtcType === "incoming_atc" ? 1500 : 0;
@@ -1527,7 +1527,7 @@ function updateCalculations() {
         }
 
         if (state.incomingNumbers > 0) {
-            const monthly = calc.incomingSetup + calc.incomingMonthly;
+            const monthly = calc.incomingMonthly;
             const periodTotal = calc.incomingSetup + calc.incomingMonthly * calc.periodMonths;
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
