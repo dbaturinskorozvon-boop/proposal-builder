@@ -321,7 +321,7 @@ const state = {
     tariff: "pro",
     period: "3",
     operatorsCount: 3,
-    startAmount: 15000,
+    startAmount: 0,
     minutesCount: 1000,
     telephonyType: "none",
     internodBilling: "per_minute",
