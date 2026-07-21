@@ -1220,6 +1220,34 @@ section p {
     font-weight: 700;
 }
 
+.calc-summary-left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.calc-summary-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.calc-summary-line {
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
+}
+
+.calc-summary-line-name {
+    color: var(--text-muted);
+    min-width: 170px;
+}
+
+.calc-summary-line-value {
+    color: var(--text);
+    font-weight: 600;
+}
+
 .calc-summary-value {
     font-size: 24px;
     font-weight: 800;
