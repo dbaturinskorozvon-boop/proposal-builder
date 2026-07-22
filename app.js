@@ -929,11 +929,6 @@ function bindEvents() {
         updateCalculations();
     });
 
-    document.getElementById("incomingAtcSelect").addEventListener("change", e => {
-        state.incomingAtcType = e.target.value;
-        updateCalculations();
-    });
-
     document.getElementById("atcSelect").addEventListener("change", e => {
         state.atcType = e.target.value;
         updateCalculations();
