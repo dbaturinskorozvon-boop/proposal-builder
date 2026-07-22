@@ -1,0 +1,980 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary: #E84A3C;
+    --primary-dark: #C73A2E;
+    --text: #1A1A1A;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --bg: #F5F6FA;
+    --white: #FFFFFF;
+    --border: #E0E2EA;
+    --border-strong: #D0D3DE;
+    --success: #1A7F4E;
+    --info: #3498DB;
+    --accent-bg: #F8F9FC;
+    --footer-bg: #1E2A3A;
+    --brand-dark: #1A2233;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 380px;
+    min-width: 380px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+}
+
+.sidebar-header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.form-section {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.form-section h2 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 16px;
+    color: var(--text-secondary);
+}
+
+label {
+    display: block;
+    margin-bottom: 14px;
+}
+
+label span {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text);
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--white);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(232, 74, 60, 0.08);
+}
+
+.field-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+.type-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+.type-btn {
+    flex: 1;
+    padding: 10px 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--white);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.type-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.type-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+}
+
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--white);
+}
+
+.checkbox-item:hover {
+    border-color: var(--primary);
+}
+
+.checkbox-item input {
+    width: auto;
+    margin-top: 2px;
+}
+
+.checkbox-item .item-info {
+    flex: 1;
+}
+
+.checkbox-item .item-name {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.checkbox-item .item-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.checkbox-item .item-price {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.discovery-form-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--white);
+}
+
+.discovery-form-item .checkbox-item {
+    border: none;
+    border-radius: 0;
+}
+
+.discovery-options {
+    padding: 0 12px 12px 44px;
+    background: var(--accent-bg);
+}
+
+.discovery-options select {
+    font-size: 13px;
+}
+
+.sidebar-footer {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--white);
+    position: sticky;
+    bottom: 0;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-primary {
+    width: 100%;
+    background: var(--primary);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.preview-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+}
+
+.preview-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+}
+
+.preview-label {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.btn-secondary {
+    background: var(--white);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.preview-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: var(--bg);
+}
+
+.proposal-page {
+    width: 210mm;
+    min-height: 297mm;
+    background: var(--white);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    padding: 50px 60px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text);
+    position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.proposal-page p,
+.proposal-page li,
+.proposal-page h1,
+.proposal-page h2,
+.proposal-page h3 {
+    text-wrap: pretty;
+}
+
+.proposal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 36px;
+    padding: 32px 36px;
+    background: var(--brand-dark);
+    border-radius: 16px;
+    color: var(--white);
+}
+
+.proposal-header-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.proposal-header-content .hero-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 10px;
+}
+
+.proposal-header-content h1 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.4px;
+    margin-bottom: 14px;
+    color: var(--white);
+}
+
+.header-line {
+    display: block;
+    white-space: nowrap;
+}
+
+.header-line:first-child {
+    max-width: 68%;
+}
+
+.proposal-header-logo {
+    flex-shrink: 0;
+    margin-left: 40px;
+    margin-top: -8px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.proposal-header-logo .logo-img {
+    height: 32px;
+    width: auto;
+    display: block;
+}
+
+section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+}
+
+section p {
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.proposal-problem {
+    background: #F6F8FD;
+    border: 2px solid #E8E7FC;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 36px;
+}
+
+.proposal-problem h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.proposal-problem p {
+    color: var(--text);
+    margin: 0;
+}
+
+.proposal-special-offer {
+    border: 2px solid var(--primary);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 36px;
+    background: var(--white);
+}
+
+.special-offer-badge {
+    display: inline-block;
+    background: var(--primary);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+}
+
+.proposal-special-offer h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.special-offer-bonus {
+    margin-top: 22px;
+    padding: 18px;
+    background: var(--accent-bg);
+    border-radius: 10px;
+}
+
+.special-offer-bonus h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--primary);
+}
+
+.special-offer-bonus .bonus-intro {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.special-offer-bonus ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.special-offer-bonus li {
+    padding: 4px 0 4px 18px;
+    position: relative;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.special-offer-bonus li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.proposal-calc {
+    margin-bottom: 36px;
+}
+
+.license-table-wrap {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: var(--accent-bg);
+    border-radius: 12px;
+}
+
+.license-table-caption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+.license-table-caption span:first-child {
+    font-weight: 700;
+    color: var(--text);
+}
+
+.license-tariff-name {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.license-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.license-table th, .license-table td {
+    border: 1px solid var(--border);
+    padding: 14px 12px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.license-table th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.license-table th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.license-table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.license-table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+.license-table th {
+    background: #E8F4FD;
+    font-weight: 700;
+    color: var(--text);
+    font-size: 12px;
+}
+
+.license-table td {
+    color: var(--text);
+}
+
+.license-table .row-label {
+    text-align: left;
+    font-weight: 600;
+    background: var(--white);
+}
+
+.license-table tr:last-child td {
+    font-weight: 700;
+    background: #F8F9FC;
+}
+
+.calc-details {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: var(--accent-bg);
+    border-radius: 12px;
+}
+
+.calc-details-caption {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.calc-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.calc-detail-item:last-child {
+    border-bottom: none;
+}
+
+.calc-detail-name {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.calc-detail-desc {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.calc-detail-price {
+    color: var(--text);
+    font-weight: 700;
+    white-space: nowrap;
+    margin-left: 16px;
+}
+
+.calc-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    border-top: 2px solid var(--text);
+}
+
+.calc-summary-label {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.calc-summary-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.proposal-bonuses {
+    margin-bottom: 36px;
+    padding: 24px;
+    background: linear-gradient(135deg, #FFF8F7 0%, #FFF0EE 100%);
+    border: 1px solid #FADBD9;
+    border-radius: 12px;
+}
+
+.bonus-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(232, 74, 60, 0.12);
+}
+
+.bonus-card:last-child {
+    border-bottom: none;
+}
+
+.bonus-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.bonus-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.bonus-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.proposal-about {
+    margin-bottom: 36px;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 36px;
+}
+
+.proposal-advantages,
+.proposal-benefits {
+    padding: 24px;
+    background: var(--accent-bg);
+    border-radius: 12px;
+}
+
+.proposal-advantages ul,
+.proposal-benefits ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.proposal-advantages li,
+.proposal-benefits li {
+    padding: 7px 0 7px 20px;
+    position: relative;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+}
+
+.proposal-advantages li::before,
+.proposal-benefits li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-size: 8px;
+    top: 11px;
+}
+
+.proposal-discovery {
+    margin-bottom: 36px;
+    padding: 24px;
+    background: var(--accent-bg);
+    border-radius: 12px;
+}
+
+.discovery-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.discovery-item:last-child {
+    border-bottom: none;
+}
+
+.discovery-item h3 {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.discovery-item p {
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.discovery-price {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 13px;
+}
+
+.proposal-manager {
+    margin-top: 40px;
+    page-break-inside: avoid;
+}
+
+.manager-card {
+    display: flex;
+    gap: 20px;
+    background: var(--accent-bg);
+    border-radius: 12px;
+    padding: 24px;
+    align-items: center;
+}
+
+.manager-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.manager-card .manager-logo img {
+    width: auto;
+    height: 32px;
+    border-radius: 0;
+}
+
+.manager-info {
+    flex: 1;
+}
+
+.manager-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.manager-position {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.manager-contacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.manager-contact {
+    font-size: 12px;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.manager-logo {
+    flex-shrink: 0;
+    margin-left: 20px;
+}
+
+.manager-logo .logo-img {
+    height: 32px;
+    width: auto;
+    border-radius: 0;
+}
+
+.a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    background: var(--white);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    padding: 50px 60px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text);
+    box-sizing: border-box;
+    position: relative;
+    page-break-after: always;
+    break-after: page;
+}
+
+.a4-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+}
+
+#pdfExportOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding: 40px 20px;
+}
+
+#pdfExportOverlay.hidden {
+    display: none;
+}
+
+#pdfExportOverlay .overlay-message {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text);
+}
+
+#pdfExportContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+#pdfExportContainer .pdf-export .proposal-header {
+    padding: 24px 28px;
+    margin-bottom: 24px;
+}
+
+#pdfExportContainer .pdf-export .proposal-header-content h1 {
+    font-size: 20px;
+}
+
+#pdfExportContainer .pdf-export section {
+    margin-bottom: 24px;
+}
+
+#pdfExportContainer .pdf-export .proposal-problem,
+#pdfExportContainer .pdf-export .proposal-special-offer,
+#pdfExportContainer .pdf-export .license-table-wrap,
+#pdfExportContainer .pdf-export .calc-details,
+#pdfExportContainer .pdf-export .bonus-card,
+#pdfExportContainer .pdf-export .manager-card {
+    padding: 18px;
+}
+
+#pdfExportContainer .pdf-export .two-columns {
+    gap: 16px;
+}
+
+#pdfExportContainer .pdf-export .proposal-calc h2,
+#pdfExportContainer .pdf-export section h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+#pdfExportContainer .pdf-export p,
+#pdfExportContainer .pdf-export li {
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+#pdfExportContainer .pdf-export .calc-summary-row {
+    padding: 16px 20px;
+}
+
+#pdfExportContainer .pdf-export .manager-card img {
+    width: 64px;
+    height: 64px;
+}
+
+.proposal-validity {
+    background: #F6F8FD;
+    border: 2px solid #E8E7FC;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 36px;
+}
+
+.proposal-validity p {
+    margin: 0;
+    color: var(--text);
+}
+
+.proposal-manager,
+.license-table-wrap,
+.calc-total,
+.bonus-card,
+.manager-card,
+.proposal-validity {
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 20mm;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    body {
+        background: white;
+        overflow: visible;
+        margin: 0;
+        padding: 0;
+    }
+
+    .app {
+        display: block;
+    }
+
+    .sidebar,
+    .preview-toolbar {
+        display: none !important;
+    }
+
+    .preview-area {
+        overflow: visible;
+        display: block;
+    }
+
+    .preview-scroll {
+        padding: 0;
+        overflow: visible;
+        background: white;
+        display: block;
+    }
+
+    .proposal-page {
+        box-shadow: none;
+        width: 170mm;
+        min-height: 257mm;
+        padding: 0;
+        margin: 0 auto;
+        background: white;
+    }
+
+    .proposal-manager,
+    .license-table-wrap,
+    .calc-total,
+    .bonus-card,
+    .manager-card,
+    .proposal-validity {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
+
+@media (max-width: 1200px) {
+    .sidebar {
+        width: 340px;
+        min-width: 340px;
+    }
+}
