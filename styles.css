@@ -1286,6 +1286,7 @@ section p {
     font-size: 12px;
     color: var(--text-muted);
     line-height: 1.45;
+    white-space: pre-line;
 }
 
 .start-amount-value {

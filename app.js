@@ -328,6 +328,7 @@ const state = {
     period: "3",
     operatorsCount: 3,
     startAmount: 0,
+    startAmountDesc: "Рекомендуемая сумма для внесения на баланс.\nЭтого хватит на первое время работы.",
     minutesCount: 1000,
     telephonyType: "none",
     internodBilling: "per_minute",
@@ -888,6 +889,11 @@ function bindEvents() {
 
     document.getElementById("startAmountInput").addEventListener("input", e => {
         state.startAmount = parseInt(e.target.value) || 0;
+        updateStartAmount();
+    });
+
+    document.getElementById("startAmountDescInput").addEventListener("input", e => {
+        state.startAmountDesc = e.target.value;
         updateStartAmount();
     });
 
@@ -1818,8 +1824,10 @@ function fitHeaderTitle() {
 function updateStartAmount() {
     const card = document.getElementById("startAmountCard");
     const valueEl = document.getElementById("startAmountValue");
+    const descEl = document.getElementById("startAmountDesc");
     if (!card || !valueEl) return;
     const amount = parseInt(state.startAmount) || 0;
+    if (descEl) descEl.textContent = state.startAmountDesc || "";
     if (amount > 0) {
         card.style.display = "";
         valueEl.textContent = formatPrice(amount);

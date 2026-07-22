@@ -93,6 +93,11 @@
                     <span>Для старта работы (₽)</span>
                     <input type="number" id="startAmountInput" min="0" step="1000" placeholder="15000">
                 </label>
+                <label>
+                    <span>Текст для блока старта</span>
+                    <textarea id="startAmountDescInput" rows="2">Рекомендуемая сумма для внесения на баланс.
+Этого хватит на первое время работы.</textarea>
+                </label>
             </div>
 
             <div class="form-section" id="featuresSection">
@@ -985,7 +990,7 @@
                             </div>
                             <div class="start-amount-text">
                                 <div class="start-amount-title">Для старта работы</div>
-                                <div class="start-amount-desc">Рекомендуемая сумма для внесения на баланс.<br>Этого хватит на первое время работы.</div>
+                                <div class="start-amount-desc" id="startAmountDesc"></div>
                             </div>
                             <div class="start-amount-value" id="startAmountValue"></div>
                         </div>
