@@ -386,7 +386,7 @@ function renderCalcDetailPrice(monthlyPrice, periodMonths, isOneTime = false) {
             </div>
         `;
     }
-    if (isOneTime) {
+    if (isOneTime || periodMonths === 1) {
         return `
             <div class="calc-detail-price">
                 <div class="calc-detail-price-period no-divider">
@@ -396,6 +396,28 @@ function renderCalcDetailPrice(monthlyPrice, periodMonths, isOneTime = false) {
         `;
     }
     const periodPrice = monthlyPrice * periodMonths;
+    return `
+        <div class="calc-detail-price">
+            <div class="calc-detail-price-monthly">
+                <div class="calc-detail-price-value">${formatPrice(monthlyPrice)}</div>
+            </div>
+            <div class="calc-detail-price-period">
+                <div class="calc-detail-price-value">${formatPrice(periodPrice)}</div>
+            </div>
+        </div>
+    `;
+}
+
+function renderDualPrice(monthlyPrice, periodPrice, periodMonths) {
+    if (periodMonths === 1) {
+        return `
+            <div class="calc-detail-price">
+                <div class="calc-detail-price-period no-divider">
+                    <div class="calc-detail-price-value">${formatPrice(periodPrice)}</div>
+                </div>
+            </div>
+        `;
+    }
     return `
         <div class="calc-detail-price">
             <div class="calc-detail-price-monthly">
@@ -1460,7 +1482,10 @@ function updateCalculations() {
         "12": "за 12 месяцев"
     };
     const periodHeaderLabel = document.getElementById("periodPriceHeader");
-    if (periodHeaderLabel) periodHeaderLabel.textContent = periodHeaderLabels[state.period] || `за ${state.period}`;
+    if (periodHeaderLabel) {
+        periodHeaderLabel.textContent = periodHeaderLabels[state.period] || `за ${state.period}`;
+        periodHeaderLabel.style.display = state.period === "daily" ? "none" : "";
+    }
 
     const calcDetailsList = document.getElementById("calcDetailsList");
     calcDetailsList.innerHTML = "";
@@ -1517,14 +1542,7 @@ function updateCalculations() {
                         <div class="calc-detail-name">Входящая линия АТС</div>
                         <div class="calc-detail-desc">Подключение + ежемесячная плата</div>
                     </div>
-                    <div class="calc-detail-price">
-                        <div class="calc-detail-price-monthly">
-                            <div class="calc-detail-price-value">${formatPrice(calc.incomingAtcMonthly)}</div>
-                        </div>
-                        <div class="calc-detail-price-period">
-                            <div class="calc-detail-price-value">${formatPrice(calc.incomingAtcFixedPrice)}</div>
-                        </div>
-                    </div>
+                    ${renderDualPrice(calc.incomingAtcMonthly, calc.incomingAtcFixedPrice, calc.periodMonths)}
                 </div>
             `;
         }
@@ -1538,14 +1556,7 @@ function updateCalculations() {
                         <div class="calc-detail-name">Входящие номера</div>
                         <div class="calc-detail-desc">${state.incomingNumbers} ${declineWord(state.incomingNumbers, "номер", "номера", "номеров")}, подключение + ежемесячная плата</div>
                     </div>
-                    <div class="calc-detail-price">
-                        <div class="calc-detail-price-monthly">
-                            <div class="calc-detail-price-value">${formatPrice(monthly)}</div>
-                        </div>
-                        <div class="calc-detail-price-period">
-                            <div class="calc-detail-price-value">${formatPrice(periodTotal)}</div>
-                        </div>
-                    </div>
+                    ${renderDualPrice(monthly, periodTotal, calc.periodMonths)}
                 </div>
             `;
         }
