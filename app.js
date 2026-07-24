@@ -317,20 +317,6 @@ const adminData = {
     ]
 };
 
-function loadStoredAdminData() {
-    const stored = localStorage.getItem("proposalBuilder_adminData");
-    if (!stored) return;
-    try {
-        const parsed = JSON.parse(stored);
-        if (parsed.managers && parsed.managers.length) adminData.managers = parsed.managers;
-        if (parsed.specialOffers && parsed.specialOffers.length) adminData.specialOffers = parsed.specialOffers;
-        if (parsed.bonuses && parsed.bonuses.length) adminData.bonuses = parsed.bonuses;
-    } catch (e) {
-        console.error("Failed to load admin data from storage", e);
-    }
-}
-loadStoredAdminData();
-
 const state = {
     proposalType: "skorozvon",
     managerId: "",
@@ -673,7 +659,25 @@ function calculate() {
     };
 }
 
-function init() {
+async function init() {
+    try {
+        const response = await fetch("data.json?v=" + Date.now());
+        if (response.ok) {
+            const data = await response.json();
+            if (data.managers) adminData.managers = data.managers;
+            if (data.sharedContacts) adminData.sharedContacts = data.sharedContacts;
+            if (data.clientProblems) adminData.clientProblems = data.clientProblems;
+            if (data.specialOffers) adminData.specialOffers = data.specialOffers;
+            if (data.tariffs) adminData.tariffs = data.tariffs;
+            if (data.features) adminData.features = data.features;
+            if (data.discoveryProducts) adminData.discoveryProducts = data.discoveryProducts;
+            if (data.bonuses) adminData.bonuses = data.bonuses;
+            if (data.clientLogos) adminData.clientLogos = data.clientLogos;
+        }
+    } catch (e) {
+        console.error("Failed to load data.json", e);
+    }
+
     populateManagers();
     populateDiscoveryManagers();
     populateClientProblems();

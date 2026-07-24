@@ -1,3 +1,10 @@
+const GITHUB_CONFIG = {
+    owner: "dbaturinskorozvon-boop",
+    repo: "proposal-builder",
+    branch: "main",
+    dataPath: "data.json"
+};
+
 const DIRECTIONS = [
     { id: "kor2", name: "КОР-2", label: "Основной продукт" },
     { id: "discovery", name: "Дискавери", label: "Дискавери-продукты" },
@@ -32,28 +39,25 @@ const USERS = [
 const ROP_DEFAULT_PASSWORD = "rop12345";
 
 let currentUser = null;
-let adminData = loadAdminData();
+let githubToken = localStorage.getItem("proposalBuilder_githubToken") || "";
+let dataSha = null;
+let adminData = null;
+let isLoading = false;
 
-function loadAdminData() {
-    const stored = localStorage.getItem("proposalBuilder_adminData");
-    if (stored) {
-        try {
-            return JSON.parse(stored);
-        } catch (e) {
-            console.error("Failed to parse stored admin data", e);
-        }
-    }
-    return getDefaultAdminData();
+async function loadData() {
+    const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.dataPath}?t=${Date.now()}`);
+    if (!response.ok) throw new Error("Failed to load data");
+    return await response.json();
 }
 
 function getDefaultAdminData() {
     return {
         managers: [
-            { id: 1, name: "Иванова Анна", email: "aivanova@skorozvon.ru", phone: "", telegram: "", max: "", directions: ["kor2"] },
-            { id: 2, name: "Белоусова Ксения", email: "kabelousova@skorozvon.ru", phone: "", telegram: "", max: "", directions: ["kor2"] },
-            { id: 3, name: "Шелудченко Ксения", email: "ksheludchenko@skorozvon.ru", phone: "", telegram: "", max: "", directions: ["kor2"] },
-            { id: 4, name: "Борисова Мария", email: "mshherbakova@skorozvon.ru", phone: "", telegram: "", max: "", directions: ["kor2"] },
-            { id: 5, name: "Захарова Юлия", email: "yzakharova@skorozvon.ru", phone: "", telegram: "", max: "", directions: ["kor2"] }
+            { id: 1, name: "Иванова Анна", email: "aivanova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] },
+            { id: 2, name: "Белоусова Ксения", email: "kabelousova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] },
+            { id: 3, name: "Шелудченко Ксения", email: "ksheludchenko@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] },
+            { id: 4, name: "Борисова Мария", email: "mshherbakova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] },
+            { id: 5, name: "Захарова Юлия", email: "yzakharova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] }
         ],
         specialOffers: [
             {
@@ -121,10 +125,6 @@ function getDefaultAdminData() {
     };
 }
 
-function saveAdminData() {
-    localStorage.setItem("proposalBuilder_adminData", JSON.stringify(adminData));
-}
-
 async function sha256(text) {
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
@@ -177,6 +177,8 @@ function init() {
     document.getElementById("addManagerBtn").addEventListener("click", () => openManagerModal());
     document.getElementById("addOfferBtn").addEventListener("click", () => openOfferModal());
     document.getElementById("addBonusBtn").addEventListener("click", () => openBonusModal());
+    document.getElementById("saveTokenBtn").addEventListener("click", saveToken);
+    document.getElementById("testTokenBtn").addEventListener("click", testToken);
 
     document.getElementById("managersDirectionFilter").addEventListener("change", renderManagers);
     document.getElementById("offersDirectionFilter").addEventListener("change", renderSpecialOffers);
@@ -216,7 +218,7 @@ function handleLogout() {
     document.getElementById("loginError").style.display = "none";
 }
 
-function showAdminLayout() {
+async function showAdminLayout() {
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("adminLayout").style.display = "flex";
     document.getElementById("adminUserName").textContent = currentUser.name;
@@ -226,9 +228,31 @@ function showAdminLayout() {
         document.getElementById("directionsNav").style.display = "block";
     }
 
+    showGlobalLoading(true);
+    try {
+        adminData = await loadData();
+    } catch (e) {
+        showGlobalLoading(false);
+        alert("Не удалось загрузить data.json. Убедитесь, что файл опубликован на GitHub Pages, и обновите страницу.");
+        return;
+    }
+    showGlobalLoading(false);
+
     populateDirectionFilters();
     showSection("dashboard");
     renderDashboard();
+}
+
+function showGlobalLoading(show) {
+    let overlay = document.getElementById("globalLoadingOverlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "globalLoadingOverlay";
+        overlay.style.cssText = "position: fixed; inset: 0; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; font-size: 16px; font-weight: 600; color: var(--text-secondary);";
+        overlay.textContent = "Загрузка данных...";
+        document.body.appendChild(overlay);
+    }
+    overlay.style.display = show ? "flex" : "none";
 }
 
 function populateDirectionFilters() {
@@ -261,6 +285,7 @@ function showSection(section) {
     if (section === "special-offers") renderSpecialOffers();
     if (section === "bonuses") renderBonuses();
     if (section === "directions") renderDirections();
+    if (section === "settings") renderSettings();
 }
 
 function renderDashboard() {
@@ -277,6 +302,15 @@ function renderDashboard() {
         badge.textContent = d.name;
         list.appendChild(badge);
     });
+
+    const note = document.querySelector(".admin-note");
+    if (note) {
+        note.innerHTML = `
+            <h3>Как это работает</h3>
+            <p>Изменения сохраняются в файл data.json в репозитории GitHub. После сохранения конструктор подхватит их автоматически в течение 1–2 минут.</p>
+            <p style="margin-top: 8px;">Для публикации изменений нужен GitHub-токен с правом записи в репозиторий.</p>
+        `;
+    }
 }
 
 function filterByDirection(items, directions) {
@@ -290,7 +324,7 @@ function filterByDirection(items, directions) {
 
 function renderManagers() {
     const filter = document.getElementById("managersDirectionFilter").value;
-    let managers = adminData.managers;
+    let managers = adminData.managers || [];
     if (filter !== "all") {
         managers = managers.filter(m => m.directions && m.directions.includes(filter));
     }
@@ -335,16 +369,14 @@ function handleManagerAction(e) {
     } else if (action === "delete-manager") {
         if (confirm("Удалить менеджера?")) {
             adminData.managers = adminData.managers.filter(m => m.id !== id);
-            saveAdminData();
-            renderManagers();
-            renderDashboard();
+            saveData();
         }
     }
 }
 
 function renderSpecialOffers() {
     const filter = document.getElementById("offersDirectionFilter").value;
-    let offers = adminData.specialOffers;
+    let offers = adminData.specialOffers || [];
     if (filter !== "all") {
         offers = offers.filter(o => o.directions && o.directions.includes(filter));
     }
@@ -364,16 +396,16 @@ function renderSpecialOffers() {
             <div class="editor-card-header">
                 <div>
                     <div class="editor-card-title">${escapeHtml(offer.title)}</div>
-                    <div class="editor-card-subtitle">${offer.directions.map(d => directionName(d)).join(", ")}</div>
+                    <div class="editor-card-subtitle">${(offer.directions || []).map(d => directionName(d)).join(", ")}</div>
                 </div>
             </div>
             <div class="editor-card-body">
                 <p>${escapeHtml(offer.description)}</p>
-                ${offer.bonuses.map(b => `
+                ${(offer.bonuses || []).map(b => `
                     <div style="margin-top: 12px; padding: 12px; background: var(--accent-bg); border-radius: 8px;">
                         <strong>${escapeHtml(b.title)}</strong>
                         ${b.intro ? `<p style="margin-top: 4px;">${escapeHtml(b.intro)}</p>` : ""}
-                        <ul>${b.items.map(i => `<li>${escapeHtml(i)}</li>`).join("")}</ul>
+                        <ul>${(b.items || []).map(i => `<li>${escapeHtml(i)}</li>`).join("")}</ul>
                     </div>
                 `).join("")}
             </div>
@@ -398,16 +430,14 @@ function handleOfferAction(e) {
     } else if (action === "delete-offer") {
         if (confirm("Удалить спецпредложение?")) {
             adminData.specialOffers = adminData.specialOffers.filter(o => o.id !== id);
-            saveAdminData();
-            renderSpecialOffers();
-            renderDashboard();
+            saveData();
         }
     }
 }
 
 function renderBonuses() {
     const filter = document.getElementById("bonusesDirectionFilter").value;
-    let bonuses = adminData.bonuses;
+    let bonuses = adminData.bonuses || [];
     if (filter !== "all") {
         bonuses = bonuses.filter(b => b.directions && b.directions.includes(filter));
     }
@@ -427,7 +457,7 @@ function renderBonuses() {
             <div class="editor-card-header">
                 <div>
                     <div class="editor-card-title">${bonus.icon} ${escapeHtml(bonus.title)}</div>
-                    <div class="editor-card-subtitle">${bonus.directions.map(d => directionName(d)).join(", ")}</div>
+                    <div class="editor-card-subtitle">${(bonus.directions || []).map(d => directionName(d)).join(", ")}</div>
                 </div>
             </div>
             <div class="editor-card-body">${escapeHtml(bonus.description)}</div>
@@ -452,9 +482,7 @@ function handleBonusAction(e) {
     } else if (action === "delete-bonus") {
         if (confirm("Удалить бонус?")) {
             adminData.bonuses = adminData.bonuses.filter(b => b.id !== id);
-            saveAdminData();
-            renderBonuses();
-            renderDashboard();
+            saveData();
         }
     }
 }
@@ -478,13 +506,60 @@ function renderDirections() {
     });
 }
 
+function renderSettings() {
+    const input = document.getElementById("githubTokenInput");
+    input.value = githubToken ? "••••••••••••••••••••••••••" : "";
+}
+
+function saveToken() {
+    const input = document.getElementById("githubTokenInput");
+    const token = input.value.trim();
+    if (!token || token === "••••••••••••••••••••••••••") {
+        alert("Введите токен");
+        return;
+    }
+    githubToken = token;
+    localStorage.setItem("proposalBuilder_githubToken", token);
+    input.value = "••••••••••••••••••••••••••";
+    document.getElementById("tokenStatus").textContent = "Токен сохранён";
+    document.getElementById("tokenStatus").style.color = "var(--success)";
+}
+
+async function testToken() {
+    const statusEl = document.getElementById("tokenStatus");
+    if (!githubToken) {
+        statusEl.textContent = "Сначала сохраните токен";
+        statusEl.style.color = "var(--danger)";
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}`, {
+            headers: {
+                "Authorization": `token ${githubToken}`,
+                "Accept": "application/vnd.github.v3+json"
+            }
+        });
+        if (response.ok) {
+            statusEl.textContent = "Токен работает";
+            statusEl.style.color = "var(--success)";
+        } else {
+            const error = await response.json();
+            statusEl.textContent = "Ошибка: " + (error.message || "Токен не работает");
+            statusEl.style.color = "var(--danger)";
+        }
+    } catch (e) {
+        statusEl.textContent = "Ошибка: " + e.message;
+        statusEl.style.color = "var(--danger)";
+    }
+}
+
 function openModal(title, bodyHtml, onSave) {
     document.getElementById("modalTitle").textContent = title;
     document.getElementById("modalBody").innerHTML = bodyHtml;
     document.getElementById("modalOverlay").style.display = "flex";
     document.getElementById("modalSave").onclick = () => {
         onSave();
-        closeModal();
     };
 }
 
@@ -492,8 +567,7 @@ function closeModal() {
     document.getElementById("modalOverlay").style.display = "none";
 }
 
-function saveModal() {
-}
+function saveModal() {}
 
 function directionCheckboxesHtml(selectedDirections, name) {
     const directions = getAccessibleDirections();
@@ -575,9 +649,7 @@ function openManagerModal(id) {
             adminData.managers.push(newManager);
         }
 
-        saveAdminData();
-        renderManagers();
-        renderDashboard();
+        saveData();
         closeModal();
     });
 }
@@ -607,7 +679,7 @@ function openOfferModal(id) {
         </div>
         <div class="form-group">
             <label>Пункты бонуса (по одному на строку)</label>
-            <textarea id="offerBonusItems" rows="5">${bonus ? bonus.items.map(i => escapeHtml(i)).join("\n") : ""}</textarea>
+            <textarea id="offerBonusItems" rows="5">${bonus ? (bonus.items || []).map(i => escapeHtml(i)).join("\n") : ""}</textarea>
         </div>
     `;
 
@@ -636,9 +708,7 @@ function openOfferModal(id) {
             adminData.specialOffers.push(newOffer);
         }
 
-        saveAdminData();
-        renderSpecialOffers();
-        renderDashboard();
+        saveData();
         closeModal();
     });
 }
@@ -682,9 +752,7 @@ function openBonusModal(id) {
             adminData.bonuses.push(newBonus);
         }
 
-        saveAdminData();
-        renderBonuses();
-        renderDashboard();
+        saveData();
         closeModal();
     });
 }
@@ -692,6 +760,67 @@ function openBonusModal(id) {
 function directionName(id) {
     const d = DIRECTIONS.find(dir => dir.id === id);
     return d ? d.name : id;
+}
+
+async function saveData() {
+    if (!githubToken) {
+        alert("Для сохранения изменений нужно ввести GitHub-токен в настройках.");
+        showSection("settings");
+        return;
+    }
+
+    showGlobalLoading(true);
+
+    try {
+        await saveToGitHub(adminData);
+        renderDashboard();
+        if (document.getElementById("managersSection").classList.contains("active")) renderManagers();
+        if (document.getElementById("specialOffersSection").classList.contains("active")) renderSpecialOffers();
+        if (document.getElementById("bonusesSection").classList.contains("active")) renderBonuses();
+        alert("Изменения сохранены. Они появятся в конструкторе через 1–2 минуты.");
+    } catch (e) {
+        console.error("Failed to save", e);
+        alert("Ошибка сохранения: " + e.message);
+    } finally {
+        showGlobalLoading(false);
+    }
+}
+
+async function getFileSha() {
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.dataPath}?ref=${GITHUB_CONFIG.branch}`, {
+        headers: {
+            "Authorization": `token ${githubToken}`,
+            "Accept": "application/vnd.github.v3+json"
+        }
+    });
+    if (!response.ok) throw new Error("Не удалось получить информацию о файле");
+    const data = await response.json();
+    return data.sha;
+}
+
+async function saveToGitHub(data) {
+    const sha = await getFileSha();
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.dataPath}`, {
+        method: "PUT",
+        headers: {
+            "Authorization": `token ${githubToken}`,
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: "update data from admin panel",
+            content: content,
+            sha: sha,
+            branch: GITHUB_CONFIG.branch
+        })
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Ошибка сохранения в GitHub");
+    }
 }
 
 function escapeHtml(text) {

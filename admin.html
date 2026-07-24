@@ -48,6 +48,7 @@
                     <a href="#" class="admin-nav-item" data-section="special-offers">Спецпредложения</a>
                     <a href="#" class="admin-nav-item" data-section="bonuses">Бонусы</a>
                     <a href="#" class="admin-nav-item" data-section="directions" id="directionsNav" style="display: none;">Направления</a>
+                    <a href="#" class="admin-nav-item" data-section="settings">Настройки</a>
                 </nav>
                 <div class="admin-sidebar-footer">
                     <a href="index.html" class="btn-secondary btn-small">К конструктору</a>
@@ -152,6 +153,30 @@
                         <h1>Направления</h1>
                     </div>
                     <div class="cards-list" id="directionsEditorList"></div>
+                </section>
+
+                <section class="admin-section" id="settingsSection">
+                    <div class="admin-section-header">
+                        <h1>Настройки</h1>
+                    </div>
+                    <div class="editor-card">
+                        <div class="editor-card-header">
+                            <div>
+                                <div class="editor-card-title">GitHub-токен</div>
+                                <div class="editor-card-subtitle">Нужен для сохранения изменений в репозиторий</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Токен</label>
+                            <input type="password" id="githubTokenInput" placeholder="ghp_..." value="">
+                            <small>Введите Personal Access Token с правом repo. Токен хранится только в этом браузере.</small>
+                        </div>
+                        <div class="editor-card-actions">
+                            <button class="btn-primary btn-small" id="saveTokenBtn">Сохранить токен</button>
+                            <button class="btn-secondary btn-small" id="testTokenBtn">Проверить токен</button>
+                        </div>
+                        <div id="tokenStatus" style="margin-top: 12px; font-size: 13px;"></div>
+                    </div>
                 </section>
             </main>
         </div>
