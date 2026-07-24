@@ -719,6 +719,19 @@ input:focus, select:focus, textarea:focus {
     bottom: 0;
 }
 
+.admin-link {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.admin-link:hover {
+    color: var(--primary);
+}
+
 .btn-primary, .btn-secondary {
     padding: 12px 20px;
     border: none;

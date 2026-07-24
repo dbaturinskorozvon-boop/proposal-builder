@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админка — Конструктор КП Скорозвон</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="app" id="app">
+        <div class="login-screen" id="loginScreen">
+            <div class="login-card">
+                <div class="login-logo">Скорозвон</div>
+                <h1>Админка конструктора КП</h1>
+                <p class="login-subtitle">Вход для руководителей отдела продаж</p>
+                <form id="loginForm" class="login-form">
+                    <label>
+                        <span>Email</span>
+                        <input type="email" id="loginEmail" placeholder="rop@skorozvon.ru" required>
+                    </label>
+                    <label>
+                        <span>Пароль</span>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </label>
+                    <button type="submit" class="btn-primary">Войти</button>
+                </form>
+                <div class="login-hint">Для SSO свяжитесь с ИТ-отделом</div>
+                <div id="loginError" class="login-error"></div>
+            </div>
+        </div>
+
+        <div class="admin-layout" id="adminLayout" style="display: none;">
+            <aside class="admin-sidebar">
+                <div class="admin-sidebar-header">
+                    <div class="admin-logo">Скорозвон</div>
+                    <div class="admin-subtitle">Админка КП</div>
+                </div>
+                <div class="admin-user">
+                    <div class="admin-user-name" id="adminUserName"></div>
+                    <div class="admin-user-role" id="adminUserRole"></div>
+                </div>
+                <nav class="admin-nav">
+                    <a href="#" class="admin-nav-item active" data-section="dashboard">Обзор</a>
+                    <a href="#" class="admin-nav-item" data-section="managers">Менеджеры</a>
+                    <a href="#" class="admin-nav-item" data-section="special-offers">Спецпредложения</a>
+                    <a href="#" class="admin-nav-item" data-section="bonuses">Бонусы</a>
+                    <a href="#" class="admin-nav-item" data-section="directions" id="directionsNav" style="display: none;">Направления</a>
+                </nav>
+                <div class="admin-sidebar-footer">
+                    <a href="index.html" class="btn-secondary btn-small">К конструктору</a>
+                    <button class="btn-secondary btn-small" id="logoutBtn">Выйти</button>
+                </div>
+            </aside>
+
+            <main class="admin-main">
+                <section class="admin-section active" id="dashboardSection">
+                    <div class="admin-section-header">
+                        <h1>Обзор</h1>
+                    </div>
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value" id="dashboardManagersCount">0</div>
+                            <div class="dashboard-card-label">Менеджеров</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value" id="dashboardOffersCount">0</div>
+                            <div class="dashboard-card-label">Спецпредложений</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value" id="dashboardBonusesCount">0</div>
+                            <div class="dashboard-card-label">Бонусов</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-directions" id="dashboardDirections">
+                        <h2>Доступные направления</h2>
+                        <div class="directions-list" id="directionsList"></div>
+                    </div>
+                    <div class="admin-note">
+                        <h3>Как это работает</h3>
+                        <p>Изменения сохраняются в браузере этого компьютера. Чтобы обновить данные для всех пользователей, нажмите «Экспортировать данные» в нужном разделе и отправьте файл разработчику.</p>
+                    </div>
+                </section>
+
+                <section class="admin-section" id="managersSection">
+                    <div class="admin-section-header">
+                        <h1>Менеджеры</h1>
+                        <button class="btn-primary btn-small" id="addManagerBtn">+ Добавить менеджера</button>
+                    </div>
+                    <div class="admin-filter">
+                        <label>
+                            <span>Направление</span>
+                            <select id="managersDirectionFilter">
+                                <option value="all">Все</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="data-table-wrapper">
+                        <table class="data-table" id="managersTable">
+                            <thead>
+                                <tr>
+                                    <th>ФИО</th>
+                                    <th>Email</th>
+                                    <th>Телефон</th>
+                                    <th>Telegram</th>
+                                    <th>MAX</th>
+                                    <th>Направления</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="admin-section" id="specialOffersSection">
+                    <div class="admin-section-header">
+                        <h1>Спецпредложения</h1>
+                        <button class="btn-primary btn-small" id="addOfferBtn">+ Добавить спецпредложение</button>
+                    </div>
+                    <div class="admin-filter">
+                        <label>
+                            <span>Направление</span>
+                            <select id="offersDirectionFilter">
+                                <option value="all">Все</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="cards-list" id="offersList"></div>
+                </section>
+
+                <section class="admin-section" id="bonusesSection">
+                    <div class="admin-section-header">
+                        <h1>Бонусы</h1>
+                        <button class="btn-primary btn-small" id="addBonusBtn">+ Добавить бонус</button>
+                    </div>
+                    <div class="admin-filter">
+                        <label>
+                            <span>Направление</span>
+                            <select id="bonusesDirectionFilter">
+                                <option value="all">Все</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="cards-list" id="bonusesList"></div>
+                </section>
+
+                <section class="admin-section" id="directionsSection">
+                    <div class="admin-section-header">
+                        <h1>Направления</h1>
+                    </div>
+                    <div class="cards-list" id="directionsEditorList"></div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" style="display: none;">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Редактирование</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn-secondary btn-small" id="modalCancel">Отмена</button>
+                <button class="btn-primary btn-small" id="modalSave">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

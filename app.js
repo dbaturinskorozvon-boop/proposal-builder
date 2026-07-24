@@ -317,6 +317,20 @@ const adminData = {
     ]
 };
 
+function loadStoredAdminData() {
+    const stored = localStorage.getItem("proposalBuilder_adminData");
+    if (!stored) return;
+    try {
+        const parsed = JSON.parse(stored);
+        if (parsed.managers && parsed.managers.length) adminData.managers = parsed.managers;
+        if (parsed.specialOffers && parsed.specialOffers.length) adminData.specialOffers = parsed.specialOffers;
+        if (parsed.bonuses && parsed.bonuses.length) adminData.bonuses = parsed.bonuses;
+    } catch (e) {
+        console.error("Failed to load admin data from storage", e);
+    }
+}
+loadStoredAdminData();
+
 const state = {
     proposalType: "skorozvon",
     managerId: "",
