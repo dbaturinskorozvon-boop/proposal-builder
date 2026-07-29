@@ -1083,7 +1083,8 @@ section p {
     color: #2D9D5C;
 }
 
-.license-card-best {
+.license-card-best,
+.license-card-active {
     border: 2px solid var(--primary);
     background: #FFF8F7;
 }

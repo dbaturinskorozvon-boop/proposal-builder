@@ -1492,6 +1492,19 @@ function updateCalculations() {
         document.getElementById(cardBenefitIds[index]).textContent = isDailyPeriod ? "Базовая цена" : `Выгода ${formatNumber(benefit)} ₽`;
     });
 
+    document.querySelectorAll(".license-card").forEach(card => {
+        card.classList.remove("license-card-active");
+        const badge = card.querySelector(".license-card-badge");
+        if (badge) badge.textContent = "";
+    });
+
+    const activeCard = document.querySelector(`.license-card[data-period="${state.period}"]`);
+    if (activeCard) {
+        activeCard.classList.add("license-card-active");
+        const activeBadge = activeCard.querySelector(".license-card-badge");
+        if (activeBadge) activeBadge.textContent = "Ваш тариф";
+    }
+
     const periodLabels = {
         "daily": "30 дней",
         "3": "3 месяца",
