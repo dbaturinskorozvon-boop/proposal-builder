@@ -1103,6 +1103,10 @@ section p {
     white-space: nowrap;
 }
 
+.license-card-badge:empty {
+    display: none;
+}
+
 .license-card-price-value,
 .license-card-price-currency,
 .license-card-price-period {
