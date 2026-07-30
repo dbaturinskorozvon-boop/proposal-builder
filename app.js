@@ -1187,8 +1187,12 @@ function updateOnboarding() {
     const section = document.getElementById("onboardingSection");
     if (!section) return;
 
+    const activeTabButton = document.querySelector('.tab-button.active');
+    const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
+    const isKor2 = activeTab === 'kor2';
     const isSkorozvon = state.proposalType === "skorozvon" || state.proposalType === "both";
-    section.style.display = (isSkorozvon && state.registrationStatus === "no_registration") ? "block" : "none";
+
+    section.style.display = (isKor2 && isSkorozvon && state.registrationStatus === "no_registration") ? "block" : "none";
 }
 
 function updateProposalType() {
@@ -1348,6 +1352,7 @@ function updatePreviewForTab() {
     const aiRobotSection = document.getElementById("aiRobotPreviewSection");
     const aiRobotCalculationSection = document.getElementById("aiRobotCalculationPreviewSection");
     const managerSection = document.getElementById("managerSection");
+    const onboardingSection = document.getElementById("onboardingSection");
     const header = document.querySelector(".proposal-header");
 
     if (isDiscovery) {
@@ -1355,6 +1360,7 @@ function updatePreviewForTab() {
         if (specialOfferSection) specialOfferSection.style.display = "none";
         if (calcSection) calcSection.style.display = "none";
         if (bonusesSection) bonusesSection.style.display = "none";
+        if (onboardingSection) onboardingSection.style.display = "none";
         if (aboutSection) aboutSection.style.display = "none";
         if (twoColumns) twoColumns.style.display = "none";
         if (discoverySection) discoverySection.style.display = state.showDiscoveryTariffs ? "block" : "none";
@@ -1367,6 +1373,7 @@ function updatePreviewForTab() {
         if (specialOfferSection) specialOfferSection.style.display = state.selectedSpecialOffer ? "block" : "none";
         if (calcSection) calcSection.style.display = "block";
         if (bonusesSection) bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
+        if (onboardingSection) onboardingSection.style.display = state.registrationStatus === "no_registration" ? "block" : "none";
         if (aboutSection) aboutSection.style.display = "block";
         if (twoColumns) twoColumns.style.display = "grid";
         if (discoverySection) discoverySection.style.display = "none";
