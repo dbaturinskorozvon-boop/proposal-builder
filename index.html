@@ -179,6 +179,19 @@
                 <h2>7. Бонусы</h2>
                 <div id="bonusesList" class="checkbox-list"></div>
             </div>
+
+            <div class="form-section">
+                <h2>8. Для запуска</h2>
+                <label>
+                    <span>Регистрация в сервисе</span>
+                    <select id="registrationStatus">
+                        <option value="">Выберите</option>
+                        <option value="has_registration">Есть регистрация</option>
+                        <option value="no_registration">Нет регистрации</option>
+                    </select>
+                </label>
+                <p class="field-hint">Если у клиента нет регистрации, в КП добавится инструкция по запуску</p>
+            </div>
             </div>
 
             <div class="tab-content" data-tab="discovery">
@@ -1003,6 +1016,42 @@
                     <section class="proposal-bonuses" id="bonusesSection">
                         <h2>Бонусы и спецусловия</h2>
                         <div id="previewBonuses"></div>
+                    </section>
+
+                    <section class="proposal-onboarding" id="onboardingSection" style="display: none;">
+                        <h2>Три простых шага, чтобы начать звонить</h2>
+                        <ol class="onboarding-steps">
+                            <li>
+                                Пройти регистрацию:
+                                <a href="https://skorozvon.ru/" target="_blank">https://skorozvon.ru/</a>
+                            </li>
+                            <li>
+                                Произвести оплату через скачивание счета (при формировании счета заполняете реквизиты)
+                                <a href="https://app.skorozvon.ru/#/pay" target="_blank">https://app.skorozvon.ru/#/pay</a>
+                                <p class="onboarding-note">
+                                    Первым платежом в сервисе подтверждается
+                                    <a href="https://skorozvon.ru/oferta-ob-ispolzovanii-programmy-skorozvon" target="_blank">Оферта</a>,
+                                    поэтому оплата производится с расчетного счета юридического лица, с которого будете в дальнейшем работать в сервисе. Работаем без НДС
+                                </p>
+                            </li>
+                            <li>
+                                Для подключения своей АТС воспользуйтесь инструкцией:
+                                <ul class="onboarding-links">
+                                    <li>
+                                        <a href="https://skorozvon.ru/manual/nachalo-raboty/nastroyka-telefonii/storonnyaya-telefoniya/podklyuchenie-sobstvennoy-ats" target="_blank">SIP-trunk с регистрацией (логин/пароль)</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://skorozvon.ru/manual/nachalo-raboty/nastroyka-telefonii/storonnyaya-telefoniya/podklyuchenie-ats-s-registracziej" target="_blank">SIP-trunk без регистрации (по IP)</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://skorozvon.ru/manual/nachalo-raboty/nastroyka-telefonii/storonnyaya-telefoniya/podklyuchenie-ats-s-registracziej" target="_blank">Подключение большой тройки (МТС, Билайн, Мегафон) с оформлением договора через сервис</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://docs.google.com/document/d/10B-YbRxzgP850K5D2js0rHpeEJSGeD1ZkTEXL94vMZo/edit?tab=t.0" target="_blank">Подключение оператора партнера Интернод</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ol>
                     </section>
 
                     <section class="proposal-validity" id="validitySection" style="display: none;">

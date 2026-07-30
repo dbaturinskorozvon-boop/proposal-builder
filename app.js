@@ -352,6 +352,7 @@ const state = {
     selectedBonuses: [],
     clientProblemId: "",
     customProblem: "",
+    registrationStatus: "",
 };
 
 function formatPrice(value) {
@@ -1066,6 +1067,14 @@ function bindEvents() {
         }
     });
 
+    const registrationStatusSelect = document.getElementById("registrationStatus");
+    if (registrationStatusSelect) {
+        registrationStatusSelect.addEventListener("change", e => {
+            state.registrationStatus = e.target.value;
+            updateOnboarding();
+        });
+    }
+
     document.querySelectorAll('.tab-button').forEach(btn => {
         btn.addEventListener('click', () => {
             if (btn.disabled) return;
@@ -1174,6 +1183,14 @@ function bindEvents() {
     document.getElementById("discoveryValidUntilDate").value = state.validUntil;
 }
 
+function updateOnboarding() {
+    const section = document.getElementById("onboardingSection");
+    if (!section) return;
+
+    const isSkorozvon = state.proposalType === "skorozvon" || state.proposalType === "both";
+    section.style.display = (isSkorozvon && state.registrationStatus === "no_registration") ? "block" : "none";
+}
+
 function updateProposalType() {
     const skorozvonSection = document.getElementById("skorozvonSection");
     const discoverySection = document.getElementById("discoverySection");
@@ -1184,12 +1201,14 @@ function updateProposalType() {
     const benefitsSection = document.querySelector(".proposal-benefits");
 
     const bonusesSection = document.getElementById("bonusesSection");
+    const onboardingSection = document.getElementById("onboardingSection");
     const twoColumns = document.querySelector(".two-columns");
 
     if (state.proposalType === "skorozvon") {
         skorozvonSection.style.display = "block";
         calcSection.style.display = "block";
         bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
+        onboardingSection.style.display = state.registrationStatus === "no_registration" ? "block" : "none";
         aboutSection.style.display = "block";
         twoColumns.style.display = "grid";
         discoverySection.style.display = "none";
@@ -1198,6 +1217,7 @@ function updateProposalType() {
         skorozvonSection.style.display = "none";
         calcSection.style.display = "none";
         bonusesSection.style.display = "none";
+        onboardingSection.style.display = "none";
         aboutSection.style.display = "none";
         twoColumns.style.display = "none";
         discoverySection.style.display = "block";
@@ -1206,6 +1226,7 @@ function updateProposalType() {
         skorozvonSection.style.display = "block";
         calcSection.style.display = "block";
         bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
+        onboardingSection.style.display = state.registrationStatus === "no_registration" ? "block" : "none";
         aboutSection.style.display = "block";
         twoColumns.style.display = "grid";
         discoverySection.style.display = "block";
@@ -1875,6 +1896,7 @@ function updateUI() {
     updateProblem();
     updateSpecialOffer();
     updateBonuses();
+    updateOnboarding();
     updateCalculations();
     updatePreviewForTab();
     syncDiscoveryClientFields();
