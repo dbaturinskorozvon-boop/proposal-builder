@@ -1185,6 +1185,7 @@ function bindEvents() {
 
 function updateOnboarding() {
     const section = document.getElementById("onboardingSection");
+    const registrationStep = document.getElementById("onboardingRegistrationStep");
     if (!section) return;
 
     const activeTabButton = document.querySelector('.tab-button.active');
@@ -1192,7 +1193,12 @@ function updateOnboarding() {
     const isKor2 = activeTab === 'kor2';
     const isSkorozvon = state.proposalType === "skorozvon" || state.proposalType === "both";
 
-    section.style.display = (isKor2 && isSkorozvon && state.registrationStatus === "no_registration") ? "block" : "none";
+    const showSection = isKor2 && isSkorozvon && state.registrationStatus !== "";
+    section.style.display = showSection ? "block" : "none";
+
+    if (registrationStep) {
+        registrationStep.style.display = state.registrationStatus === "has_registration" ? "none" : "";
+    }
 }
 
 function updateProposalType() {
@@ -1212,7 +1218,7 @@ function updateProposalType() {
         skorozvonSection.style.display = "block";
         calcSection.style.display = "block";
         bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
-        onboardingSection.style.display = state.registrationStatus === "no_registration" ? "block" : "none";
+        onboardingSection.style.display = state.registrationStatus ? "block" : "none";
         aboutSection.style.display = "block";
         twoColumns.style.display = "grid";
         discoverySection.style.display = "none";
@@ -1230,7 +1236,7 @@ function updateProposalType() {
         skorozvonSection.style.display = "block";
         calcSection.style.display = "block";
         bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
-        onboardingSection.style.display = state.registrationStatus === "no_registration" ? "block" : "none";
+        onboardingSection.style.display = state.registrationStatus ? "block" : "none";
         aboutSection.style.display = "block";
         twoColumns.style.display = "grid";
         discoverySection.style.display = "block";
@@ -1373,7 +1379,7 @@ function updatePreviewForTab() {
         if (specialOfferSection) specialOfferSection.style.display = state.selectedSpecialOffer ? "block" : "none";
         if (calcSection) calcSection.style.display = "block";
         if (bonusesSection) bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
-        if (onboardingSection) onboardingSection.style.display = state.registrationStatus === "no_registration" ? "block" : "none";
+        if (onboardingSection) onboardingSection.style.display = state.registrationStatus ? "block" : "none";
         if (aboutSection) aboutSection.style.display = "block";
         if (twoColumns) twoColumns.style.display = "grid";
         if (discoverySection) discoverySection.style.display = "none";
