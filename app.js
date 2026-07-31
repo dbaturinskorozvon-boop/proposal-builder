@@ -353,6 +353,7 @@ const state = {
     clientProblemId: "",
     customProblem: "",
     registrationStatus: "",
+    partnersNeeded: "",
 };
 
 function formatPrice(value) {
@@ -1075,6 +1076,14 @@ function bindEvents() {
         });
     }
 
+    const partnersNeededSelect = document.getElementById("partnersNeeded");
+    if (partnersNeededSelect) {
+        partnersNeededSelect.addEventListener("change", e => {
+            state.partnersNeeded = e.target.value;
+            updatePartners();
+        });
+    }
+
     document.querySelectorAll('.tab-button').forEach(btn => {
         btn.addEventListener('click', () => {
             if (btn.disabled) return;
@@ -1208,6 +1217,18 @@ function updateOnboarding() {
     }
 }
 
+function updatePartners() {
+    const section = document.getElementById("partnersSection");
+    if (!section) return;
+
+    const activeTabButton = document.querySelector('.tab-button.active');
+    const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
+    const isKor2 = activeTab === 'kor2';
+    const isSkorozvon = state.proposalType === "skorozvon" || state.proposalType === "both";
+
+    section.style.display = (isKor2 && isSkorozvon && state.partnersNeeded === "yes") ? "block" : "none";
+}
+
 function updateProposalType() {
     const skorozvonSection = document.getElementById("skorozvonSection");
     const discoverySection = document.getElementById("discoverySection");
@@ -1219,6 +1240,7 @@ function updateProposalType() {
 
     const bonusesSection = document.getElementById("bonusesSection");
     const onboardingSection = document.getElementById("onboardingSection");
+    const partnersSection = document.getElementById("partnersSection");
     const twoColumns = document.querySelector(".two-columns");
 
     if (state.proposalType === "skorozvon") {
@@ -1226,6 +1248,7 @@ function updateProposalType() {
         calcSection.style.display = "block";
         bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
         onboardingSection.style.display = state.registrationStatus ? "block" : "none";
+        partnersSection.style.display = state.partnersNeeded === "yes" ? "block" : "none";
         aboutSection.style.display = "block";
         twoColumns.style.display = "grid";
         discoverySection.style.display = "none";
@@ -1235,6 +1258,7 @@ function updateProposalType() {
         calcSection.style.display = "none";
         bonusesSection.style.display = "none";
         onboardingSection.style.display = "none";
+        partnersSection.style.display = "none";
         aboutSection.style.display = "none";
         twoColumns.style.display = "none";
         discoverySection.style.display = "block";
@@ -1244,6 +1268,7 @@ function updateProposalType() {
         calcSection.style.display = "block";
         bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
         onboardingSection.style.display = state.registrationStatus ? "block" : "none";
+        partnersSection.style.display = state.partnersNeeded === "yes" ? "block" : "none";
         aboutSection.style.display = "block";
         twoColumns.style.display = "grid";
         discoverySection.style.display = "block";
@@ -1366,6 +1391,7 @@ function updatePreviewForTab() {
     const aiRobotCalculationSection = document.getElementById("aiRobotCalculationPreviewSection");
     const managerSection = document.getElementById("managerSection");
     const onboardingSection = document.getElementById("onboardingSection");
+    const partnersSection = document.getElementById("partnersSection");
     const header = document.querySelector(".proposal-header");
 
     if (isDiscovery) {
@@ -1374,6 +1400,7 @@ function updatePreviewForTab() {
         if (calcSection) calcSection.style.display = "none";
         if (bonusesSection) bonusesSection.style.display = "none";
         if (onboardingSection) onboardingSection.style.display = "none";
+        if (partnersSection) partnersSection.style.display = "none";
         if (aboutSection) aboutSection.style.display = "none";
         if (twoColumns) twoColumns.style.display = "none";
         if (discoverySection) discoverySection.style.display = state.showDiscoveryTariffs ? "block" : "none";
@@ -1387,6 +1414,7 @@ function updatePreviewForTab() {
         if (calcSection) calcSection.style.display = "block";
         if (bonusesSection) bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
         if (onboardingSection) onboardingSection.style.display = state.registrationStatus ? "block" : "none";
+        if (partnersSection) partnersSection.style.display = state.partnersNeeded === "yes" ? "block" : "none";
         if (aboutSection) aboutSection.style.display = "block";
         if (twoColumns) twoColumns.style.display = "grid";
         if (discoverySection) discoverySection.style.display = "none";
@@ -1917,6 +1945,7 @@ function updateUI() {
     updateSpecialOffer();
     updateBonuses();
     updateOnboarding();
+    updatePartners();
     updateCalculations();
     updatePreviewForTab();
     syncDiscoveryClientFields();

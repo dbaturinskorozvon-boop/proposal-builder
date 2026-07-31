@@ -1391,6 +1391,32 @@ section p {
     word-break: break-all;
 }
 
+.proposal-partners {
+    margin-bottom: 36px;
+    padding: 24px;
+    background: var(--accent-bg);
+    border-radius: 12px;
+}
+
+.proposal-partners h2 {
+    margin-bottom: 16px;
+}
+
+.partners-list {
+    padding-left: 20px;
+    line-height: 1.6;
+}
+
+.partners-list li {
+    margin-bottom: 8px;
+}
+
+.partners-list a {
+    color: var(--primary);
+    text-decoration: underline;
+    word-break: break-all;
+}
+
 .proposal-about {
     margin-bottom: 36px;
 }

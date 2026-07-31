@@ -192,6 +192,18 @@
                 </label>
                 <p class="field-hint">Если у клиента нет регистрации, в КП добавится инструкция по запуску</p>
             </div>
+
+            <div class="form-section">
+                <h2>9. Партнеры</h2>
+                <label>
+                    <span>Партнеры парсинга</span>
+                    <select id="partnersNeeded">
+                        <option value="">Не нужны</option>
+                        <option value="yes">Нужны</option>
+                    </select>
+                </label>
+                <p class="field-hint">Показать блок партнеров парсинга в КП</p>
+            </div>
             </div>
 
             <div class="tab-content" data-tab="discovery">
@@ -1052,6 +1064,30 @@
                                 </ul>
                             </li>
                         </ol>
+                    </section>
+
+                    <section class="proposal-partners" id="partnersSection" style="display: none;">
+                        <h2>Партнеры парсинга</h2>
+                        <ul class="partners-list">
+                            <li>
+                                <a href="https://wantresult.ru/" target="_blank">WantResult</a>
+                            </li>
+                            <li>
+                                <a href="https://bigdata.com.ru/" target="_blank">BigData</a>
+                            </li>
+                            <li>
+                                <a href="https://dmp.one/" target="_blank">DMP.one</a> — нет интеграции с нами, только эксель
+                            </li>
+                            <li>
+                                <a href="https://knam.pro/" target="_blank">Кнам</a>
+                            </li>
+                            <li>
+                                <a href="https://pastilalsk.ru/" target="_blank">Пастила</a>
+                            </li>
+                            <li>
+                                <a href="https://ai-up.ru/" target="_blank">AI-UP</a> — нет интеграции с нами, только эксель
+                            </li>
+                        </ul>
                     </section>
 
                     <section class="proposal-validity" id="validitySection" style="display: none;">
