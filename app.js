@@ -1199,6 +1199,13 @@ function updateOnboarding() {
     if (registrationStep) {
         registrationStep.style.display = state.registrationStatus === "has_registration" ? "none" : "";
     }
+
+    const title = document.getElementById("onboardingTitle");
+    if (title) {
+        title.textContent = state.registrationStatus === "has_registration"
+            ? "Два простых шага, чтобы начать звонить"
+            : "Три простых шага, чтобы начать звонить";
+    }
 }
 
 function updateProposalType() {
