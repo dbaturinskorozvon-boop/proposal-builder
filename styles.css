@@ -397,6 +397,221 @@ body {
     color: var(--text);
 }
 
+.proposal-ai-trainer {
+    margin-bottom: 24px;
+    page-break-inside: avoid;
+}
+
+.proposal-ai-trainer h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--text);
+}
+
+.ai-trainer-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.ai-trainer-card {
+    position: relative;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 16px 16px;
+    background: var(--white);
+    text-align: center;
+}
+
+.ai-trainer-card-active {
+    border-color: var(--primary);
+    background: #FFF8F7;
+}
+
+.ai-trainer-card-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.ai-trainer-card-badge:empty {
+    display: none;
+}
+
+.ai-trainer-card-name {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.ai-trainer-card-staff {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.ai-trainer-card-feature {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    min-height: 40px;
+}
+
+.ai-trainer-card-feature strong {
+    color: var(--text);
+}
+
+.ai-trainer-card-price {
+    margin-bottom: 8px;
+}
+
+.ai-trainer-card-price-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.ai-trainer-card-price-period {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.ai-trainer-card-quarterly {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.ai-trainer-card-quarterly strong {
+    color: var(--text);
+    font-size: 16px;
+}
+
+.ai-trainer-card-economy {
+    font-size: 12px;
+    color: var(--primary);
+    margin-bottom: 16px;
+}
+
+.ai-trainer-modules {
+    text-align: left;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 4px;
+}
+
+.ai-trainer-module {
+    margin-bottom: 14px;
+}
+
+.ai-trainer-module:last-child {
+    margin-bottom: 0;
+}
+
+.ai-trainer-module-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.ai-trainer-module-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 6px;
+}
+
+.ai-trainer-module-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 20px;
+}
+
+.ai-trainer-module-included {
+    background: #E6F7EF;
+    color: #2D9D5C;
+}
+
+.ai-trainer-module-extra {
+    background: #FFF5F4;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.ai-trainer-calc {
+    margin-bottom: 16px;
+}
+
+.ai-trainer-calc .calc-detail-total {
+    border-top: 2px solid var(--text);
+    border-bottom: none;
+}
+
+.ai-trainer-calc .calc-detail-total .calc-detail-name,
+.ai-trainer-calc .calc-detail-total .calc-detail-price {
+    font-weight: 800;
+}
+
+.ai-trainer-menu-modules {
+    margin-top: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+}
+
+.ai-trainer-menu-module {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    padding: 6px 0;
+}
+
+.ai-trainer-menu-module + .ai-trainer-menu-module {
+    border-top: 1px dashed var(--border);
+}
+
+.ai-trainer-menu-included {
+    color: #2D9D5C;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ai-trainer-menu-extra {
+    color: var(--primary);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ai-trainer-footnote {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.ai-trainer-footnote p {
+    margin-bottom: 4px;
+}
+
+@media (max-width: 768px) {
+    .ai-trainer-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
 .ai-calculation-disclaimer {
     border: 1px solid var(--primary);
     border-radius: 12px;

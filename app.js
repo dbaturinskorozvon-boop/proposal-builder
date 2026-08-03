@@ -348,6 +348,8 @@ const state = {
     showClassicRobot: false,
     showAiRobot: false,
     showAiRobotCalculation: false,
+    aiTrainerEnabled: false,
+    aiTrainerTariff: "xs",
     selectedSpecialOffer: "",
     selectedBonuses: [],
     clientProblemId: "",
@@ -369,6 +371,57 @@ function formatDayPrice(value) {
 }
 
 const ORG_FORMS = ["ООО", "ИП", "АО", "ПАО", "ЗАО", "ОАО", "НКО", "ГУП", "МУП", "ФГБУ", "АНО"];
+
+const AI_TRAINER_TARIFFS = {
+    xs: {
+        name: "XS",
+        staff: "до 10 сотрудников",
+        feature: "Безлимитные сценарии",
+        monthly: 23000,
+        quarterly: 58500,
+        economy: 10350,
+        dialogs: 100,
+        modules: {
+            managerReport: "included",
+            customParams: "extra",
+            dashboard360: "extra"
+        }
+    },
+    s: {
+        name: "S",
+        staff: "до 30 сотрудников",
+        feature: "Безлимитные сценарии",
+        monthly: 45500,
+        quarterly: 116000,
+        economy: 20475,
+        dialogs: 300,
+        modules: {
+            managerReport: "included",
+            customParams: "included",
+            dashboard360: "extra"
+        }
+    },
+    m: {
+        name: "M",
+        staff: "до 70 сотрудников",
+        feature: "Безлимитные сценарии",
+        monthly: 80500,
+        quarterly: 205500,
+        economy: 36225,
+        dialogs: 700,
+        modules: {
+            managerReport: "included",
+            customParams: "included",
+            dashboard360: "included"
+        }
+    }
+};
+
+const AI_TRAINER_MODULES = [
+    { id: "managerReport", title: "Отчетность руководителя", desc: "Отслеживание средних баллов сотрудников", extraPrice: 5000 },
+    { id: "customParams", title: "Кастомные параметры оценки", desc: "Проверка менеджеров по кастомным оценкам", extraPrice: 5000 },
+    { id: "dashboard360", title: "Дашборд 360", desc: "Аналитика отдела и процесс показателей в разрезе сценариев и навыков сотрудников", extraPrice: 5000 }
+];
 
 function formatClientCompany(raw) {
     const value = (raw || "").trim().replace(/[«»"']/g, "").replace(/\s+/g, " ").trim();
@@ -1180,6 +1233,25 @@ function bindEvents() {
         });
     }
 
+    const aiTrainerToggle = document.getElementById("aiTrainerToggle");
+    if (aiTrainerToggle) {
+        aiTrainerToggle.addEventListener("change", e => {
+            state.aiTrainerEnabled = e.target.checked;
+            const options = document.getElementById("aiTrainerOptions");
+            if (options) options.style.display = e.target.checked ? "block" : "none";
+            updateAiTrainer();
+            updatePreviewForTab();
+        });
+    }
+
+    const aiTrainerTariff = document.getElementById("aiTrainerTariff");
+    if (aiTrainerTariff) {
+        aiTrainerTariff.addEventListener("change", e => {
+            state.aiTrainerTariff = e.target.value;
+            updateAiTrainer();
+        });
+    }
+
     document.getElementById("printProposal").addEventListener("click", printProposal);
     document.getElementById("downloadPdf").addEventListener("click", downloadPdf);
 
@@ -1227,6 +1299,106 @@ function updatePartners() {
     const isSkorozvon = state.proposalType === "skorozvon" || state.proposalType === "both";
 
     section.style.display = (isKor2 && isSkorozvon && state.partnersNeeded === "yes") ? "block" : "none";
+}
+
+function updateAiTrainer() {
+    const section = document.getElementById("aiTrainerPreviewSection");
+    const cardsContainer = document.getElementById("aiTrainerCards");
+    const calcList = document.getElementById("aiTrainerCalcList");
+    const menuModules = document.getElementById("aiTrainerMenuModules");
+    if (!section || !cardsContainer) return;
+
+    const activeTabButton = document.querySelector('.tab-button.active');
+    const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
+    const isDiscovery = activeTab === 'discovery';
+
+    section.style.display = (isDiscovery && state.aiTrainerEnabled) ? "block" : "none";
+
+    if (!state.aiTrainerEnabled) {
+        cardsContainer.innerHTML = "";
+        if (calcList) calcList.innerHTML = "";
+        if (menuModules) menuModules.innerHTML = "";
+        return;
+    }
+
+    const selectedTariff = AI_TRAINER_TARIFFS[state.aiTrainerTariff] || AI_TRAINER_TARIFFS.xs;
+
+    if (menuModules) {
+        menuModules.innerHTML = AI_TRAINER_MODULES.map(m => {
+            const isIncluded = selectedTariff.modules[m.id] === "included";
+            return `
+                <div class="ai-trainer-menu-module">
+                    <span>${m.title}</span>
+                    <span class="${isIncluded ? 'ai-trainer-menu-included' : 'ai-trainer-menu-extra'}">${isIncluded ? 'Входит' : `+ ${formatNumber(m.extraPrice)} ₽`}</span>
+                </div>
+            `;
+        }).join("");
+    }
+
+    cardsContainer.innerHTML = Object.entries(AI_TRAINER_TARIFFS).map(([key, t]) => {
+        const isActive = key === state.aiTrainerTariff;
+        const modulesHtml = AI_TRAINER_MODULES.map(m => {
+            const isIncluded = t.modules[m.id] === "included";
+            return `
+                <div class="ai-trainer-module">
+                    <div class="ai-trainer-module-title">${m.title}</div>
+                    <div class="ai-trainer-module-desc">${m.desc}</div>
+                    <span class="ai-trainer-module-badge ${isIncluded ? 'ai-trainer-module-included' : 'ai-trainer-module-extra'}">
+                        ${isIncluded ? 'Входит в тариф' : `+ ${formatNumber(m.extraPrice)} руб/мес`}
+                    </span>
+                </div>
+            `;
+        }).join("");
+
+        return `
+            <div class="ai-trainer-card ${isActive ? 'ai-trainer-card-active' : ''}" data-ai-trainer-tariff="${key}">
+                <div class="ai-trainer-card-badge">${isActive ? 'Ваш тариф' : ''}</div>
+                <div class="ai-trainer-card-name">${t.name}</div>
+                <div class="ai-trainer-card-staff">${t.staff}</div>
+                <div class="ai-trainer-card-feature"><strong>${t.feature}</strong></div>
+                <div class="ai-trainer-card-price">
+                    <span class="ai-trainer-card-price-value">${formatNumber(t.monthly)}</span>
+                    <span class="ai-trainer-card-price-period"> руб/мес</span>
+                </div>
+                <div class="ai-trainer-card-quarterly">
+                    <strong>${formatNumber(t.quarterly)}</strong> руб/квартал
+                </div>
+                <div class="ai-trainer-card-economy">Экономия: ${formatNumber(t.economy)} руб. (${formatNumber(Math.round(t.economy / 3))} в месяц)</div>
+                <div class="ai-trainer-modules">
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Подключаемые модули:</div>
+                    ${modulesHtml}
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    if (calcList) {
+        let extraTotal = 0;
+        const calcRows = AI_TRAINER_MODULES.map(m => {
+            if (selectedTariff.modules[m.id] === "included") return "";
+            extraTotal += m.extraPrice;
+            return `
+                <div class="calc-detail-item">
+                    <div class="calc-detail-name">${m.title}</div>
+                    <div class="calc-detail-price">+ ${formatNumber(m.extraPrice)} руб/мес</div>
+                </div>
+            `;
+        }).join("");
+
+        const total = selectedTariff.monthly + extraTotal;
+
+        calcList.innerHTML = `
+            <div class="calc-detail-item">
+                <div class="calc-detail-name">AI-тренажер «${selectedTariff.name}»</div>
+                <div class="calc-detail-price">${formatNumber(selectedTariff.monthly)} руб/мес</div>
+            </div>
+            ${calcRows}
+            <div class="calc-detail-item calc-detail-total">
+                <div class="calc-detail-name">Итого в месяц</div>
+                <div class="calc-detail-price">${formatNumber(total)} руб/мес</div>
+            </div>
+        `;
+    }
 }
 
 function updateProposalType() {
@@ -1389,6 +1561,7 @@ function updatePreviewForTab() {
     const classicRobotSection = document.getElementById("classicRobotPreviewSection");
     const aiRobotSection = document.getElementById("aiRobotPreviewSection");
     const aiRobotCalculationSection = document.getElementById("aiRobotCalculationPreviewSection");
+    const aiTrainerSection = document.getElementById("aiTrainerPreviewSection");
     const managerSection = document.getElementById("managerSection");
     const onboardingSection = document.getElementById("onboardingSection");
     const partnersSection = document.getElementById("partnersSection");
@@ -1408,6 +1581,7 @@ function updatePreviewForTab() {
         if (classicRobotSection) classicRobotSection.style.display = state.showClassicRobot ? "block" : "none";
         if (aiRobotSection) aiRobotSection.style.display = state.showAiRobot ? "block" : "none";
         if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = state.showAiRobotCalculation ? "block" : "none";
+        if (aiTrainerSection) aiTrainerSection.style.display = state.aiTrainerEnabled ? "block" : "none";
     } else {
         if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
         if (specialOfferSection) specialOfferSection.style.display = state.selectedSpecialOffer ? "block" : "none";
@@ -1422,6 +1596,7 @@ function updatePreviewForTab() {
         if (classicRobotSection) classicRobotSection.style.display = "none";
         if (aiRobotSection) aiRobotSection.style.display = "none";
         if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = "none";
+        if (aiTrainerSection) aiTrainerSection.style.display = "none";
     }
 
     if (managerSection) managerSection.style.display = "";
@@ -1457,6 +1632,15 @@ function syncDiscoveryClientFields() {
 
     const aiRobotCalculationToggle = document.getElementById("aiRobotCalculationToggle");
     if (aiRobotCalculationToggle) aiRobotCalculationToggle.checked = state.showAiRobotCalculation;
+
+    const aiTrainerToggle = document.getElementById("aiTrainerToggle");
+    if (aiTrainerToggle) aiTrainerToggle.checked = state.aiTrainerEnabled;
+
+    const aiTrainerOptions = document.getElementById("aiTrainerOptions");
+    if (aiTrainerOptions) aiTrainerOptions.style.display = state.aiTrainerEnabled ? "block" : "none";
+
+    const aiTrainerTariff = document.getElementById("aiTrainerTariff");
+    if (aiTrainerTariff) aiTrainerTariff.value = state.aiTrainerTariff;
 }
 
 function getIcon(name) {
@@ -1946,6 +2130,7 @@ function updateUI() {
     updateBonuses();
     updateOnboarding();
     updatePartners();
+    updateAiTrainer();
     updateCalculations();
     updatePreviewForTab();
     syncDiscoveryClientFields();

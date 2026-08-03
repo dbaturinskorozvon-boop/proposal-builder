@@ -230,7 +230,28 @@
                 </div>
 
                 <div class="form-section">
-                    <h2>2. Тарифы</h2>
+                    <h2>2. AI-тренажер</h2>
+                    <label class="checkbox-item ai-trainer-toggle">
+                        <input type="checkbox" id="aiTrainerToggle">
+                        <div class="item-info">
+                            <div class="item-name">Включить AI-тренажер</div>
+                        </div>
+                    </label>
+                    <div id="aiTrainerOptions" style="display: none; margin-top: 12px;">
+                        <label>
+                            <span>Тариф</span>
+                            <select id="aiTrainerTariff">
+                                <option value="xs" selected>XS</option>
+                                <option value="s">S</option>
+                                <option value="m">M</option>
+                            </select>
+                        </label>
+                        <div class="ai-trainer-menu-modules" id="aiTrainerMenuModules"></div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>3. Тарифы</h2>
                     <label class="checkbox-item">
                         <input type="checkbox" id="discoveryTariffsToggle">
                         <div class="item-info">
@@ -240,7 +261,7 @@
                 </div>
 
                 <div class="form-section">
-                    <h2>3. Расчет</h2>
+                    <h2>4. Расчет</h2>
                     <label class="checkbox-item">
                         <input type="checkbox" id="calculationToggle">
                         <div class="item-info">
@@ -250,7 +271,7 @@
                 </div>
 
                 <div class="form-section">
-                    <h2>4. Пакетная линейка классического робота</h2>
+                    <h2>5. Пакетная линейка классического робота</h2>
                     <label class="checkbox-item">
                         <input type="checkbox" id="classicRobotToggle">
                         <div class="item-info">
@@ -260,7 +281,7 @@
                 </div>
 
                 <div class="form-section">
-                    <h2>5. Пакетная линейка ИИ-робота</h2>
+                    <h2>6. Пакетная линейка ИИ-робота</h2>
                     <label class="checkbox-item">
                         <input type="checkbox" id="aiRobotToggle">
                         <div class="item-info">
@@ -327,6 +348,25 @@
                         <h2 id="previewSpecialOfferTitle"></h2>
                         <p id="previewSpecialOfferDescription"></p>
                         <div id="previewSpecialOfferBonuses"></div>
+                    </section>
+
+                    <section class="proposal-ai-trainer" id="aiTrainerPreviewSection" style="display: none;">
+                        <h2>Тарификация AI-тренажера</h2>
+                        <div class="ai-trainer-cards" id="aiTrainerCards"></div>
+
+                        <div class="calc-details ai-trainer-calc" id="aiTrainerCalcDetails">
+                            <div class="calc-details-caption">
+                                <span>Расчет стоимости</span>
+                                <span>в месяц</span>
+                            </div>
+                            <div id="aiTrainerCalcList"></div>
+                        </div>
+
+                        <div class="ai-trainer-footnote">
+                            <p>* Тариф XS: до 100 диалогов в месяц</p>
+                            <p>* Тариф S: до 300 диалогов в месяц</p>
+                            <p>* Тариф M: до 700 диалогов в месяц</p>
+                        </div>
                     </section>
 
                     <section class="proposal-discovery-tariffs" id="discoveryTariffsPreviewSection" style="display: none;">
