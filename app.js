@@ -1814,8 +1814,8 @@ function updateCalculations() {
                 calcDetailsList.innerHTML += `
                     <div class="calc-detail-item">
                         <div>
-                            <div class="calc-detail-name">МАВ</div>
-                            <div class="calc-detail-desc">${calc.internodMavAttemptsCount.toLocaleString("ru-RU")} ${declineWord(calc.internodMavAttemptsCount, "попытка дозвона", "попытки дозвона", "попыток дозвона")}, 0,70 ₽ за 1 попытку дозвона</div>
+                            <div class="calc-detail-name">МАВ и этикетка</div>
+                            <div class="calc-detail-desc">${calc.internodMavAttemptsCount.toLocaleString("ru-RU")} инициаций вызова, 0.70 коп/шт</div>
                         </div>
                         ${renderCalcDetailPrice(calc.internodMavMonthly, calc.periodMonths)}
                     </div>
