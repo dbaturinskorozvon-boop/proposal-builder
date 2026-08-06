@@ -333,6 +333,7 @@ const state = {
     telephonyType: "none",
     internodBilling: "per_minute",
     internodRate: 2.15,
+    internodMavAttempts: 0,
     internodCarousel: false,
     internodNumbers: false,
     internodNumbersCount: 1,
@@ -357,6 +358,8 @@ const state = {
     registrationStatus: "",
     partnersNeeded: "",
 };
+
+const INTERNOD_MAV_ATTEMPT_PRICE = 0.7;
 
 function formatPrice(value) {
     return formatNumber(value) + " ₽";
@@ -633,9 +636,11 @@ function calculate() {
     const minutesPricePerMin = getMinutesPrice(minutes);
     const minutesMonthly = minutes * minutesPricePerMin;
     const telephonyMonthly = getTelephonyPrice(state.telephonyType, minutes);
+    const internodMavAttemptsCount = state.telephonyType === "internod" ? (parseInt(state.internodMavAttempts) || 0) : 0;
+    const internodMavMonthly = internodMavAttemptsCount * INTERNOD_MAV_ATTEMPT_PRICE;
     const internodCarouselMonthly = state.telephonyType === "internod" && state.internodCarousel ? 3000 : 0;
     const internodNumbersMonthly = state.telephonyType === "internod" && state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
-    const moduleMonthly = telephonyMonthly + internodCarouselMonthly + internodNumbersMonthly;
+    const moduleMonthly = telephonyMonthly + internodMavMonthly + internodCarouselMonthly + internodNumbersMonthly;
     const incomingSetup = incomingNumbers * adminData.tariffs.incomingNumber.setup;
     const incomingMonthly = incomingNumbers * adminData.tariffs.incomingNumber.monthly;
 
@@ -694,6 +699,8 @@ function calculate() {
         licensePeriod,
         minutesMonthly,
         telephonyMonthly,
+        internodMavAttemptsCount,
+        internodMavMonthly,
         internodCarouselMonthly,
         internodNumbersMonthly,
         moduleMonthly,
@@ -991,6 +998,11 @@ function bindEvents() {
 
     document.getElementById("internodRateSelect").addEventListener("change", e => {
         state.internodRate = parseFloat(e.target.value);
+        updateCalculations();
+    });
+
+    document.getElementById("internodMavAttempts").addEventListener("input", e => {
+        state.internodMavAttempts = e.target.value;
         updateCalculations();
     });
 
@@ -1797,6 +1809,18 @@ function updateCalculations() {
                     ${renderCalcDetailPrice(calc.telephonyMonthly, calc.periodMonths)}
                 </div>
             `;
+
+            if (calc.internodMavAttemptsCount > 0) {
+                calcDetailsList.innerHTML += `
+                    <div class="calc-detail-item">
+                        <div>
+                            <div class="calc-detail-name">МАВ</div>
+                            <div class="calc-detail-desc">${calc.internodMavAttemptsCount.toLocaleString("ru-RU")} ${declineWord(calc.internodMavAttemptsCount, "попытка дозвона", "попытки дозвона", "попыток дозвона")}, 0,70 ₽ за 1 попытку дозвона</div>
+                        </div>
+                        ${renderCalcDetailPrice(calc.internodMavMonthly, calc.periodMonths)}
+                    </div>
+                `;
+            }
 
             if (state.telephonyType === "internod" && state.internodCarousel) {
                 calcDetailsList.innerHTML += `
