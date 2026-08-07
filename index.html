@@ -250,6 +250,14 @@
                                 <option value="m">M</option>
                             </select>
                         </label>
+                        <label>
+                            <span>Период</span>
+                            <select id="aiTrainerPeriod">
+                                <option value="3" selected>3 месяца</option>
+                                <option value="6">6 месяцев</option>
+                                <option value="12">12 месяцев</option>
+                            </select>
+                        </label>
                         <div class="ai-trainer-menu-modules" id="aiTrainerMenuModules"></div>
                     </div>
                 </div>
@@ -357,7 +365,10 @@
                         <div class="calc-details ai-trainer-calc" id="aiTrainerCalcDetails">
                             <div class="calc-details-caption">
                                 <span>Расчет стоимости</span>
-                                <span>в месяц</span>
+                                <div class="calc-details-price-header">
+                                    <span>в месяц</span>
+                                    <span id="aiTrainerPeriodPriceHeader">за 3 месяца</span>
+                                </div>
                             </div>
                             <div id="aiTrainerCalcList"></div>
                         </div>

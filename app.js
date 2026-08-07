@@ -351,6 +351,7 @@ const state = {
     showAiRobotCalculation: false,
     aiTrainerEnabled: false,
     aiTrainerTariff: "xs",
+    aiTrainerPeriod: "3",
     aiTrainerExtraModules: {},
     selectedSpecialOffer: "",
     selectedBonuses: [],
@@ -426,6 +427,20 @@ const AI_TRAINER_MODULES = [
     { id: "customParams", title: "Кастомные параметры оценки", desc: "Проверка менеджеров по кастомным оценкам", extraPrice: 5000 },
     { id: "dashboard360", title: "Дашборд 360", desc: "Аналитика отдела и процесс показателей в разрезе сценариев и навыков сотрудников", extraPrice: 5000 }
 ];
+
+const AI_TRAINER_PERIOD_MONTHS = {
+    "3": 3,
+    "6": 6,
+    "12": 12
+};
+
+function getAiTrainerPeriodMonths() {
+    return AI_TRAINER_PERIOD_MONTHS[state.aiTrainerPeriod] || 3;
+}
+
+function getAiTrainerTariffPeriodPrice(tariff, periodMonths) {
+    return tariff.quarterly * (periodMonths / 3);
+}
 
 function formatClientCompany(raw) {
     const value = (raw || "").trim().replace(/[«»"']/g, "").replace(/\s+/g, " ").trim();
@@ -1265,6 +1280,14 @@ function bindEvents() {
         });
     }
 
+    const aiTrainerPeriod = document.getElementById("aiTrainerPeriod");
+    if (aiTrainerPeriod) {
+        aiTrainerPeriod.addEventListener("change", e => {
+            state.aiTrainerPeriod = e.target.value;
+            updateAiTrainer();
+        });
+    }
+
     document.getElementById("printProposal").addEventListener("click", printProposal);
     document.getElementById("downloadPdf").addEventListener("click", downloadPdf);
 
@@ -1335,6 +1358,11 @@ function updateAiTrainer() {
     }
 
     const selectedTariff = AI_TRAINER_TARIFFS[state.aiTrainerTariff] || AI_TRAINER_TARIFFS.xs;
+    const periodMonths = getAiTrainerPeriodMonths();
+    const periodPriceHeader = document.getElementById("aiTrainerPeriodPriceHeader");
+    if (periodPriceHeader) {
+        periodPriceHeader.textContent = `за ${periodMonths} ${declineWord(periodMonths, "месяц", "месяца", "месяцев")}`;
+    }
 
     if (menuModules) {
         menuModules.innerHTML = AI_TRAINER_MODULES.map(m => {
@@ -1396,30 +1424,33 @@ function updateAiTrainer() {
     }).join("");
 
     if (calcList) {
-        let extraTotal = 0;
+        let extraMonthly = 0;
         const calcRows = AI_TRAINER_MODULES.map(m => {
             if (selectedTariff.modules[m.id] === "included") return "";
             if (!state.aiTrainerExtraModules[m.id]) return "";
-            extraTotal += m.extraPrice;
+            extraMonthly += m.extraPrice;
             return `
                 <div class="calc-detail-item">
                     <div class="calc-detail-name">${m.title}</div>
-                    <div class="calc-detail-price">+ ${formatNumber(m.extraPrice)} руб/мес</div>
+                    ${renderCalcDetailPrice(m.extraPrice, periodMonths)}
                 </div>
             `;
         }).join("");
 
-        const total = selectedTariff.monthly + extraTotal;
+        const tariffPeriodPrice = getAiTrainerTariffPeriodPrice(selectedTariff, periodMonths);
+        const extraPeriodTotal = extraMonthly * periodMonths;
+        const totalMonthly = selectedTariff.monthly + extraMonthly;
+        const totalPeriod = tariffPeriodPrice + extraPeriodTotal;
 
         calcList.innerHTML = `
             <div class="calc-detail-item">
                 <div class="calc-detail-name">AI-тренажер «${selectedTariff.name}»</div>
-                <div class="calc-detail-price">${formatNumber(selectedTariff.monthly)} руб/мес</div>
+                ${renderDualPrice(selectedTariff.monthly, tariffPeriodPrice, periodMonths)}
             </div>
             ${calcRows}
             <div class="calc-detail-item calc-detail-total">
-                <div class="calc-detail-name">Итого в месяц</div>
-                <div class="calc-detail-price">${formatNumber(total)} руб/мес</div>
+                <div class="calc-detail-name">Итого</div>
+                ${renderDualPrice(totalMonthly, totalPeriod, periodMonths)}
             </div>
         `;
     }
@@ -1665,6 +1696,9 @@ function syncDiscoveryClientFields() {
 
     const aiTrainerTariff = document.getElementById("aiTrainerTariff");
     if (aiTrainerTariff) aiTrainerTariff.value = state.aiTrainerTariff;
+
+    const aiTrainerPeriod = document.getElementById("aiTrainerPeriod");
+    if (aiTrainerPeriod) aiTrainerPeriod.value = state.aiTrainerPeriod;
 }
 
 function getIcon(name) {
