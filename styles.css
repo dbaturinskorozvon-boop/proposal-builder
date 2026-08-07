@@ -805,6 +805,10 @@ body {
     margin-bottom: 16px;
 }
 
+.section-header-toggle:only-child {
+    margin-bottom: 0;
+}
+
 .section-header-toggle h2 {
     margin-bottom: 0;
 }
