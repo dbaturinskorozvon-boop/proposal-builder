@@ -351,7 +351,7 @@ const state = {
     showAiRobotCalculation: false,
     aiTrainerEnabled: false,
     aiTrainerTariff: "xs",
-    aiTrainerPeriod: "3",
+    aiTrainerPeriod: "1",
     aiTrainerExtraModules: {},
     selectedSpecialOffer: "",
     selectedBonuses: [],
@@ -429,16 +429,18 @@ const AI_TRAINER_MODULES = [
 ];
 
 const AI_TRAINER_PERIOD_MONTHS = {
+    "1": 1,
     "3": 3,
     "6": 6,
     "12": 12
 };
 
 function getAiTrainerPeriodMonths() {
-    return AI_TRAINER_PERIOD_MONTHS[state.aiTrainerPeriod] || 3;
+    return AI_TRAINER_PERIOD_MONTHS[state.aiTrainerPeriod] || 1;
 }
 
 function getAiTrainerTariffPeriodPrice(tariff, periodMonths) {
+    if (periodMonths === 1) return tariff.monthly;
     return tariff.quarterly * (periodMonths / 3);
 }
 
@@ -1362,6 +1364,7 @@ function updateAiTrainer() {
     const periodPriceHeader = document.getElementById("aiTrainerPeriodPriceHeader");
     if (periodPriceHeader) {
         periodPriceHeader.textContent = `за ${periodMonths} ${declineWord(periodMonths, "месяц", "месяца", "месяцев")}`;
+        periodPriceHeader.style.display = periodMonths === 1 ? "none" : "";
     }
 
     if (menuModules) {
