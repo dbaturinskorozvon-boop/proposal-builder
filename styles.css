@@ -573,11 +573,38 @@ body {
 
 .ai-trainer-menu-module {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     font-size: 12px;
     padding: 6px 0;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+.ai-trainer-menu-module input {
+    width: auto;
+    margin: 0;
+    accent-color: var(--primary);
+}
+
+.ai-trainer-menu-module.is-included {
+    cursor: default;
+}
+
+.ai-trainer-menu-module.is-included input {
+    accent-color: #2D9D5C;
+}
+
+.ai-trainer-menu-module span {
+    display: inline;
+    margin-bottom: 0;
+    font-size: 12px;
+}
+
+.ai-trainer-menu-module-title {
+    flex: 1;
+    font-weight: 600;
+    color: var(--text);
 }
 
 .ai-trainer-menu-module + .ai-trainer-menu-module {

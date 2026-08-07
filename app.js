@@ -351,6 +351,7 @@ const state = {
     showAiRobotCalculation: false,
     aiTrainerEnabled: false,
     aiTrainerTariff: "xs",
+    aiTrainerExtraModules: {},
     selectedSpecialOffer: "",
     selectedBonuses: [],
     clientProblemId: "",
@@ -1338,13 +1339,23 @@ function updateAiTrainer() {
     if (menuModules) {
         menuModules.innerHTML = AI_TRAINER_MODULES.map(m => {
             const isIncluded = selectedTariff.modules[m.id] === "included";
+            const isChecked = isIncluded || !!state.aiTrainerExtraModules[m.id];
             return `
-                <div class="ai-trainer-menu-module">
-                    <span>${m.title}</span>
+                <label class="ai-trainer-menu-module ${isIncluded ? 'is-included' : ''}">
+                    <input type="checkbox" data-ai-trainer-module="${m.id}" ${isChecked ? 'checked' : ''} ${isIncluded ? 'disabled' : ''}>
+                    <span class="ai-trainer-menu-module-title">${m.title}</span>
                     <span class="${isIncluded ? 'ai-trainer-menu-included' : 'ai-trainer-menu-extra'}">${isIncluded ? 'Входит' : `+ ${formatNumber(m.extraPrice)} ₽`}</span>
-                </div>
+                </label>
             `;
         }).join("");
+
+        menuModules.querySelectorAll("input[data-ai-trainer-module]").forEach(input => {
+            input.addEventListener("change", e => {
+                const moduleId = e.target.dataset.aiTrainerModule;
+                state.aiTrainerExtraModules[moduleId] = e.target.checked;
+                updateAiTrainer();
+            });
+        });
     }
 
     cardsContainer.innerHTML = Object.entries(AI_TRAINER_TARIFFS).map(([key, t]) => {
@@ -1388,6 +1399,7 @@ function updateAiTrainer() {
         let extraTotal = 0;
         const calcRows = AI_TRAINER_MODULES.map(m => {
             if (selectedTariff.modules[m.id] === "included") return "";
+            if (!state.aiTrainerExtraModules[m.id]) return "";
             extraTotal += m.extraPrice;
             return `
                 <div class="calc-detail-item">
