@@ -347,6 +347,8 @@ const state = {
     showDiscoveryTariffs: false,
     showClassicRobot: false,
     classicRobotContacts: "",
+    classicRobotContactsMaxOmni: "",
+    classicRobotContactsExtended: "",
     showAiRobot: false,
     showAiRobotCalculation: false,
     aiTrainerEnabled: false,
@@ -383,10 +385,80 @@ const CLASSIC_ROBOT_CALC = {
     ownTelephonyRate: 1.25,
     contactsPerNumber: 500,
     numberPrice: 10,
-    licenseMonthly: 4500,
-    trunkOneTime: 2000,
-    assemblyOneTime: 60000
+    licenseMonthly: 4500
 };
+
+const CLASSIC_ROBOT_SERVICE_PACKAGES = {
+    ownAtcReg: [
+        { minutes: 2000, price: 540 },
+        { minutes: 5000, price: 1350 },
+        { minutes: 7000, price: 1890 },
+        { minutes: 10000, price: 2700 },
+        { minutes: 15000, price: 4050 },
+        { minutes: 20000, price: 5400 },
+        { minutes: 30000, price: 8100 },
+        { minutes: 40000, price: 10800 },
+        { minutes: 60000, price: 16200 },
+        { minutes: 100000, price: 27000 },
+        { minutes: 200000, price: 54000 }
+    ],
+    ownAtcNoRegMax: [
+        { minutes: 2000, price: 7000 },
+        { minutes: 5000, price: 12500 },
+        { minutes: 7000, price: 17500 },
+        { minutes: 10000, price: 20000 },
+        { minutes: 15000, price: 30000 },
+        { minutes: 20000, price: 40000 },
+        { minutes: 30000, price: 60000 },
+        { minutes: 40000, price: 80000 },
+        { minutes: 60000, price: 96000 },
+        { minutes: 100000, price: 150000 },
+        { minutes: 200000, price: 200000 }
+    ],
+    ownAtcNoRegExtended: [
+        { minutes: 2000, price: 6400 },
+        { minutes: 5000, price: 11000 },
+        { minutes: 7000, price: 15400 },
+        { minutes: 10000, price: 17000 },
+        { minutes: 15000, price: 25500 },
+        { minutes: 20000, price: 34000 },
+        { minutes: 30000, price: 51000 },
+        { minutes: 40000, price: 68000 },
+        { minutes: 60000, price: 84000 },
+        { minutes: 100000, price: 130000 },
+        { minutes: 200000, price: 160000 }
+    ]
+};
+
+const CLASSIC_ROBOT_SCENARIOS = [
+    {
+        id: "ownAtcReg",
+        title: "СВОЯ АТС +регистрация",
+        contactsState: "classicRobotContacts",
+        serviceName: "СВОЯ АТС + модуль дозвона (25 коп + запись 2 коп)",
+        servicePackages: CLASSIC_ROBOT_SERVICE_PACKAGES.ownAtcReg,
+        trunkOneTime: 2000,
+        assemblyOneTime: 60000
+    },
+    {
+        id: "ownAtcNoRegMax",
+        title: "СВОЯ АТС БЕЗ регистрации (Максимальный с Омни)",
+        contactsState: "classicRobotContactsMaxOmni",
+        serviceName: "СВОЯ АТС + модуль дозвона максимальный (Омни)",
+        servicePackages: CLASSIC_ROBOT_SERVICE_PACKAGES.ownAtcNoRegMax,
+        trunkOneTime: 30000,
+        assemblyOneTime: 60000
+    },
+    {
+        id: "ownAtcNoRegExtended",
+        title: "СВОЯ АТС БЕЗ регистрации (Расширенный без Омни)",
+        contactsState: "classicRobotContactsExtended",
+        serviceName: "СВОЯ АТС + модуль дозвона расширенный (без Омни)",
+        servicePackages: CLASSIC_ROBOT_SERVICE_PACKAGES.ownAtcNoRegExtended,
+        trunkOneTime: 10000,
+        assemblyOneTime: 87000
+    }
+];
 
 function formatPrice(value) {
     return formatNumber(value) + " ₽";
@@ -1264,6 +1336,22 @@ function bindEvents() {
         });
     }
 
+    const classicRobotContactsMaxOmni = document.getElementById("classicRobotContactsMaxOmni");
+    if (classicRobotContactsMaxOmni) {
+        classicRobotContactsMaxOmni.addEventListener("input", e => {
+            state.classicRobotContactsMaxOmni = e.target.value;
+            updatePreviewForTab();
+        });
+    }
+
+    const classicRobotContactsExtended = document.getElementById("classicRobotContactsExtended");
+    if (classicRobotContactsExtended) {
+        classicRobotContactsExtended.addEventListener("input", e => {
+            state.classicRobotContactsExtended = e.target.value;
+            updatePreviewForTab();
+        });
+    }
+
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) {
         classicRobotToggle.addEventListener("change", e => {
@@ -1626,66 +1714,70 @@ function updateDiscoveryPreview() {
     section.style.display = state.showDiscoveryTariffs ? "block" : "none";
 }
 
-function getClassicRobotMinutePackage(requiredMinutes) {
-    return CLASSIC_ROBOT_MINUTE_PACKAGES.find(p => requiredMinutes <= p.minutes)
-        || CLASSIC_ROBOT_MINUTE_PACKAGES[CLASSIC_ROBOT_MINUTE_PACKAGES.length - 1];
+function getClassicRobotPackage(packages, requiredMinutes) {
+    return packages.find(p => requiredMinutes <= p.minutes) || packages[packages.length - 1];
 }
 
 function updateClassicRobotCalculation() {
     const container = document.getElementById("classicRobotCalculationContent");
     if (!container) return;
 
-    const contacts = parseInt(state.classicRobotContacts) || 0;
-    if (contacts <= 0) {
-        container.innerHTML = `<p class="calculation-note">Введите количество контактов для расчета.</p>`;
-        return;
-    }
+    container.innerHTML = CLASSIC_ROBOT_SCENARIOS.map(scenario => {
+        const contacts = parseInt(state[scenario.contactsState]) || 0;
+        if (contacts <= 0) return "";
 
-    const requiredMinutes = Math.ceil(contacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
-    const minutePackage = getClassicRobotMinutePackage(requiredMinutes);
-    const numbersCount = Math.ceil(contacts / CLASSIC_ROBOT_CALC.contactsPerNumber);
-    const telephonyTotal = Math.ceil(requiredMinutes * CLASSIC_ROBOT_CALC.ownTelephonyRate);
-    const numbersTotal = numbersCount * CLASSIC_ROBOT_CALC.numberPrice;
-    const total = minutePackage.price + telephonyTotal + numbersTotal + CLASSIC_ROBOT_CALC.licenseMonthly + CLASSIC_ROBOT_CALC.trunkOneTime + CLASSIC_ROBOT_CALC.assemblyOneTime;
+        const requiredMinutes = Math.ceil(contacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+        const minutePackage = getClassicRobotPackage(CLASSIC_ROBOT_MINUTE_PACKAGES, requiredMinutes);
+        const servicePackage = getClassicRobotPackage(scenario.servicePackages, minutePackage.minutes);
+        const numbersCount = Math.ceil(contacts / CLASSIC_ROBOT_CALC.contactsPerNumber);
+        const telephonyTotal = Math.ceil(requiredMinutes * CLASSIC_ROBOT_CALC.ownTelephonyRate);
+        const numbersTotal = numbersCount * CLASSIC_ROBOT_CALC.numberPrice;
+        const trunkLabel = scenario.trunkOneTime === 30000 ? "Транки (3 шт, разово)" : "Транк (разово)";
+        const total = minutePackage.price + servicePackage.price + telephonyTotal + numbersTotal + CLASSIC_ROBOT_CALC.licenseMonthly + scenario.trunkOneTime + scenario.assemblyOneTime;
 
-    container.innerHTML = `
-        <div class="calculation-card">
-            <h3>СВОЯ АТС +регистрация</h3>
-            <table class="calculation-table">
-                <tbody>
-                    <tr>
-                        <td>Пакет минут (${formatNumber(minutePackage.minutes)} мин)</td>
-                        <td class="calculation-price">${formatNumber(minutePackage.price)}</td>
-                    </tr>
-                    <tr>
-                        <td>Телефония клиента (своя, ${formatNumber(requiredMinutes)} мин × 1,25)</td>
-                        <td class="calculation-price">${formatNumber(telephonyTotal)}</td>
-                    </tr>
-                    <tr>
-                        <td>Номера (${formatNumber(numbersCount)} шт × 10 руб)</td>
-                        <td class="calculation-price">${formatNumber(numbersTotal)}</td>
-                    </tr>
-                    <tr>
-                        <td>Лицензия сервиса (месяц)</td>
-                        <td class="calculation-price">${formatNumber(CLASSIC_ROBOT_CALC.licenseMonthly)}</td>
-                    </tr>
-                    <tr>
-                        <td>Транк (разово)</td>
-                        <td class="calculation-price">${formatNumber(CLASSIC_ROBOT_CALC.trunkOneTime)}</td>
-                    </tr>
-                    <tr>
-                        <td>Сборка / интеграция (разово)</td>
-                        <td class="calculation-price">${formatNumber(CLASSIC_ROBOT_CALC.assemblyOneTime)}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p class="calculation-note">60 000 (средняя цена сборки); дозвон 50%, диалог 30 сек; в пакете ${formatNumber(minutePackage.minutes)} мин</p>
-            <div class="calculation-total">
-                <span>Итого за первый месяц</span>
-                <span class="calculation-total-price">${formatNumber(total)}</span>
+        return `
+            <div class="calculation-card">
+                <h3>${scenario.title}</h3>
+                <table class="calculation-table">
+                    <tbody>
+                        <tr>
+                            <td>Пакет минут (${formatNumber(minutePackage.minutes)} мин)</td>
+                            <td class="calculation-price">${formatNumber(minutePackage.price)}</td>
+                        </tr>
+                        <tr>
+                            <td>${scenario.serviceName}</td>
+                            <td class="calculation-price">${formatNumber(servicePackage.price)}</td>
+                        </tr>
+                        <tr>
+                            <td>Телефония клиента (своя, ${formatNumber(requiredMinutes)} мин × 1,25)</td>
+                            <td class="calculation-price">${formatNumber(telephonyTotal)}</td>
+                        </tr>
+                        <tr>
+                            <td>Номера (${formatNumber(numbersCount)} шт × 10 руб)</td>
+                            <td class="calculation-price">${formatNumber(numbersTotal)}</td>
+                        </tr>
+                        <tr>
+                            <td>Лицензия сервиса (месяц)</td>
+                            <td class="calculation-price">${formatNumber(CLASSIC_ROBOT_CALC.licenseMonthly)}</td>
+                        </tr>
+                        <tr>
+                            <td>${trunkLabel}</td>
+                            <td class="calculation-price">${formatNumber(scenario.trunkOneTime)}</td>
+                        </tr>
+                        <tr>
+                            <td>Сборка / интеграция (разово)</td>
+                            <td class="calculation-price">${formatNumber(scenario.assemblyOneTime)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="calculation-note">${formatNumber(scenario.assemblyOneTime)} (средняя цена сборки); дозвон 50%, диалог 30 сек; в пакете ${formatNumber(minutePackage.minutes)} мин</p>
+                <div class="calculation-total">
+                    <span>Итого за первый месяц</span>
+                    <span class="calculation-total-price">${formatNumber(total)}</span>
+                </div>
             </div>
-        </div>
-    `;
+        `;
+    }).join("");
 }
 
 function updatePreviewForTab() {
@@ -1711,7 +1803,7 @@ function updatePreviewForTab() {
     const onboardingSection = document.getElementById("onboardingSection");
     const partnersSection = document.getElementById("partnersSection");
     const header = document.querySelector(".proposal-header");
-    const hasClassicRobotCalculation = state.showClassicRobot && (parseInt(state.classicRobotContacts) || 0) > 0;
+    const hasClassicRobotCalculation = state.showClassicRobot && CLASSIC_ROBOT_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
 
     if (isDiscovery) {
         if (problemSection) problemSection.style.display = "none";
@@ -1770,6 +1862,12 @@ function syncDiscoveryClientFields() {
 
     const classicRobotContacts = document.getElementById("classicRobotContacts");
     if (classicRobotContacts) classicRobotContacts.value = state.classicRobotContacts;
+
+    const classicRobotContactsMaxOmni = document.getElementById("classicRobotContactsMaxOmni");
+    if (classicRobotContactsMaxOmni) classicRobotContactsMaxOmni.value = state.classicRobotContactsMaxOmni;
+
+    const classicRobotContactsExtended = document.getElementById("classicRobotContactsExtended");
+    if (classicRobotContactsExtended) classicRobotContactsExtended.value = state.classicRobotContactsExtended;
 
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) classicRobotToggle.checked = state.showClassicRobot;
