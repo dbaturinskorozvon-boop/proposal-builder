@@ -1711,7 +1711,7 @@ function updatePreviewForTab() {
     const onboardingSection = document.getElementById("onboardingSection");
     const partnersSection = document.getElementById("partnersSection");
     const header = document.querySelector(".proposal-header");
-    const hasClassicRobotCalculation = (parseInt(state.classicRobotContacts) || 0) > 0;
+    const hasClassicRobotCalculation = state.showClassicRobot && (parseInt(state.classicRobotContacts) || 0) > 0;
 
     if (isDiscovery) {
         if (problemSection) problemSection.style.display = "none";
