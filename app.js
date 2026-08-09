@@ -345,9 +345,8 @@ const state = {
     featureQuantities: {},
     selectedDiscovery: {},
     showDiscoveryTariffs: true,
-    showCalculation: false,
     showClassicRobot: false,
-    classicRobotContacts: 20000,
+    classicRobotContacts: "",
     showAiRobot: false,
     showAiRobotCalculation: false,
     aiTrainerEnabled: false,
@@ -1257,19 +1256,11 @@ function bindEvents() {
         });
     }
 
-    const calculationToggle = document.getElementById("calculationToggle");
-    if (calculationToggle) {
-        calculationToggle.addEventListener("change", e => {
-            state.showCalculation = e.target.checked;
-            updatePreviewForTab();
-        });
-    }
-
     const classicRobotContacts = document.getElementById("classicRobotContacts");
     if (classicRobotContacts) {
         classicRobotContacts.addEventListener("input", e => {
             state.classicRobotContacts = e.target.value;
-            updateClassicRobotCalculation();
+            updatePreviewForTab();
         });
     }
 
@@ -1659,7 +1650,7 @@ function updateClassicRobotCalculation() {
 
     container.innerHTML = `
         <div class="calculation-card">
-            <h3>Классический робот СВОЯ АТС + регистрация</h3>
+            <h3>СВОЯ АТС +регистрация</h3>
             <table class="calculation-table">
                 <tbody>
                     <tr>
@@ -1720,6 +1711,7 @@ function updatePreviewForTab() {
     const onboardingSection = document.getElementById("onboardingSection");
     const partnersSection = document.getElementById("partnersSection");
     const header = document.querySelector(".proposal-header");
+    const hasClassicRobotCalculation = (parseInt(state.classicRobotContacts) || 0) > 0;
 
     if (isDiscovery) {
         if (problemSection) problemSection.style.display = "none";
@@ -1731,8 +1723,8 @@ function updatePreviewForTab() {
         if (aboutSection) aboutSection.style.display = "none";
         if (twoColumns) twoColumns.style.display = "none";
         if (discoverySection) discoverySection.style.display = state.showDiscoveryTariffs ? "block" : "none";
-        if (calculationSection) calculationSection.style.display = state.showCalculation ? "block" : "none";
-        if (state.showCalculation) updateClassicRobotCalculation();
+        if (calculationSection) calculationSection.style.display = hasClassicRobotCalculation ? "block" : "none";
+        if (hasClassicRobotCalculation) updateClassicRobotCalculation();
         if (classicRobotSection) classicRobotSection.style.display = state.showClassicRobot ? "block" : "none";
         if (aiRobotSection) aiRobotSection.style.display = state.showAiRobot ? "block" : "none";
         if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = state.showAiRobotCalculation ? "block" : "none";
@@ -1775,9 +1767,6 @@ function syncDiscoveryClientFields() {
 
     const discoveryTariffsToggle = document.getElementById("discoveryTariffsToggle");
     if (discoveryTariffsToggle) discoveryTariffsToggle.checked = state.showDiscoveryTariffs;
-
-    const calculationToggle = document.getElementById("calculationToggle");
-    if (calculationToggle) calculationToggle.checked = state.showCalculation;
 
     const classicRobotContacts = document.getElementById("classicRobotContacts");
     if (classicRobotContacts) classicRobotContacts.value = state.classicRobotContacts;

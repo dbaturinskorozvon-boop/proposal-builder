@@ -877,6 +877,13 @@ label span {
     color: var(--text);
 }
 
+.classic-calc-subtitle {
+    margin: 8px 0 10px 24px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+}
+
 .feature-quantity-label span {
     font-size: 12px;
 }
