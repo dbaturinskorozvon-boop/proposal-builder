@@ -347,6 +347,7 @@ const state = {
     showDiscoveryTariffs: true,
     showCalculation: false,
     showClassicRobot: false,
+    classicRobotContacts: 20000,
     showAiRobot: false,
     showAiRobotCalculation: false,
     aiTrainerEnabled: false,
@@ -362,6 +363,31 @@ const state = {
 };
 
 const INTERNOD_MAV_ATTEMPT_PRICE = 0.7;
+
+const CLASSIC_ROBOT_MINUTE_PACKAGES = [
+    { minutes: 2000, price: 12000 },
+    { minutes: 5000, price: 27500 },
+    { minutes: 7000, price: 35000 },
+    { minutes: 10000, price: 45000 },
+    { minutes: 15000, price: 60000 },
+    { minutes: 20000, price: 73400 },
+    { minutes: 30000, price: 99900 },
+    { minutes: 40000, price: 120000 },
+    { minutes: 60000, price: 160200 },
+    { minutes: 100000, price: 233000 },
+    { minutes: 200000, price: 466000 }
+];
+
+const CLASSIC_ROBOT_CALC = {
+    answerRate: 0.5,
+    dialogMinutes: 0.5,
+    ownTelephonyRate: 1.25,
+    contactsPerNumber: 500,
+    numberPrice: 10,
+    licenseMonthly: 4500,
+    trunkOneTime: 2000,
+    assemblyOneTime: 60000
+};
 
 function formatPrice(value) {
     return formatNumber(value) + " ₽";
@@ -1239,6 +1265,14 @@ function bindEvents() {
         });
     }
 
+    const classicRobotContacts = document.getElementById("classicRobotContacts");
+    if (classicRobotContacts) {
+        classicRobotContacts.addEventListener("input", e => {
+            state.classicRobotContacts = e.target.value;
+            updateClassicRobotCalculation();
+        });
+    }
+
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) {
         classicRobotToggle.addEventListener("change", e => {
@@ -1601,6 +1635,68 @@ function updateDiscoveryPreview() {
     section.style.display = state.showDiscoveryTariffs ? "block" : "none";
 }
 
+function getClassicRobotMinutePackage(requiredMinutes) {
+    return CLASSIC_ROBOT_MINUTE_PACKAGES.find(p => requiredMinutes <= p.minutes)
+        || CLASSIC_ROBOT_MINUTE_PACKAGES[CLASSIC_ROBOT_MINUTE_PACKAGES.length - 1];
+}
+
+function updateClassicRobotCalculation() {
+    const container = document.getElementById("classicRobotCalculationContent");
+    if (!container) return;
+
+    const contacts = parseInt(state.classicRobotContacts) || 0;
+    if (contacts <= 0) {
+        container.innerHTML = `<p class="calculation-note">Введите количество контактов для расчета.</p>`;
+        return;
+    }
+
+    const requiredMinutes = Math.ceil(contacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+    const minutePackage = getClassicRobotMinutePackage(requiredMinutes);
+    const numbersCount = Math.ceil(contacts / CLASSIC_ROBOT_CALC.contactsPerNumber);
+    const telephonyTotal = Math.ceil(requiredMinutes * CLASSIC_ROBOT_CALC.ownTelephonyRate);
+    const numbersTotal = numbersCount * CLASSIC_ROBOT_CALC.numberPrice;
+    const total = minutePackage.price + telephonyTotal + numbersTotal + CLASSIC_ROBOT_CALC.licenseMonthly + CLASSIC_ROBOT_CALC.trunkOneTime + CLASSIC_ROBOT_CALC.assemblyOneTime;
+
+    container.innerHTML = `
+        <div class="calculation-card">
+            <h3>Классический робот СВОЯ АТС + регистрация</h3>
+            <table class="calculation-table">
+                <tbody>
+                    <tr>
+                        <td>Пакет минут (${formatNumber(minutePackage.minutes)} мин)</td>
+                        <td class="calculation-price">${formatNumber(minutePackage.price)}</td>
+                    </tr>
+                    <tr>
+                        <td>Телефония клиента (своя, ${formatNumber(requiredMinutes)} мин × 1,25)</td>
+                        <td class="calculation-price">${formatNumber(telephonyTotal)}</td>
+                    </tr>
+                    <tr>
+                        <td>Номера (${formatNumber(numbersCount)} шт × 10 руб)</td>
+                        <td class="calculation-price">${formatNumber(numbersTotal)}</td>
+                    </tr>
+                    <tr>
+                        <td>Лицензия сервиса (месяц)</td>
+                        <td class="calculation-price">${formatNumber(CLASSIC_ROBOT_CALC.licenseMonthly)}</td>
+                    </tr>
+                    <tr>
+                        <td>Транк (разово)</td>
+                        <td class="calculation-price">${formatNumber(CLASSIC_ROBOT_CALC.trunkOneTime)}</td>
+                    </tr>
+                    <tr>
+                        <td>Сборка / интеграция (разово)</td>
+                        <td class="calculation-price">${formatNumber(CLASSIC_ROBOT_CALC.assemblyOneTime)}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="calculation-note">60 000 (средняя цена сборки); дозвон 50%, диалог 30 сек; в пакете ${formatNumber(minutePackage.minutes)} мин</p>
+            <div class="calculation-total">
+                <span>Итого за первый месяц</span>
+                <span class="calculation-total-price">${formatNumber(total)}</span>
+            </div>
+        </div>
+    `;
+}
+
 function updatePreviewForTab() {
     const activeTabButton = document.querySelector('.tab-button.active');
     const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
@@ -1636,6 +1732,7 @@ function updatePreviewForTab() {
         if (twoColumns) twoColumns.style.display = "none";
         if (discoverySection) discoverySection.style.display = state.showDiscoveryTariffs ? "block" : "none";
         if (calculationSection) calculationSection.style.display = state.showCalculation ? "block" : "none";
+        if (state.showCalculation) updateClassicRobotCalculation();
         if (classicRobotSection) classicRobotSection.style.display = state.showClassicRobot ? "block" : "none";
         if (aiRobotSection) aiRobotSection.style.display = state.showAiRobot ? "block" : "none";
         if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = state.showAiRobotCalculation ? "block" : "none";
@@ -1681,6 +1778,9 @@ function syncDiscoveryClientFields() {
 
     const calculationToggle = document.getElementById("calculationToggle");
     if (calculationToggle) calculationToggle.checked = state.showCalculation;
+
+    const classicRobotContacts = document.getElementById("classicRobotContacts");
+    if (classicRobotContacts) classicRobotContacts.value = state.classicRobotContacts;
 
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) classicRobotToggle.checked = state.showClassicRobot;
