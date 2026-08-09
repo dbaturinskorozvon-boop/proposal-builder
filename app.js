@@ -344,7 +344,7 @@ const state = {
     selectedFeatures: [],
     featureQuantities: {},
     selectedDiscovery: {},
-    showDiscoveryTariffs: true,
+    showDiscoveryTariffs: false,
     showClassicRobot: false,
     classicRobotContacts: "",
     showAiRobot: false,
