@@ -1356,6 +1356,8 @@ function bindEvents() {
     if (classicRobotToggle) {
         classicRobotToggle.addEventListener("change", e => {
             state.showClassicRobot = e.target.checked;
+            const calculations = document.getElementById("classicRobotCalculations");
+            if (calculations) calculations.style.display = state.showClassicRobot ? "block" : "none";
             updatePreviewForTab();
         });
     }
@@ -1871,6 +1873,9 @@ function syncDiscoveryClientFields() {
 
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) classicRobotToggle.checked = state.showClassicRobot;
+
+    const classicRobotCalculations = document.getElementById("classicRobotCalculations");
+    if (classicRobotCalculations) classicRobotCalculations.style.display = state.showClassicRobot ? "block" : "none";
 
     const aiRobotToggle = document.getElementById("aiRobotToggle");
     if (aiRobotToggle) aiRobotToggle.checked = state.showAiRobot;
