@@ -349,6 +349,9 @@ const state = {
     classicRobotContacts: "",
     classicRobotContactsMaxOmni: "",
     classicRobotContactsExtended: "",
+    classicRobotAssembly: 60000,
+    classicRobotAssemblyMaxOmni: 60000,
+    classicRobotAssemblyExtended: 87000,
     showAiRobot: false,
     showAiRobotCalculation: false,
     aiTrainerEnabled: false,
@@ -365,18 +368,18 @@ const state = {
 
 const INTERNOD_MAV_ATTEMPT_PRICE = 0.7;
 
-const CLASSIC_ROBOT_MINUTE_PACKAGES = [
-    { minutes: 2000, price: 12000 },
-    { minutes: 5000, price: 27500 },
-    { minutes: 7000, price: 35000 },
-    { minutes: 10000, price: 45000 },
-    { minutes: 15000, price: 60000 },
-    { minutes: 20000, price: 73400 },
-    { minutes: 30000, price: 99900 },
-    { minutes: 40000, price: 120000 },
-    { minutes: 60000, price: 160200 },
-    { minutes: 100000, price: 233000 },
-    { minutes: 200000, price: 466000 }
+const CLASSIC_ROBOT_MINUTE_RATES = [
+    { max: 2000, rate: 6 },
+    { max: 5000, rate: 5.5 },
+    { max: 7000, rate: 5 },
+    { max: 10000, rate: 4.5 },
+    { max: 15000, rate: 4 },
+    { max: 20000, rate: 3.67 },
+    { max: 30000, rate: 3.33 },
+    { max: 40000, rate: 3 },
+    { max: 60000, rate: 2.67 },
+    { max: 100000, rate: 2.33 },
+    { max: Infinity, rate: 2.33 }
 ];
 
 const CLASSIC_ROBOT_CALC = {
@@ -388,45 +391,35 @@ const CLASSIC_ROBOT_CALC = {
     licenseMonthly: 4500
 };
 
-const CLASSIC_ROBOT_SERVICE_PACKAGES = {
+const CLASSIC_ROBOT_SERVICE_RATES = {
     ownAtcReg: [
-        { minutes: 2000, price: 540 },
-        { minutes: 5000, price: 1350 },
-        { minutes: 7000, price: 1890 },
-        { minutes: 10000, price: 2700 },
-        { minutes: 15000, price: 4050 },
-        { minutes: 20000, price: 5400 },
-        { minutes: 30000, price: 8100 },
-        { minutes: 40000, price: 10800 },
-        { minutes: 60000, price: 16200 },
-        { minutes: 100000, price: 27000 },
-        { minutes: 200000, price: 54000 }
+        { max: Infinity, rate: 0.27 }
     ],
     ownAtcNoRegMax: [
-        { minutes: 2000, price: 7000 },
-        { minutes: 5000, price: 12500 },
-        { minutes: 7000, price: 17500 },
-        { minutes: 10000, price: 20000 },
-        { minutes: 15000, price: 30000 },
-        { minutes: 20000, price: 40000 },
-        { minutes: 30000, price: 60000 },
-        { minutes: 40000, price: 80000 },
-        { minutes: 60000, price: 96000 },
-        { minutes: 100000, price: 150000 },
-        { minutes: 200000, price: 200000 }
+        { max: 2000, rate: 3.5 },
+        { max: 5000, rate: 2.5 },
+        { max: 7000, rate: 2.5 },
+        { max: 10000, rate: 2 },
+        { max: 15000, rate: 2 },
+        { max: 20000, rate: 2 },
+        { max: 30000, rate: 2 },
+        { max: 40000, rate: 2 },
+        { max: 60000, rate: 1.6 },
+        { max: 100000, rate: 1.5 },
+        { max: Infinity, rate: 1 }
     ],
     ownAtcNoRegExtended: [
-        { minutes: 2000, price: 6400 },
-        { minutes: 5000, price: 11000 },
-        { minutes: 7000, price: 15400 },
-        { minutes: 10000, price: 17000 },
-        { minutes: 15000, price: 25500 },
-        { minutes: 20000, price: 34000 },
-        { minutes: 30000, price: 51000 },
-        { minutes: 40000, price: 68000 },
-        { minutes: 60000, price: 84000 },
-        { minutes: 100000, price: 130000 },
-        { minutes: 200000, price: 160000 }
+        { max: 2000, rate: 3.2 },
+        { max: 5000, rate: 2.2 },
+        { max: 7000, rate: 2.2 },
+        { max: 10000, rate: 1.7 },
+        { max: 15000, rate: 1.7 },
+        { max: 20000, rate: 1.7 },
+        { max: 30000, rate: 1.7 },
+        { max: 40000, rate: 1.7 },
+        { max: 60000, rate: 1.4 },
+        { max: 100000, rate: 1.3 },
+        { max: Infinity, rate: 0.8 }
     ]
 };
 
@@ -435,28 +428,28 @@ const CLASSIC_ROBOT_SCENARIOS = [
         id: "ownAtcReg",
         title: "СВОЯ АТС +регистрация",
         contactsState: "classicRobotContacts",
+        assemblyState: "classicRobotAssembly",
         serviceName: "СВОЯ АТС + модуль дозвона (25 коп + запись 2 коп)",
-        servicePackages: CLASSIC_ROBOT_SERVICE_PACKAGES.ownAtcReg,
-        trunkOneTime: 2000,
-        assemblyOneTime: 60000
+        serviceRates: CLASSIC_ROBOT_SERVICE_RATES.ownAtcReg,
+        trunkOneTime: 2000
     },
     {
         id: "ownAtcNoRegMax",
         title: "СВОЯ АТС БЕЗ регистрации (Максимальный с Омни)",
         contactsState: "classicRobotContactsMaxOmni",
+        assemblyState: "classicRobotAssemblyMaxOmni",
         serviceName: "СВОЯ АТС + модуль дозвона максимальный (Омни)",
-        servicePackages: CLASSIC_ROBOT_SERVICE_PACKAGES.ownAtcNoRegMax,
-        trunkOneTime: 30000,
-        assemblyOneTime: 60000
+        serviceRates: CLASSIC_ROBOT_SERVICE_RATES.ownAtcNoRegMax,
+        trunkOneTime: 30000
     },
     {
         id: "ownAtcNoRegExtended",
         title: "СВОЯ АТС БЕЗ регистрации (Расширенный без Омни)",
         contactsState: "classicRobotContactsExtended",
+        assemblyState: "classicRobotAssemblyExtended",
         serviceName: "СВОЯ АТС + модуль дозвона расширенный (без Омни)",
-        servicePackages: CLASSIC_ROBOT_SERVICE_PACKAGES.ownAtcNoRegExtended,
-        trunkOneTime: 10000,
-        assemblyOneTime: 87000
+        serviceRates: CLASSIC_ROBOT_SERVICE_RATES.ownAtcNoRegExtended,
+        trunkOneTime: 10000
     }
 ];
 
@@ -466,6 +459,10 @@ function formatPrice(value) {
 
 function formatNumber(value) {
     return Math.round(value).toLocaleString("ru-RU");
+}
+
+function formatRate(value) {
+    return String(value).replace(".", ",");
 }
 
 function formatDayPrice(value) {
@@ -1352,6 +1349,30 @@ function bindEvents() {
         });
     }
 
+    const classicRobotAssembly = document.getElementById("classicRobotAssembly");
+    if (classicRobotAssembly) {
+        classicRobotAssembly.addEventListener("input", e => {
+            state.classicRobotAssembly = e.target.value;
+            updatePreviewForTab();
+        });
+    }
+
+    const classicRobotAssemblyMaxOmni = document.getElementById("classicRobotAssemblyMaxOmni");
+    if (classicRobotAssemblyMaxOmni) {
+        classicRobotAssemblyMaxOmni.addEventListener("input", e => {
+            state.classicRobotAssemblyMaxOmni = e.target.value;
+            updatePreviewForTab();
+        });
+    }
+
+    const classicRobotAssemblyExtended = document.getElementById("classicRobotAssemblyExtended");
+    if (classicRobotAssemblyExtended) {
+        classicRobotAssemblyExtended.addEventListener("input", e => {
+            state.classicRobotAssemblyExtended = e.target.value;
+            updatePreviewForTab();
+        });
+    }
+
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) {
         classicRobotToggle.addEventListener("change", e => {
@@ -1716,8 +1737,13 @@ function updateDiscoveryPreview() {
     section.style.display = state.showDiscoveryTariffs ? "block" : "none";
 }
 
-function getClassicRobotPackage(packages, requiredMinutes) {
-    return packages.find(p => requiredMinutes <= p.minutes) || packages[packages.length - 1];
+function getClassicRobotRate(rates, minutes) {
+    const tier = rates.find(r => minutes <= r.max);
+    return tier ? tier.rate : rates[rates.length - 1].rate;
+}
+
+function calcClassicRobotMoney(value) {
+    return Math.ceil(value);
 }
 
 function updateClassicRobotCalculation() {
@@ -1729,13 +1755,16 @@ function updateClassicRobotCalculation() {
         if (contacts <= 0) return "";
 
         const requiredMinutes = Math.ceil(contacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
-        const minutePackage = getClassicRobotPackage(CLASSIC_ROBOT_MINUTE_PACKAGES, requiredMinutes);
-        const servicePackage = getClassicRobotPackage(scenario.servicePackages, minutePackage.minutes);
+        const minuteRate = getClassicRobotRate(CLASSIC_ROBOT_MINUTE_RATES, requiredMinutes);
+        const serviceRate = getClassicRobotRate(scenario.serviceRates, requiredMinutes);
+        const packageTotal = calcClassicRobotMoney(requiredMinutes * minuteRate);
+        const serviceTotal = calcClassicRobotMoney(requiredMinutes * serviceRate);
         const numbersCount = Math.ceil(contacts / CLASSIC_ROBOT_CALC.contactsPerNumber);
-        const telephonyTotal = Math.ceil(requiredMinutes * CLASSIC_ROBOT_CALC.ownTelephonyRate);
+        const telephonyTotal = calcClassicRobotMoney(requiredMinutes * CLASSIC_ROBOT_CALC.ownTelephonyRate);
         const numbersTotal = numbersCount * CLASSIC_ROBOT_CALC.numberPrice;
+        const assemblyOneTime = parseInt(state[scenario.assemblyState]) || 0;
         const trunkLabel = scenario.trunkOneTime === 30000 ? "Транки (3 шт, разово)" : "Транк (разово)";
-        const total = minutePackage.price + servicePackage.price + telephonyTotal + numbersTotal + CLASSIC_ROBOT_CALC.licenseMonthly + scenario.trunkOneTime + scenario.assemblyOneTime;
+        const total = packageTotal + serviceTotal + telephonyTotal + numbersTotal + CLASSIC_ROBOT_CALC.licenseMonthly + scenario.trunkOneTime + assemblyOneTime;
 
         return `
             <div class="calculation-card">
@@ -1743,12 +1772,12 @@ function updateClassicRobotCalculation() {
                 <table class="calculation-table">
                     <tbody>
                         <tr>
-                            <td>Пакет минут (${formatNumber(minutePackage.minutes)} мин)</td>
-                            <td class="calculation-price">${formatNumber(minutePackage.price)}</td>
+                            <td>Минуты (${formatNumber(requiredMinutes)} мин × ${formatRate(minuteRate)})</td>
+                            <td class="calculation-price">${formatNumber(packageTotal)}</td>
                         </tr>
                         <tr>
-                            <td>${scenario.serviceName}</td>
-                            <td class="calculation-price">${formatNumber(servicePackage.price)}</td>
+                            <td>${scenario.serviceName} (${formatNumber(requiredMinutes)} мин × ${formatRate(serviceRate)})</td>
+                            <td class="calculation-price">${formatNumber(serviceTotal)}</td>
                         </tr>
                         <tr>
                             <td>Телефония клиента (своя, ${formatNumber(requiredMinutes)} мин × 1,25)</td>
@@ -1768,11 +1797,11 @@ function updateClassicRobotCalculation() {
                         </tr>
                         <tr>
                             <td>Сборка / интеграция (разово)</td>
-                            <td class="calculation-price">${formatNumber(scenario.assemblyOneTime)}</td>
+                            <td class="calculation-price">${formatNumber(assemblyOneTime)}</td>
                         </tr>
                     </tbody>
                 </table>
-                <p class="calculation-note">${formatNumber(scenario.assemblyOneTime)} (средняя цена сборки); дозвон 50%, диалог 30 сек; в пакете ${formatNumber(minutePackage.minutes)} мин</p>
+                <p class="calculation-note">дозвон 50%, диалог 30 сек; минут к оплате: ${formatNumber(requiredMinutes)}</p>
                 <div class="calculation-total">
                     <span>Итого за первый месяц</span>
                     <span class="calculation-total-price">${formatNumber(total)}</span>
@@ -1870,6 +1899,15 @@ function syncDiscoveryClientFields() {
 
     const classicRobotContactsExtended = document.getElementById("classicRobotContactsExtended");
     if (classicRobotContactsExtended) classicRobotContactsExtended.value = state.classicRobotContactsExtended;
+
+    const classicRobotAssembly = document.getElementById("classicRobotAssembly");
+    if (classicRobotAssembly) classicRobotAssembly.value = state.classicRobotAssembly;
+
+    const classicRobotAssemblyMaxOmni = document.getElementById("classicRobotAssemblyMaxOmni");
+    if (classicRobotAssemblyMaxOmni) classicRobotAssemblyMaxOmni.value = state.classicRobotAssemblyMaxOmni;
+
+    const classicRobotAssemblyExtended = document.getElementById("classicRobotAssemblyExtended");
+    if (classicRobotAssemblyExtended) classicRobotAssemblyExtended.value = state.classicRobotAssemblyExtended;
 
     const classicRobotToggle = document.getElementById("classicRobotToggle");
     if (classicRobotToggle) classicRobotToggle.checked = state.showClassicRobot;
