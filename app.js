@@ -4,31 +4,64 @@ const adminData = {
             id: 1,
             name: "Иванова Анна",
             email: "aivanova@skorozvon.ru",
-            photo: ""
+            photo: "",
+            directions: ["kor2"]
         },
         {
             id: 2,
             name: "Белоусова Ксения",
             email: "kabelousova@skorozvon.ru",
-            photo: ""
+            photo: "",
+            directions: ["kor2"]
         },
         {
             id: 3,
             name: "Шелудченко Ксения",
             email: "ksheludchenko@skorozvon.ru",
-            photo: ""
+            photo: "",
+            directions: ["kor2"]
         },
         {
             id: 4,
             name: "Борисова Мария",
             email: "mshherbakova@skorozvon.ru",
-            photo: ""
+            photo: "",
+            directions: ["kor2"]
         },
         {
             id: 5,
             name: "Захарова Юлия",
             email: "yzakharova@skorozvon.ru",
-            photo: ""
+            photo: "",
+            directions: ["kor2"]
+        },
+        {
+            id: 6,
+            name: "Лешкин Виталий",
+            email: "vlyoshkin@skorozvon.ru",
+            photo: "",
+            directions: ["discovery"]
+        },
+        {
+            id: 7,
+            name: "Куренкова Анастасия",
+            email: "akurenkova@naumen.ru",
+            photo: "",
+            directions: ["discovery"]
+        },
+        {
+            id: 8,
+            name: "Гущин Владислав",
+            email: "vgushhin@naumen.ru",
+            photo: "",
+            directions: ["discovery"]
+        },
+        {
+            id: 9,
+            name: "Ширинкин Александр",
+            email: "ashirinkin@naumen.ru",
+            photo: "",
+            directions: ["discovery"]
         }
     ],
 
@@ -936,9 +969,14 @@ async function init() {
     updateUI();
 }
 
+function getManagersByDirection(direction) {
+    const filtered = adminData.managers.filter(manager => !manager.directions || manager.directions.length === 0 || manager.directions.includes(direction));
+    return filtered.length > 0 ? filtered : adminData.managers;
+}
+
 function populateManagers() {
     const select = document.getElementById("managerSelect");
-    adminData.managers.forEach(manager => {
+    getManagersByDirection("kor2").forEach(manager => {
         const option = document.createElement("option");
         option.value = manager.id;
         option.textContent = manager.name;
@@ -949,7 +987,7 @@ function populateManagers() {
 function populateDiscoveryManagers() {
     const select = document.getElementById("discoveryManagerSelect");
     if (!select) return;
-    adminData.managers.forEach(manager => {
+    getManagersByDirection("discovery").forEach(manager => {
         const option = document.createElement("option");
         option.value = manager.id;
         option.textContent = manager.name;

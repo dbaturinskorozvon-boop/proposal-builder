@@ -57,7 +57,11 @@ function getDefaultAdminData() {
             { id: 2, name: "Белоусова Ксения", email: "kabelousova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] },
             { id: 3, name: "Шелудченко Ксения", email: "ksheludchenko@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] },
             { id: 4, name: "Борисова Мария", email: "mshherbakova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] },
-            { id: 5, name: "Захарова Юлия", email: "yzakharova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] }
+            { id: 5, name: "Захарова Юлия", email: "yzakharova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2"] },
+            { id: 6, name: "Лешкин Виталий", email: "vlyoshkin@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] },
+            { id: 7, name: "Куренкова Анастасия", email: "akurenkova@naumen.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] },
+            { id: 8, name: "Гущин Владислав", email: "vgushhin@naumen.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] },
+            { id: 9, name: "Ширинкин Александр", email: "ashirinkin@naumen.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] }
         ],
         specialOffers: [
             {
