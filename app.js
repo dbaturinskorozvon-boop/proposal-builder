@@ -2159,7 +2159,9 @@ function updatePreviewForTab() {
     const aiRobotSection = document.getElementById("aiRobotPreviewSection");
     const aiRobotCalculationSection = document.getElementById("aiRobotCalculationPreviewSection");
     const hybridRobotCalculationSection = document.getElementById("hybridRobotCalculationPreviewSection");
+    const hybridRobotSection = document.getElementById("hybridRobotPreviewSection");
     const humanVoiceCalculationSection = document.getElementById("humanVoiceCalculationPreviewSection");
+    const humanVoiceSection = document.getElementById("humanVoicePreviewSection");
     const templateRobotsSection = document.getElementById("templateRobotsPreviewSection");
     const autoInformerSection = document.getElementById("autoInformerPreviewSection");
     const aiTrainerSection = document.getElementById("aiTrainerPreviewSection");
@@ -2190,8 +2192,10 @@ function updatePreviewForTab() {
         if (aiRobotSection) aiRobotSection.style.display = state.showAiRobot ? "block" : "none";
         if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = hasAiRobotCalculation ? "block" : "none";
         if (hasAiRobotCalculation) updateAiRobotCalculation();
+        if (hybridRobotSection) hybridRobotSection.style.display = state.showHybridRobot ? "block" : "none";
         if (hybridRobotCalculationSection) hybridRobotCalculationSection.style.display = hasHybridRobotCalculation ? "block" : "none";
         if (hasHybridRobotCalculation) updateHybridRobotCalculation();
+        if (humanVoiceSection) humanVoiceSection.style.display = state.showHumanVoice ? "block" : "none";
         if (humanVoiceCalculationSection) humanVoiceCalculationSection.style.display = hasHumanVoiceCalculation ? "block" : "none";
         if (hasHumanVoiceCalculation) updateHumanVoiceCalculation();
         if (templateRobotsSection) templateRobotsSection.style.display = hasTemplateRobotsCalculation ? "block" : "none";
@@ -2214,7 +2218,9 @@ function updatePreviewForTab() {
         if (aiRobotSection) aiRobotSection.style.display = "none";
         if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = "none";
         if (hybridRobotCalculationSection) hybridRobotCalculationSection.style.display = "none";
+        if (hybridRobotSection) hybridRobotSection.style.display = "none";
         if (humanVoiceCalculationSection) humanVoiceCalculationSection.style.display = "none";
+        if (humanVoiceSection) humanVoiceSection.style.display = "none";
         if (templateRobotsSection) templateRobotsSection.style.display = "none";
         if (autoInformerSection) autoInformerSection.style.display = "none";
         if (aiTrainerSection) aiTrainerSection.style.display = "none";
