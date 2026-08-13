@@ -45,21 +45,21 @@ const adminData = {
         {
             id: 7,
             name: "Куренкова Анастасия",
-            email: "akurenkova@naumen.ru",
+            email: "akurenkova@skorozvon.ru",
             photo: "",
             directions: ["discovery"]
         },
         {
             id: 8,
             name: "Гущин Владислав",
-            email: "vgushhin@naumen.ru",
+            email: "vgushhin@skorozvon.ru",
             photo: "",
             directions: ["discovery"]
         },
         {
             id: 9,
             name: "Ширинкин Александр",
-            email: "ashirinkin@naumen.ru",
+            email: "ashirinkin@skorozvon.ru",
             photo: "",
             directions: ["discovery"]
         }
