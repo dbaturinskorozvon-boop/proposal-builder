@@ -350,6 +350,171 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="form-section">
+                    <div class="section-header-toggle">
+                        <h2>6. Гибридный робот</h2>
+                        <label class="switch" aria-label="Показать гибридного робота">
+                            <input type="checkbox" id="hybridRobotToggle">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div id="hybridRobotCalculations" style="display: none;">
+                        <div class="classic-calc-subtitle">СВОЯ АТС +регистрация</div>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="hybridRobotContacts" min="0" step="1000" placeholder="20000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость сборки</span>
+                            <input type="number" id="hybridRobotAssembly" min="0" step="1000" value="60000">
+                        </label>
+                        <div class="classic-calc-subtitle">СВОЯ АТС БЕЗ регистрации (Максимальный с Омни)</div>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="hybridRobotContactsMaxOmni" min="0" step="1000" placeholder="20000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость сборки</span>
+                            <input type="number" id="hybridRobotAssemblyMaxOmni" min="0" step="1000" value="60000">
+                        </label>
+                        <div class="classic-calc-subtitle">СВОЯ АТС БЕЗ регистрации (Расширенный без Омни)</div>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="hybridRobotContactsExtended" min="0" step="1000" placeholder="30000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость сборки</span>
+                            <input type="number" id="hybridRobotAssemblyExtended" min="0" step="1000" value="87000">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header-toggle">
+                        <h2>7. AI-HumanVoice</h2>
+                        <label class="switch" aria-label="Показать AI-HumanVoice">
+                            <input type="checkbox" id="humanVoiceToggle">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div id="humanVoiceCalculations" style="display: none;">
+                        <div class="classic-calc-subtitle">СВОЯ АТС +регистрация</div>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="humanVoiceContacts" min="0" step="1000" placeholder="20000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость сборки</span>
+                            <input type="number" id="humanVoiceAssembly" min="0" step="1000" value="50000">
+                        </label>
+                        <div class="classic-calc-subtitle">СВОЯ АТС БЕЗ регистрации (Максимальный с Омни)</div>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="humanVoiceContactsMaxOmni" min="0" step="1000" placeholder="20000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость сборки</span>
+                            <input type="number" id="humanVoiceAssemblyMaxOmni" min="0" step="1000" value="50000">
+                        </label>
+                        <div class="classic-calc-subtitle">СВОЯ АТС БЕЗ регистрации (Расширенный без Омни)</div>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="humanVoiceContactsExtended" min="0" step="1000" placeholder="30000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость сборки</span>
+                            <input type="number" id="humanVoiceAssemblyExtended" min="0" step="1000" value="50000">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header-toggle">
+                        <h2>8. Шаблонные роботы</h2>
+                        <label class="switch" aria-label="Показать шаблонных роботов">
+                            <input type="checkbox" id="templateRobotsToggle">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div id="templateRobotsOptions" style="display: none;">
+                        <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px; margin-top: 8px;">
+                            <input type="checkbox" class="template-robot-checkbox" value="informer">
+                            <div class="item-info">
+                                <div class="item-name">Автоинформатор — 10 000 ₽</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                            <input type="checkbox" class="template-robot-checkbox" value="question">
+                            <div class="item-info">
+                                <div class="item-name">Информирование + вопрос — 15 000 ₽</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                            <input type="checkbox" class="template-robot-checkbox" value="warm">
+                            <div class="item-info">
+                                <div class="item-name">Теплые продажи — 30 000 ₽</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                            <input type="checkbox" class="template-robot-checkbox" value="leadgen">
+                            <div class="item-info">
+                                <div class="item-name">Лидогенерация — 30 000 ₽</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                            <input type="checkbox" class="template-robot-checkbox" value="warmPro">
+                            <div class="item-info">
+                                <div class="item-name">Теплые продажи PRO — 35 000 ₽</div>
+                            </div>
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="templateRobotContacts" min="0" step="1000" placeholder="20000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Телефония</span>
+                            <select id="templateRobotTelephony">
+                                <option value="own">Своя АТС (2,5 ₽/мин)</option>
+                                <option value="internod">Интернод (2,6 ₽/мин)</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header-toggle">
+                        <h2>9. Автоинформатор</h2>
+                        <label class="switch" aria-label="Показать автоинформатор">
+                            <input type="checkbox" id="autoInformerToggle">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div id="autoInformerOptions" style="display: none;">
+                        <label style="margin-left: 24px; margin-top: 8px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="autoInformerContacts" min="0" step="1000" placeholder="20000">
+                        </label>
+                        <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                            <input type="checkbox" id="autoInformerAsr">
+                            <div class="item-info">
+                                <div class="item-name">Распознавание речи (1,6 ₽/мин)</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                            <input type="checkbox" id="autoInformerTransfer">
+                            <div class="item-info">
+                                <div class="item-name">Перевод на менеджера (0,25 ₽/мин)</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                            <input type="checkbox" id="autoInformerRecording">
+                            <div class="item-info">
+                                <div class="item-name">Запись звонка (0,02 ₽/мин)</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-content" data-tab="active">
@@ -876,6 +1041,42 @@
 
                         <div class="ai-calculation-disclaimer">
                             <p>Стоимость указана примерная, зависит от сборки (указана средняя цена) также указана примерная средняя стоимость операторов за их трафик (погрешность небольшая)</p>
+                        </div>
+                    </section>
+
+                    <section class="proposal-calculation" id="hybridRobotCalculationPreviewSection" style="display: none;">
+                        <h2>Расчет — гибридный робот</h2>
+                        <div id="hybridRobotCalculationContent"></div>
+
+                        <div class="ai-calculation-disclaimer">
+                            <p>Гибридный формат: робот ведёт диалог по сценарию, ИИ подключается точечно в сложных ветках — низкая стоимость минуты без траты токенов на весь диалог</p>
+                        </div>
+                    </section>
+
+                    <section class="proposal-calculation" id="humanVoiceCalculationPreviewSection" style="display: none;">
+                        <h2>Расчет — AI-HumanVoice</h2>
+                        <div id="humanVoiceCalculationContent"></div>
+
+                        <div class="ai-calculation-disclaimer">
+                            <p>AI-HumanVoice: логика диалога от ИИ + предзаписанный дикторский голос. Диалог дешевле синтеза, без пауз и без зависимости от зарубежных серверов. Сборка от 1 дня</p>
+                        </div>
+                    </section>
+
+                    <section class="proposal-calculation" id="templateRobotsPreviewSection" style="display: none;">
+                        <h2>Расчет — шаблонные роботы</h2>
+                        <div id="templateRobotsCalculationContent"></div>
+
+                        <div class="ai-calculation-disclaimer">
+                            <p>Оплата шаблона — единоразовая, шаблон можно использовать неограниченное количество раз в других сценариях</p>
+                        </div>
+                    </section>
+
+                    <section class="proposal-calculation" id="autoInformerPreviewSection" style="display: none;">
+                        <h2>Расчет — автоинформатор</h2>
+                        <div id="autoInformerCalculationContent"></div>
+
+                        <div class="ai-calculation-disclaimer">
+                            <p>Оплата списывается только за совершённые звонки. Робот детектирует до 98% автоответчиков и голосовых почт, что экономит на нецелевых соединениях</p>
                         </div>
                     </section>
 

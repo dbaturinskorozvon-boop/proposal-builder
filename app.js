@@ -359,6 +359,29 @@ const state = {
     aiRobotAssembly: 60000,
     aiRobotAssemblyMaxOmni: 60000,
     aiRobotAssemblyExtended: 87000,
+    showHybridRobot: false,
+    hybridRobotContacts: "",
+    hybridRobotContactsMaxOmni: "",
+    hybridRobotContactsExtended: "",
+    hybridRobotAssembly: 60000,
+    hybridRobotAssemblyMaxOmni: 60000,
+    hybridRobotAssemblyExtended: 87000,
+    showHumanVoice: false,
+    humanVoiceContacts: "",
+    humanVoiceContactsMaxOmni: "",
+    humanVoiceContactsExtended: "",
+    humanVoiceAssembly: 50000,
+    humanVoiceAssemblyMaxOmni: 50000,
+    humanVoiceAssemblyExtended: 50000,
+    showTemplateRobots: false,
+    templateRobotsSelected: [],
+    templateRobotContacts: "",
+    templateRobotTelephony: "own",
+    showAutoInformer: false,
+    autoInformerContacts: "",
+    autoInformerAsr: false,
+    autoInformerTransfer: false,
+    autoInformerRecording: false,
     aiTrainerEnabled: false,
     aiTrainerTariff: "xs",
     aiTrainerPeriod: "1",
@@ -465,6 +488,42 @@ const AI_ROBOT_SCENARIOS = CLASSIC_ROBOT_SCENARIOS.map(scenario => ({
     contactsState: scenario.contactsState.replace("classicRobot", "aiRobot"),
     assemblyState: scenario.assemblyState.replace("classicRobot", "aiRobot")
 }));
+
+const HYBRID_ROBOT_MINUTE_MARKUP = 2.5;
+
+const HYBRID_ROBOT_SCENARIOS = CLASSIC_ROBOT_SCENARIOS.map(scenario => ({
+    ...scenario,
+    contactsState: scenario.contactsState.replace("classicRobot", "hybridRobot"),
+    assemblyState: scenario.assemblyState.replace("classicRobot", "hybridRobot")
+}));
+
+const HUMAN_VOICE_MINUTE_MARKUP = 2.5;
+
+const HUMAN_VOICE_SCENARIOS = CLASSIC_ROBOT_SCENARIOS.map(scenario => ({
+    ...scenario,
+    contactsState: scenario.contactsState.replace("classicRobot", "humanVoice"),
+    assemblyState: scenario.assemblyState.replace("classicRobot", "humanVoice")
+}));
+
+const TEMPLATE_ROBOTS = [
+    { id: "informer", name: "Автоинформатор", price: 10000, description: "Робот произносит сообщение и завершает диалог. Для уведомлений и напоминаний" },
+    { id: "question", name: "Информирование + вопрос", price: 15000, description: "Робот произносит сообщение и задает вопрос клиенту" },
+    { id: "warm", name: "Теплые продажи", price: 30000, description: "После согласия клиента на первый вопрос робот задает второй вопрос" },
+    { id: "leadgen", name: "Лидогенерация", price: 30000, description: "После отказа клиента на первый вопрос робот задает второй вопрос" },
+    { id: "warmPro", name: "Теплые продажи PRO", price: 35000, description: "Доступны дополнительные действия по всем результатам звонка" }
+];
+
+const TEMPLATE_ROBOT_TRAFFIC_RATES = {
+    own: 2.5,
+    internod: 2.6
+};
+
+const AUTOINFORMER_CALC = {
+    minuteRate: 2.4,
+    asrRate: 1.6,
+    transferRate: 0.25,
+    recordingRate: 0.02
+};
 
 function formatPrice(value) {
     return formatNumber(value) + " ₽";
@@ -1423,6 +1482,135 @@ function bindEvents() {
         }
     });
 
+    const hybridRobotToggle = document.getElementById("hybridRobotToggle");
+    if (hybridRobotToggle) {
+        hybridRobotToggle.addEventListener("change", e => {
+            state.showHybridRobot = e.target.checked;
+            const calculations = document.getElementById("hybridRobotCalculations");
+            if (calculations) calculations.style.display = state.showHybridRobot ? "block" : "none";
+            updatePreviewForTab();
+        });
+    }
+
+    HYBRID_ROBOT_SCENARIOS.forEach(scenario => {
+        const contactsInput = document.getElementById(scenario.contactsState);
+        if (contactsInput) {
+            contactsInput.addEventListener("input", e => {
+                state[scenario.contactsState] = e.target.value;
+                updatePreviewForTab();
+            });
+        }
+        const assemblyInput = document.getElementById(scenario.assemblyState);
+        if (assemblyInput) {
+            assemblyInput.addEventListener("input", e => {
+                state[scenario.assemblyState] = e.target.value;
+                updatePreviewForTab();
+            });
+        }
+    });
+
+    const humanVoiceToggle = document.getElementById("humanVoiceToggle");
+    if (humanVoiceToggle) {
+        humanVoiceToggle.addEventListener("change", e => {
+            state.showHumanVoice = e.target.checked;
+            const calculations = document.getElementById("humanVoiceCalculations");
+            if (calculations) calculations.style.display = state.showHumanVoice ? "block" : "none";
+            updatePreviewForTab();
+        });
+    }
+
+    HUMAN_VOICE_SCENARIOS.forEach(scenario => {
+        const contactsInput = document.getElementById(scenario.contactsState);
+        if (contactsInput) {
+            contactsInput.addEventListener("input", e => {
+                state[scenario.contactsState] = e.target.value;
+                updatePreviewForTab();
+            });
+        }
+        const assemblyInput = document.getElementById(scenario.assemblyState);
+        if (assemblyInput) {
+            assemblyInput.addEventListener("input", e => {
+                state[scenario.assemblyState] = e.target.value;
+                updatePreviewForTab();
+            });
+        }
+    });
+
+    const templateRobotsToggle = document.getElementById("templateRobotsToggle");
+    if (templateRobotsToggle) {
+        templateRobotsToggle.addEventListener("change", e => {
+            state.showTemplateRobots = e.target.checked;
+            const options = document.getElementById("templateRobotsOptions");
+            if (options) options.style.display = state.showTemplateRobots ? "block" : "none";
+            updatePreviewForTab();
+        });
+    }
+
+    document.querySelectorAll(".template-robot-checkbox").forEach(checkbox => {
+        checkbox.addEventListener("change", () => {
+            state.templateRobotsSelected = Array.from(document.querySelectorAll(".template-robot-checkbox:checked")).map(el => el.value);
+            updatePreviewForTab();
+        });
+    });
+
+    const templateRobotContacts = document.getElementById("templateRobotContacts");
+    if (templateRobotContacts) {
+        templateRobotContacts.addEventListener("input", e => {
+            state.templateRobotContacts = e.target.value;
+            updatePreviewForTab();
+        });
+    }
+
+    const templateRobotTelephony = document.getElementById("templateRobotTelephony");
+    if (templateRobotTelephony) {
+        templateRobotTelephony.addEventListener("change", e => {
+            state.templateRobotTelephony = e.target.value;
+            updatePreviewForTab();
+        });
+    }
+
+    const autoInformerToggle = document.getElementById("autoInformerToggle");
+    if (autoInformerToggle) {
+        autoInformerToggle.addEventListener("change", e => {
+            state.showAutoInformer = e.target.checked;
+            const options = document.getElementById("autoInformerOptions");
+            if (options) options.style.display = state.showAutoInformer ? "block" : "none";
+            updatePreviewForTab();
+        });
+    }
+
+    const autoInformerContacts = document.getElementById("autoInformerContacts");
+    if (autoInformerContacts) {
+        autoInformerContacts.addEventListener("input", e => {
+            state.autoInformerContacts = e.target.value;
+            updatePreviewForTab();
+        });
+    }
+
+    const autoInformerAsr = document.getElementById("autoInformerAsr");
+    if (autoInformerAsr) {
+        autoInformerAsr.addEventListener("change", e => {
+            state.autoInformerAsr = e.target.checked;
+            updatePreviewForTab();
+        });
+    }
+
+    const autoInformerTransfer = document.getElementById("autoInformerTransfer");
+    if (autoInformerTransfer) {
+        autoInformerTransfer.addEventListener("change", e => {
+            state.autoInformerTransfer = e.target.checked;
+            updatePreviewForTab();
+        });
+    }
+
+    const autoInformerRecording = document.getElementById("autoInformerRecording");
+    if (autoInformerRecording) {
+        autoInformerRecording.addEventListener("change", e => {
+            state.autoInformerRecording = e.target.checked;
+            updatePreviewForTab();
+        });
+    }
+
     const aiTrainerToggle = document.getElementById("aiTrainerToggle");
     if (aiTrainerToggle) {
         aiTrainerToggle.addEventListener("change", e => {
@@ -1846,6 +2034,112 @@ function updateAiRobotCalculation() {
     container.innerHTML = buildRobotCalculationCards(AI_ROBOT_SCENARIOS, AI_ROBOT_MINUTE_MARKUP);
 }
 
+function updateHybridRobotCalculation() {
+    const container = document.getElementById("hybridRobotCalculationContent");
+    if (!container) return;
+
+    container.innerHTML = buildRobotCalculationCards(HYBRID_ROBOT_SCENARIOS, HYBRID_ROBOT_MINUTE_MARKUP);
+}
+
+function updateHumanVoiceCalculation() {
+    const container = document.getElementById("humanVoiceCalculationContent");
+    if (!container) return;
+
+    container.innerHTML = buildRobotCalculationCards(HUMAN_VOICE_SCENARIOS, HUMAN_VOICE_MINUTE_MARKUP);
+}
+
+function updateTemplateRobotsCalculation() {
+    const container = document.getElementById("templateRobotsCalculationContent");
+    if (!container) return;
+
+    const selected = TEMPLATE_ROBOTS.filter(template => state.templateRobotsSelected.includes(template.id));
+    const contacts = parseInt(state.templateRobotContacts) || 0;
+    if (selected.length === 0 && contacts <= 0) {
+        container.innerHTML = "";
+        return;
+    }
+
+    const requiredMinutes = Math.ceil(contacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+    const trafficRate = TEMPLATE_ROBOT_TRAFFIC_RATES[state.templateRobotTelephony] || TEMPLATE_ROBOT_TRAFFIC_RATES.own;
+    const telephonyLabel = state.templateRobotTelephony === "internod" ? "Интернод" : "своя АТС";
+    const trafficTotal = calcClassicRobotMoney(requiredMinutes * trafficRate);
+    const templatesTotal = selected.reduce((sum, template) => sum + template.price, 0);
+
+    const templateRows = selected.map(template => `
+                        <tr>
+                            <td>${template.name} (разово)</td>
+                            <td class="calculation-price">${formatNumber(template.price)}</td>
+                        </tr>`).join("");
+
+    const trafficRow = requiredMinutes > 0 ? `
+                        <tr>
+                            <td>Трафик (${telephonyLabel}, ${formatNumber(requiredMinutes)} мин × ${formatRate(trafficRate)})</td>
+                            <td class="calculation-price">${formatNumber(trafficTotal)}</td>
+                        </tr>` : "";
+
+    container.innerHTML = `
+            <div class="calculation-card">
+                <h3>Шаблонные роботы</h3>
+                <table class="calculation-table">
+                    <tbody>${templateRows}${trafficRow}
+                    </tbody>
+                </table>
+                <p class="calculation-note">дозвон 50%, диалог 30 сек; минут к оплате: ${formatNumber(requiredMinutes)}</p>
+                <div class="calculation-total">
+                    <span>Итого за первый месяц</span>
+                    <span class="calculation-total-price">${formatNumber(templatesTotal + trafficTotal)}</span>
+                </div>
+            </div>
+        `;
+}
+
+function updateAutoInformerCalculation() {
+    const container = document.getElementById("autoInformerCalculationContent");
+    if (!container) return;
+
+    const contacts = parseInt(state.autoInformerContacts) || 0;
+    if (contacts <= 0) {
+        container.innerHTML = "";
+        return;
+    }
+
+    const requiredMinutes = Math.ceil(contacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+    const baseTotal = calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.minuteRate);
+
+    const addons = [
+        { enabled: state.autoInformerAsr, name: "Распознавание речи", rate: AUTOINFORMER_CALC.asrRate },
+        { enabled: state.autoInformerTransfer, name: "Перевод на менеджера", rate: AUTOINFORMER_CALC.transferRate },
+        { enabled: state.autoInformerRecording, name: "Запись звонка", rate: AUTOINFORMER_CALC.recordingRate }
+    ].filter(addon => addon.enabled);
+
+    const addonRows = addons.map(addon => `
+                        <tr>
+                            <td>${addon.name} (${formatNumber(requiredMinutes)} мин × ${formatRate(addon.rate)})</td>
+                            <td class="calculation-price">${formatNumber(calcClassicRobotMoney(requiredMinutes * addon.rate))}</td>
+                        </tr>`).join("");
+
+    const total = baseTotal + addons.reduce((sum, addon) => sum + calcClassicRobotMoney(requiredMinutes * addon.rate), 0);
+
+    container.innerHTML = `
+            <div class="calculation-card">
+                <h3>Автоинформатор</h3>
+                <table class="calculation-table">
+                    <tbody>
+                        <tr>
+                            <td>Обзвон роботом (${formatNumber(requiredMinutes)} мин × ${formatRate(AUTOINFORMER_CALC.minuteRate)})</td>
+                            <td class="calculation-price">${formatNumber(baseTotal)}</td>
+                        </tr>${addonRows}
+                    </tbody>
+                </table>
+                <p class="calculation-note">дозвон 50%, диалог 30 сек; минут к оплате: ${formatNumber(requiredMinutes)}</p>
+                <div class="calculation-total">
+                    <span>Итого за первый месяц</span>
+                    <span class="calculation-total-price">${formatNumber(total)}</span>
+                </div>
+            </div>
+        `;
+}
+
 function updatePreviewForTab() {
     const activeTabButton = document.querySelector('.tab-button.active');
     const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
@@ -1864,6 +2158,10 @@ function updatePreviewForTab() {
     const classicRobotSection = document.getElementById("classicRobotPreviewSection");
     const aiRobotSection = document.getElementById("aiRobotPreviewSection");
     const aiRobotCalculationSection = document.getElementById("aiRobotCalculationPreviewSection");
+    const hybridRobotCalculationSection = document.getElementById("hybridRobotCalculationPreviewSection");
+    const humanVoiceCalculationSection = document.getElementById("humanVoiceCalculationPreviewSection");
+    const templateRobotsSection = document.getElementById("templateRobotsPreviewSection");
+    const autoInformerSection = document.getElementById("autoInformerPreviewSection");
     const aiTrainerSection = document.getElementById("aiTrainerPreviewSection");
     const managerSection = document.getElementById("managerSection");
     const onboardingSection = document.getElementById("onboardingSection");
@@ -1871,6 +2169,10 @@ function updatePreviewForTab() {
     const header = document.querySelector(".proposal-header");
     const hasClassicRobotCalculation = state.showClassicRobot && CLASSIC_ROBOT_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
     const hasAiRobotCalculation = state.showAiRobot && AI_ROBOT_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
+    const hasHybridRobotCalculation = state.showHybridRobot && HYBRID_ROBOT_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
+    const hasHumanVoiceCalculation = state.showHumanVoice && HUMAN_VOICE_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
+    const hasTemplateRobotsCalculation = state.showTemplateRobots && (state.templateRobotsSelected.length > 0 || (parseInt(state.templateRobotContacts) || 0) > 0);
+    const hasAutoInformerCalculation = state.showAutoInformer && (parseInt(state.autoInformerContacts) || 0) > 0;
 
     if (isDiscovery) {
         if (problemSection) problemSection.style.display = "none";
@@ -1888,6 +2190,14 @@ function updatePreviewForTab() {
         if (aiRobotSection) aiRobotSection.style.display = state.showAiRobot ? "block" : "none";
         if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = hasAiRobotCalculation ? "block" : "none";
         if (hasAiRobotCalculation) updateAiRobotCalculation();
+        if (hybridRobotCalculationSection) hybridRobotCalculationSection.style.display = hasHybridRobotCalculation ? "block" : "none";
+        if (hasHybridRobotCalculation) updateHybridRobotCalculation();
+        if (humanVoiceCalculationSection) humanVoiceCalculationSection.style.display = hasHumanVoiceCalculation ? "block" : "none";
+        if (hasHumanVoiceCalculation) updateHumanVoiceCalculation();
+        if (templateRobotsSection) templateRobotsSection.style.display = hasTemplateRobotsCalculation ? "block" : "none";
+        if (hasTemplateRobotsCalculation) updateTemplateRobotsCalculation();
+        if (autoInformerSection) autoInformerSection.style.display = hasAutoInformerCalculation ? "block" : "none";
+        if (hasAutoInformerCalculation) updateAutoInformerCalculation();
         if (aiTrainerSection) aiTrainerSection.style.display = state.aiTrainerEnabled ? "block" : "none";
     } else {
         if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
@@ -1903,6 +2213,10 @@ function updatePreviewForTab() {
         if (classicRobotSection) classicRobotSection.style.display = "none";
         if (aiRobotSection) aiRobotSection.style.display = "none";
         if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = "none";
+        if (hybridRobotCalculationSection) hybridRobotCalculationSection.style.display = "none";
+        if (humanVoiceCalculationSection) humanVoiceCalculationSection.style.display = "none";
+        if (templateRobotsSection) templateRobotsSection.style.display = "none";
+        if (autoInformerSection) autoInformerSection.style.display = "none";
         if (aiTrainerSection) aiTrainerSection.style.display = "none";
     }
 
@@ -1965,6 +2279,68 @@ function syncDiscoveryClientFields() {
         const assemblyInput = document.getElementById(scenario.assemblyState);
         if (assemblyInput) assemblyInput.value = state[scenario.assemblyState];
     });
+
+    const hybridRobotToggle = document.getElementById("hybridRobotToggle");
+    if (hybridRobotToggle) hybridRobotToggle.checked = state.showHybridRobot;
+
+    const hybridRobotCalculations = document.getElementById("hybridRobotCalculations");
+    if (hybridRobotCalculations) hybridRobotCalculations.style.display = state.showHybridRobot ? "block" : "none";
+
+    HYBRID_ROBOT_SCENARIOS.forEach(scenario => {
+        const contactsInput = document.getElementById(scenario.contactsState);
+        if (contactsInput) contactsInput.value = state[scenario.contactsState];
+
+        const assemblyInput = document.getElementById(scenario.assemblyState);
+        if (assemblyInput) assemblyInput.value = state[scenario.assemblyState];
+    });
+
+    const humanVoiceToggle = document.getElementById("humanVoiceToggle");
+    if (humanVoiceToggle) humanVoiceToggle.checked = state.showHumanVoice;
+
+    const humanVoiceCalculations = document.getElementById("humanVoiceCalculations");
+    if (humanVoiceCalculations) humanVoiceCalculations.style.display = state.showHumanVoice ? "block" : "none";
+
+    HUMAN_VOICE_SCENARIOS.forEach(scenario => {
+        const contactsInput = document.getElementById(scenario.contactsState);
+        if (contactsInput) contactsInput.value = state[scenario.contactsState];
+
+        const assemblyInput = document.getElementById(scenario.assemblyState);
+        if (assemblyInput) assemblyInput.value = state[scenario.assemblyState];
+    });
+
+    const templateRobotsToggle = document.getElementById("templateRobotsToggle");
+    if (templateRobotsToggle) templateRobotsToggle.checked = state.showTemplateRobots;
+
+    const templateRobotsOptions = document.getElementById("templateRobotsOptions");
+    if (templateRobotsOptions) templateRobotsOptions.style.display = state.showTemplateRobots ? "block" : "none";
+
+    document.querySelectorAll(".template-robot-checkbox").forEach(checkbox => {
+        checkbox.checked = state.templateRobotsSelected.includes(checkbox.value);
+    });
+
+    const templateRobotContacts = document.getElementById("templateRobotContacts");
+    if (templateRobotContacts) templateRobotContacts.value = state.templateRobotContacts;
+
+    const templateRobotTelephony = document.getElementById("templateRobotTelephony");
+    if (templateRobotTelephony) templateRobotTelephony.value = state.templateRobotTelephony;
+
+    const autoInformerToggle = document.getElementById("autoInformerToggle");
+    if (autoInformerToggle) autoInformerToggle.checked = state.showAutoInformer;
+
+    const autoInformerOptions = document.getElementById("autoInformerOptions");
+    if (autoInformerOptions) autoInformerOptions.style.display = state.showAutoInformer ? "block" : "none";
+
+    const autoInformerContacts = document.getElementById("autoInformerContacts");
+    if (autoInformerContacts) autoInformerContacts.value = state.autoInformerContacts;
+
+    const autoInformerAsr = document.getElementById("autoInformerAsr");
+    if (autoInformerAsr) autoInformerAsr.checked = state.autoInformerAsr;
+
+    const autoInformerTransfer = document.getElementById("autoInformerTransfer");
+    if (autoInformerTransfer) autoInformerTransfer.checked = state.autoInformerTransfer;
+
+    const autoInformerRecording = document.getElementById("autoInformerRecording");
+    if (autoInformerRecording) autoInformerRecording.checked = state.autoInformerRecording;
 
     const aiTrainerToggle = document.getElementById("aiTrainerToggle");
     if (aiTrainerToggle) aiTrainerToggle.checked = state.aiTrainerEnabled;
