@@ -354,6 +354,12 @@ const state = {
     classicRobotAssemblyExtended: 87000,
     showAiRobot: false,
     showAiRobotCalculation: false,
+    aiRobotContacts: "",
+    aiRobotContactsMaxOmni: "",
+    aiRobotContactsExtended: "",
+    aiRobotAssembly: 60000,
+    aiRobotAssemblyMaxOmni: 60000,
+    aiRobotAssemblyExtended: 87000,
     aiTrainerEnabled: false,
     aiTrainerTariff: "xs",
     aiTrainerPeriod: "1",
@@ -452,6 +458,14 @@ const CLASSIC_ROBOT_SCENARIOS = [
         trunkOneTime: 10000
     }
 ];
+
+const AI_ROBOT_MINUTE_MARKUP = 2.5;
+
+const AI_ROBOT_SCENARIOS = CLASSIC_ROBOT_SCENARIOS.map(scenario => ({
+    ...scenario,
+    contactsState: scenario.contactsState.replace("classicRobot", "aiRobot"),
+    assemblyState: scenario.assemblyState.replace("classicRobot", "aiRobot")
+}));
 
 function formatPrice(value) {
     return formatNumber(value) + " ₽";
@@ -1395,9 +1409,28 @@ function bindEvents() {
     if (aiRobotCalculationToggle) {
         aiRobotCalculationToggle.addEventListener("change", e => {
             state.showAiRobotCalculation = e.target.checked;
+            const calculations = document.getElementById("aiRobotCalculations");
+            if (calculations) calculations.style.display = state.showAiRobotCalculation ? "block" : "none";
             updatePreviewForTab();
         });
     }
+
+    AI_ROBOT_SCENARIOS.forEach(scenario => {
+        const contactsInput = document.getElementById(scenario.contactsState);
+        if (contactsInput) {
+            contactsInput.addEventListener("input", e => {
+                state[scenario.contactsState] = e.target.value;
+                updatePreviewForTab();
+            });
+        }
+        const assemblyInput = document.getElementById(scenario.assemblyState);
+        if (assemblyInput) {
+            assemblyInput.addEventListener("input", e => {
+                state[scenario.assemblyState] = e.target.value;
+                updatePreviewForTab();
+            });
+        }
+    });
 
     const aiTrainerToggle = document.getElementById("aiTrainerToggle");
     if (aiTrainerToggle) {
@@ -1746,16 +1779,13 @@ function calcClassicRobotMoney(value) {
     return Math.ceil(value);
 }
 
-function updateClassicRobotCalculation() {
-    const container = document.getElementById("classicRobotCalculationContent");
-    if (!container) return;
-
-    container.innerHTML = CLASSIC_ROBOT_SCENARIOS.map(scenario => {
+function buildRobotCalculationCards(scenarios, minuteMarkup) {
+    return scenarios.map(scenario => {
         const contacts = parseInt(state[scenario.contactsState]) || 0;
         if (contacts <= 0) return "";
 
         const requiredMinutes = Math.ceil(contacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
-        const minuteRate = getClassicRobotRate(CLASSIC_ROBOT_MINUTE_RATES, requiredMinutes);
+        const minuteRate = getClassicRobotRate(CLASSIC_ROBOT_MINUTE_RATES, requiredMinutes) + minuteMarkup;
         const serviceRate = getClassicRobotRate(scenario.serviceRates, requiredMinutes);
         const packageTotal = calcClassicRobotMoney(requiredMinutes * minuteRate);
         const serviceTotal = calcClassicRobotMoney(requiredMinutes * serviceRate);
@@ -1811,6 +1841,20 @@ function updateClassicRobotCalculation() {
     }).join("");
 }
 
+function updateClassicRobotCalculation() {
+    const container = document.getElementById("classicRobotCalculationContent");
+    if (!container) return;
+
+    container.innerHTML = buildRobotCalculationCards(CLASSIC_ROBOT_SCENARIOS, 0);
+}
+
+function updateAiRobotCalculation() {
+    const container = document.getElementById("aiRobotCalculationContent");
+    if (!container) return;
+
+    container.innerHTML = buildRobotCalculationCards(AI_ROBOT_SCENARIOS, AI_ROBOT_MINUTE_MARKUP);
+}
+
 function updatePreviewForTab() {
     const activeTabButton = document.querySelector('.tab-button.active');
     const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
@@ -1835,6 +1879,7 @@ function updatePreviewForTab() {
     const partnersSection = document.getElementById("partnersSection");
     const header = document.querySelector(".proposal-header");
     const hasClassicRobotCalculation = state.showClassicRobot && CLASSIC_ROBOT_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
+    const hasAiRobotCalculation = state.showAiRobotCalculation && AI_ROBOT_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
 
     if (isDiscovery) {
         if (problemSection) problemSection.style.display = "none";
@@ -1850,7 +1895,8 @@ function updatePreviewForTab() {
         if (hasClassicRobotCalculation) updateClassicRobotCalculation();
         if (classicRobotSection) classicRobotSection.style.display = state.showClassicRobot ? "block" : "none";
         if (aiRobotSection) aiRobotSection.style.display = state.showAiRobot ? "block" : "none";
-        if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = state.showAiRobotCalculation ? "block" : "none";
+        if (aiRobotCalculationSection) aiRobotCalculationSection.style.display = hasAiRobotCalculation ? "block" : "none";
+        if (hasAiRobotCalculation) updateAiRobotCalculation();
         if (aiTrainerSection) aiTrainerSection.style.display = state.aiTrainerEnabled ? "block" : "none";
     } else {
         if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
@@ -1920,6 +1966,17 @@ function syncDiscoveryClientFields() {
 
     const aiRobotCalculationToggle = document.getElementById("aiRobotCalculationToggle");
     if (aiRobotCalculationToggle) aiRobotCalculationToggle.checked = state.showAiRobotCalculation;
+
+    const aiRobotCalculations = document.getElementById("aiRobotCalculations");
+    if (aiRobotCalculations) aiRobotCalculations.style.display = state.showAiRobotCalculation ? "block" : "none";
+
+    AI_ROBOT_SCENARIOS.forEach(scenario => {
+        const contactsInput = document.getElementById(scenario.contactsState);
+        if (contactsInput) contactsInput.value = state[scenario.contactsState];
+
+        const assemblyInput = document.getElementById(scenario.assemblyState);
+        if (assemblyInput) assemblyInput.value = state[scenario.assemblyState];
+    });
 
     const aiTrainerToggle = document.getElementById("aiTrainerToggle");
     if (aiTrainerToggle) aiTrainerToggle.checked = state.aiTrainerEnabled;

@@ -326,6 +326,35 @@
                             <div class="item-name">Расчет</div>
                         </div>
                     </label>
+                    <div id="aiRobotCalculations" style="display: none;">
+                        <div class="classic-calc-subtitle">СВОЯ АТС +регистрация</div>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="aiRobotContacts" min="0" step="1000" placeholder="20000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость сборки</span>
+                            <input type="number" id="aiRobotAssembly" min="0" step="1000" value="60000">
+                        </label>
+                        <div class="classic-calc-subtitle">СВОЯ АТС БЕЗ регистрации (Максимальный с Омни)</div>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="aiRobotContactsMaxOmni" min="0" step="1000" placeholder="20000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость сборки</span>
+                            <input type="number" id="aiRobotAssemblyMaxOmni" min="0" step="1000" value="60000">
+                        </label>
+                        <div class="classic-calc-subtitle">СВОЯ АТС БЕЗ регистрации (Расширенный без Омни)</div>
+                        <label style="margin-left: 24px;">
+                            <span>Кол-во контактов</span>
+                            <input type="number" id="aiRobotContactsExtended" min="0" step="1000" placeholder="30000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость сборки</span>
+                            <input type="number" id="aiRobotAssemblyExtended" min="0" step="1000" value="87000">
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -849,79 +878,7 @@
 
                     <section class="proposal-ai-calculation" id="aiRobotCalculationPreviewSection" style="display: none;">
                         <h2>Расчет</h2>
-
-                        <div class="calculation-card">
-                            <h3>ИИ робот исход номера Интернод</h3>
-                            <table class="calculation-table">
-                                <tbody>
-                                    <tr>
-                                        <td>Пакет минут (30 000 мин)</td>
-                                        <td class="calculation-price">174 900</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Номера для обзвона (200 шт × 300 руб)</td>
-                                        <td class="calculation-price">60 000</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Лицензия сервиса (месяц)</td>
-                                        <td class="calculation-price">4 500</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Карусель номеров (месяц)</td>
-                                        <td class="calculation-price">3 000</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Сборка / интеграция (разово)</td>
-                                        <td class="calculation-price">50 000</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <p class="calculation-note">50 000 (цена может быть до 100.000 от сложности скрипта)</p>
-                            <div class="calculation-total">
-                                <span>Итого за первый месяц</span>
-                                <span class="calculation-total-price">292 400</span>
-                            </div>
-                        </div>
-
-                        <div class="calculation-card">
-                            <h3>ИИ робот исход номера на своей АТС</h3>
-                            <table class="calculation-table">
-                                <tbody>
-                                    <tr>
-                                        <td>СВОЯ АТС + модуль дозвона (макс.)</td>
-                                        <td class="calculation-price">60 000</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Скорректированный пакет минут (30 000 мин)</td>
-                                        <td class="calculation-price">174 900</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Телефония клиента (своя, 25 000 мин × 1,25)</td>
-                                        <td class="calculation-price">31 250</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Номера (200 шт × 10 руб)</td>
-                                        <td class="calculation-price">2 000</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Лицензия сервиса (месяц)</td>
-                                        <td class="calculation-price">4 500</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Транки (3 шт, разово)</td>
-                                        <td class="calculation-price">30 000</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Сборка / интеграция (разово)</td>
-                                        <td class="calculation-price">50 000</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="calculation-total">
-                                <span>Итого за первый месяц</span>
-                                <span class="calculation-total-price">352 650</span>
-                            </div>
-                        </div>
+                        <div id="aiRobotCalculationContent"></div>
 
                         <div class="ai-calculation-disclaimer">
                             <p>Стоимость указана примерная, зависит от сборки (указана средняя цена) также указана примерная средняя стоимость операторов за их трафик (погрешность небольшая)</p>
