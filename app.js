@@ -353,7 +353,6 @@ const state = {
     classicRobotAssemblyMaxOmni: 60000,
     classicRobotAssemblyExtended: 87000,
     showAiRobot: false,
-    showAiRobotCalculation: false,
     aiRobotContacts: "",
     aiRobotContactsMaxOmni: "",
     aiRobotContactsExtended: "",
@@ -1401,16 +1400,8 @@ function bindEvents() {
     if (aiRobotToggle) {
         aiRobotToggle.addEventListener("change", e => {
             state.showAiRobot = e.target.checked;
-            updatePreviewForTab();
-        });
-    }
-
-    const aiRobotCalculationToggle = document.getElementById("aiRobotCalculationToggle");
-    if (aiRobotCalculationToggle) {
-        aiRobotCalculationToggle.addEventListener("change", e => {
-            state.showAiRobotCalculation = e.target.checked;
             const calculations = document.getElementById("aiRobotCalculations");
-            if (calculations) calculations.style.display = state.showAiRobotCalculation ? "block" : "none";
+            if (calculations) calculations.style.display = state.showAiRobot ? "block" : "none";
             updatePreviewForTab();
         });
     }
@@ -1879,7 +1870,7 @@ function updatePreviewForTab() {
     const partnersSection = document.getElementById("partnersSection");
     const header = document.querySelector(".proposal-header");
     const hasClassicRobotCalculation = state.showClassicRobot && CLASSIC_ROBOT_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
-    const hasAiRobotCalculation = state.showAiRobotCalculation && AI_ROBOT_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
+    const hasAiRobotCalculation = state.showAiRobot && AI_ROBOT_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
 
     if (isDiscovery) {
         if (problemSection) problemSection.style.display = "none";
@@ -1964,11 +1955,8 @@ function syncDiscoveryClientFields() {
     const aiRobotToggle = document.getElementById("aiRobotToggle");
     if (aiRobotToggle) aiRobotToggle.checked = state.showAiRobot;
 
-    const aiRobotCalculationToggle = document.getElementById("aiRobotCalculationToggle");
-    if (aiRobotCalculationToggle) aiRobotCalculationToggle.checked = state.showAiRobotCalculation;
-
     const aiRobotCalculations = document.getElementById("aiRobotCalculations");
-    if (aiRobotCalculations) aiRobotCalculations.style.display = state.showAiRobotCalculation ? "block" : "none";
+    if (aiRobotCalculations) aiRobotCalculations.style.display = state.showAiRobot ? "block" : "none";
 
     AI_ROBOT_SCENARIOS.forEach(scenario => {
         const contactsInput = document.getElementById(scenario.contactsState);
