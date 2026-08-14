@@ -634,8 +634,8 @@ body {
 }
 
 @media (max-width: 768px) {
-.proposal-ai-trainer .discovery-tariffs-lead:last-of-type {
-    margin-bottom: 44px;
+.ai-trainer-description {
+    margin-bottom: 40px;
 }
 
 .ai-trainer-cards {
