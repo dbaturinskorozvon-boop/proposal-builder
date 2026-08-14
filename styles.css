@@ -634,7 +634,11 @@ body {
 }
 
 @media (max-width: 768px) {
-    .ai-trainer-cards {
+.proposal-ai-trainer .discovery-tariffs-lead:last-of-type {
+    margin-bottom: 24px;
+}
+
+.ai-trainer-cards {
         grid-template-columns: 1fr;
     }
 }
