@@ -416,6 +416,10 @@ body {
     margin-bottom: 20px;
 }
 
+.ai-trainer-description {
+    margin-bottom: 60px;
+}
+
 .ai-trainer-card {
     position: relative;
     border: 2px solid var(--border);
@@ -634,11 +638,7 @@ body {
 }
 
 @media (max-width: 768px) {
-.ai-trainer-description {
-    margin-bottom: 60px;
-}
-
-.ai-trainer-cards {
+    .ai-trainer-cards {
         grid-template-columns: 1fr;
     }
 }
