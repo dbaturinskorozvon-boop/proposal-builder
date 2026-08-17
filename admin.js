@@ -877,9 +877,14 @@ function renderReport() {
     document.getElementById("reportExtrasSum").textContent = formatMoney(totalExtras);
     document.getElementById("reportTotalSum").textContent = formatMoney(totalAll);
 
+    const managerFilter = document.getElementById("reportManagerFilter").value;
+    const showCompany = managerFilter !== "all";
+
     const byRow = new Map();
     filtered.forEach(p => {
-        const key = proposalManagerKey(p) + "|" + (p.company || "") + "|" + (p.proposalType || "");
+        const key = showCompany
+            ? proposalManagerKey(p) + "|" + (p.company || "") + "|" + (p.proposalType || "")
+            : proposalManagerKey(p) + "|" + (p.proposalType || "");
         if (!byRow.has(key)) {
             byRow.set(key, {
                 name: p.managerName || "Не указан",
@@ -895,16 +900,21 @@ function renderReport() {
         row.total += p.total || 0;
     });
 
-    const managersTbody = document.querySelector("#reportManagersTable tbody");
+    const managersTable = document.getElementById("reportManagersTable");
+    const companyHeader = managersTable.querySelector("th[data-col='company']");
+    if (companyHeader) companyHeader.style.display = showCompany ? "" : "none";
+
+    const managersTbody = managersTable.querySelector("tbody");
     managersTbody.innerHTML = "";
+    const emptyColspan = showCompany ? 7 : 6;
     if (byRow.size === 0) {
-        managersTbody.innerHTML = '<tr><td colspan="7" class="empty-state">Нет данных за выбранный период</td></tr>';
+        managersTbody.innerHTML = `<tr><td colspan="${emptyColspan}" class="empty-state">Нет данных за выбранный период</td></tr>`;
     } else {
         Array.from(byRow.values()).sort((a, b) => b.total - a.total || a.name.localeCompare(b.name)).forEach(row => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${escapeHtml(row.name)}</td>
-                <td>${escapeHtml(row.company)}</td>
+                ${showCompany ? `<td>${escapeHtml(row.company)}</td>` : ""}
                 <td>${escapeHtml(row.direction)}</td>
                 <td>${row.count}</td>
                 <td>${formatMoney(row.product)}</td>
