@@ -938,6 +938,17 @@ function calculate() {
     };
 }
 
+let proposalsWriteToken = "";
+let builderUser = null;
+
+async function sha256(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
 async function init() {
     try {
         const response = await fetch("data.json?v=" + Date.now());
@@ -952,10 +963,61 @@ async function init() {
             if (data.discoveryProducts) adminData.discoveryProducts = data.discoveryProducts;
             if (data.bonuses) adminData.bonuses = data.bonuses;
             if (data.clientLogos) adminData.clientLogos = data.clientLogos;
+            if (data.proposalsWriteToken) proposalsWriteToken = data.proposalsWriteToken;
         }
     } catch (e) {
         console.error("Failed to load data.json", e);
     }
+
+    document.getElementById("builderLoginForm").addEventListener("submit", handleBuilderLogin);
+    document.getElementById("builderLogout").addEventListener("click", handleBuilderLogout);
+
+    const saved = sessionStorage.getItem("proposalBuilder_builderUser");
+    if (saved) {
+        try {
+            const user = JSON.parse(saved);
+            const stillExists = adminData.managers.find(m => String(m.id) === String(user.id) && m.passwordHash);
+            if (stillExists) {
+                builderUser = stillExists;
+                startBuilder();
+                return;
+            }
+        } catch (e) {}
+        sessionStorage.removeItem("proposalBuilder_builderUser");
+    }
+}
+
+async function handleBuilderLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById("builderLoginEmail").value.trim().toLowerCase();
+    const password = document.getElementById("builderLoginPassword").value;
+    const errorEl = document.getElementById("builderLoginError");
+
+    const passwordHash = await sha256(password);
+    const user = adminData.managers.find(m => m.email && m.email.toLowerCase() === email && m.passwordHash && m.passwordHash === passwordHash);
+
+    if (user) {
+        builderUser = user;
+        sessionStorage.setItem("proposalBuilder_builderUser", JSON.stringify(user));
+        errorEl.style.display = "none";
+        startBuilder();
+    } else {
+        errorEl.textContent = "Неверный email или пароль";
+        errorEl.style.display = "block";
+    }
+}
+
+function handleBuilderLogout(e) {
+    e.preventDefault();
+    builderUser = null;
+    sessionStorage.removeItem("proposalBuilder_builderUser");
+    location.reload();
+}
+
+function startBuilder() {
+    document.getElementById("builderLogin").style.display = "none";
+    document.getElementById("builderApp").style.display = "";
+    document.getElementById("sidebarUser").textContent = builderUser.name;
 
     populateManagers();
     populateDiscoveryManagers();
@@ -966,7 +1028,24 @@ async function init() {
     populateBonuses();
     populateClientLogos();
     bindEvents();
+
+    lockManagerSelection();
     updateUI();
+}
+
+function lockManagerSelection() {
+    const select = document.getElementById("managerSelect");
+    if (select && select.querySelector(`option[value="${builderUser.id}"]`)) {
+        select.value = String(builderUser.id);
+        state.managerId = String(builderUser.id);
+        select.disabled = true;
+    }
+    const discoverySelect = document.getElementById("discoveryManagerSelect");
+    if (discoverySelect && discoverySelect.querySelector(`option[value="${builderUser.id}"]`)) {
+        discoverySelect.value = String(builderUser.id);
+        state.discoveryManagerId = String(builderUser.id);
+        discoverySelect.disabled = true;
+    }
 }
 
 function getManagersByDirection(direction) {
@@ -2778,7 +2857,7 @@ function buildProposalLogEvent() {
     const productTotal = totals.licensePeriod + (totals.moduleMonthly + totals.incomingMonthly) * periodMonths + totals.incomingSetup;
     const extrasTotal = totals.periodTotal - productTotal;
 
-    const manager = getManager(state.managerId) || getManager(state.discoveryManagerId);
+    const manager = builderUser || getManager(state.managerId) || getManager(state.discoveryManagerId);
 
     return {
         id: "p-" + Date.now(),
@@ -2794,7 +2873,7 @@ function buildProposalLogEvent() {
 }
 
 async function logProposalEvent() {
-    const token = localStorage.getItem("proposalBuilder_githubToken");
+    const token = proposalsWriteToken || localStorage.getItem("proposalBuilder_githubToken");
     if (!token) return;
 
     const apiUrl = `https://api.github.com/repos/${PROPOSALS_LOG_CONFIG.owner}/${PROPOSALS_LOG_CONFIG.repo}/contents/${PROPOSALS_LOG_CONFIG.logPath}`;
