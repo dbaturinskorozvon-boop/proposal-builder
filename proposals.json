@@ -1,0 +1,211 @@
+[
+  {
+    "id": "demo-17",
+    "date": "2026-07-18T15:46:00.000Z",
+    "managerId": "5",
+    "managerName": "Захарова Юлия",
+    "company": "ООО «Логистика 24»",
+    "proposalType": "skorozvon",
+    "productTotal": 184000,
+    "extrasTotal": 40000,
+    "total": 224000
+  },
+  {
+    "id": "demo-10",
+    "date": "2026-07-18T17:55:00.000Z",
+    "managerId": "3",
+    "managerName": "Шелудченко Ксения",
+    "company": "ИП Морозов",
+    "proposalType": "skorozvon",
+    "productTotal": 138000,
+    "extrasTotal": 29000,
+    "total": 167000
+  },
+  {
+    "id": "demo-13",
+    "date": "2026-07-20T20:05:00.000Z",
+    "managerId": "4",
+    "managerName": "Борисова Мария",
+    "company": "АО «ТехноСфера»",
+    "proposalType": "skorozvon",
+    "productTotal": 52500,
+    "extrasTotal": 12000,
+    "total": 64500
+  },
+  {
+    "id": "demo-6",
+    "date": "2026-07-20T23:12:00.000Z",
+    "managerId": "2",
+    "managerName": "Белоусова Ксения",
+    "company": "ООО «СтройМонтаж»",
+    "proposalType": "skorozvon",
+    "productTotal": 59000,
+    "extrasTotal": 19000,
+    "total": 78000
+  },
+  {
+    "id": "demo-9",
+    "date": "2026-07-22T23:14:00.000Z",
+    "managerId": "3",
+    "managerName": "Шелудченко Ксения",
+    "company": "ООО «АвтоПрайм»",
+    "proposalType": "skorozvon",
+    "productTotal": 116500,
+    "extrasTotal": 32000,
+    "total": 148500
+  },
+  {
+    "id": "demo-18",
+    "date": "2026-07-23T23:46:00.000Z",
+    "managerId": "5",
+    "managerName": "Захарова Юлия",
+    "company": "АО «СеверСталь Трейд»",
+    "proposalType": "skorozvon",
+    "productTotal": 38000,
+    "extrasTotal": 14000,
+    "total": 52000
+  },
+  {
+    "id": "demo-16",
+    "date": "2026-07-24T20:50:00.000Z",
+    "managerId": "5",
+    "managerName": "Захарова Юлия",
+    "company": "ООО «ПромРесурс»",
+    "proposalType": "skorozvon",
+    "productTotal": 120500,
+    "extrasTotal": 28000,
+    "total": 148500
+  },
+  {
+    "id": "demo-15",
+    "date": "2026-07-25T22:22:00.000Z",
+    "managerId": "5",
+    "managerName": "Захарова Юлия",
+    "company": "ИП Белкина",
+    "proposalType": "skorozvon",
+    "productTotal": 190000,
+    "extrasTotal": 34000,
+    "total": 224000
+  },
+  {
+    "id": "demo-12",
+    "date": "2026-07-26T20:11:00.000Z",
+    "managerId": "4",
+    "managerName": "Борисова Мария",
+    "company": "ООО «Экспресс Доставка»",
+    "proposalType": "skorozvon",
+    "productTotal": 68500,
+    "extrasTotal": 29000,
+    "total": 97500
+  },
+  {
+    "id": "demo-11",
+    "date": "2026-07-27T18:24:00.000Z",
+    "managerId": "3",
+    "managerName": "Шелудченко Ксения",
+    "company": "ООО «СитиКлиник»",
+    "proposalType": "skorozvon",
+    "productTotal": 67000,
+    "extrasTotal": 22000,
+    "total": 89000
+  },
+  {
+    "id": "demo-4",
+    "date": "2026-07-30T20:15:00.000Z",
+    "managerId": "2",
+    "managerName": "Белоусова Ксения",
+    "company": "ООО «Медиа Групп»",
+    "proposalType": "skorozvon",
+    "productTotal": 169000,
+    "extrasTotal": 55000,
+    "total": 224000
+  },
+  {
+    "id": "demo-14",
+    "date": "2026-08-02T18:50:00.000Z",
+    "managerId": "4",
+    "managerName": "Борисова Мария",
+    "company": "ООО «ЮгАгро»",
+    "proposalType": "skorozvon",
+    "productTotal": 91500,
+    "extrasTotal": 20500,
+    "total": 112000
+  },
+  {
+    "id": "demo-5",
+    "date": "2026-08-03T20:32:00.000Z",
+    "managerId": "2",
+    "managerName": "Белоусова Ксения",
+    "company": "ИП Кузнецова",
+    "proposalType": "skorozvon",
+    "productTotal": 162000,
+    "extrasTotal": 33000,
+    "total": 195000
+  },
+  {
+    "id": "demo-19",
+    "date": "2026-08-04T19:56:00.000Z",
+    "managerId": "5",
+    "managerName": "Захарова Юлия",
+    "company": "ООО «Дентал Арт»",
+    "proposalType": "skorozvon",
+    "productTotal": 63500,
+    "extrasTotal": 25500,
+    "total": 89000
+  },
+  {
+    "id": "demo-8",
+    "date": "2026-08-04T22:38:00.000Z",
+    "managerId": "3",
+    "managerName": "Шелудченко Ксения",
+    "company": "АО «Ритейл Сервис»",
+    "proposalType": "skorozvon",
+    "productTotal": 86500,
+    "extrasTotal": 25500,
+    "total": 112000
+  },
+  {
+    "id": "demo-7",
+    "date": "2026-08-08T21:47:00.000Z",
+    "managerId": "3",
+    "managerName": "Шелудченко Ксения",
+    "company": "ООО «Финанс Плюс»",
+    "proposalType": "skorozvon",
+    "productTotal": 96500,
+    "extrasTotal": 15500,
+    "total": 112000
+  },
+  {
+    "id": "demo-2",
+    "date": "2026-08-13T15:55:00.000Z",
+    "managerId": "1",
+    "managerName": "Иванова Анна",
+    "company": "ИП Соколов",
+    "proposalType": "skorozvon",
+    "productTotal": 157000,
+    "extrasTotal": 38000,
+    "total": 195000
+  },
+  {
+    "id": "demo-1",
+    "date": "2026-08-16T19:45:00.000Z",
+    "managerId": "1",
+    "managerName": "Иванова Анна",
+    "company": "ООО «Вектор»",
+    "proposalType": "skorozvon",
+    "productTotal": 76000,
+    "extrasTotal": 13000,
+    "total": 89000
+  },
+  {
+    "id": "demo-3",
+    "date": "2026-08-16T22:47:00.000Z",
+    "managerId": "1",
+    "managerName": "Иванова Анна",
+    "company": "АО «ТрансЛогистик»",
+    "proposalType": "skorozvon",
+    "productTotal": 70000,
+    "extrasTotal": 19000,
+    "total": 89000
+  }
+]
