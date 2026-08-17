@@ -1992,6 +1992,20 @@ function getClassicRobotRate(rates, minutes) {
     return tier ? tier.rate : rates[rates.length - 1].rate;
 }
 
+const CLASSIC_ROBOT_PACKAGES = [
+    { minutes: 2000, name: "Старт" },
+    { minutes: 5000, name: "XS" },
+    { minutes: 10000, name: "S" },
+    { minutes: 20000, name: "M" },
+    { minutes: 40000, name: "L" },
+    { minutes: 100000, name: "Enterprise" }
+];
+
+function getClassicRobotPackage(minutes) {
+    if (minutes <= 0) return null;
+    return CLASSIC_ROBOT_PACKAGES.find(p => minutes <= p.minutes) || null;
+}
+
 function calcClassicRobotMoney(value) {
     return Math.ceil(value);
 }
@@ -2002,16 +2016,21 @@ function buildRobotCalculationCards(scenarios, minuteMarkup) {
         if (contacts <= 0) return "";
 
         const requiredMinutes = Math.ceil(contacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
-        const minuteRate = getClassicRobotRate(CLASSIC_ROBOT_MINUTE_RATES, requiredMinutes) + minuteMarkup;
-        const serviceRate = getClassicRobotRate(scenario.serviceRates, requiredMinutes);
-        const packageTotal = calcClassicRobotMoney(requiredMinutes * minuteRate);
-        const serviceTotal = calcClassicRobotMoney(requiredMinutes * serviceRate);
+        const robotPackage = getClassicRobotPackage(requiredMinutes);
+        const billedMinutes = robotPackage ? robotPackage.minutes : requiredMinutes;
+        const minuteRate = getClassicRobotRate(CLASSIC_ROBOT_MINUTE_RATES, billedMinutes) + minuteMarkup;
+        const serviceRate = getClassicRobotRate(scenario.serviceRates, billedMinutes);
+        const packageTotal = calcClassicRobotMoney(billedMinutes * minuteRate);
+        const serviceTotal = calcClassicRobotMoney(billedMinutes * serviceRate);
         const numbersCount = Math.ceil(contacts / CLASSIC_ROBOT_CALC.contactsPerNumber);
-        const telephonyTotal = calcClassicRobotMoney(requiredMinutes * CLASSIC_ROBOT_CALC.ownTelephonyRate);
+        const telephonyTotal = calcClassicRobotMoney(billedMinutes * CLASSIC_ROBOT_CALC.ownTelephonyRate);
         const numbersTotal = numbersCount * CLASSIC_ROBOT_CALC.numberPrice;
         const assemblyOneTime = parseInt(state[scenario.assemblyState]) || 0;
         const trunkLabel = scenario.trunkOneTime === 30000 ? "Транки (3 шт, разово)" : "Транк (разово)";
         const total = packageTotal + serviceTotal + telephonyTotal + numbersTotal + CLASSIC_ROBOT_CALC.licenseMonthly + scenario.trunkOneTime + assemblyOneTime;
+        const packageNote = robotPackage && billedMinutes !== requiredMinutes
+            ? `пакет «${robotPackage.name}», минут к оплате: ${formatNumber(billedMinutes)}`
+            : `минут к оплате: ${formatNumber(billedMinutes)}`;
 
         return `
             <div class="calculation-card">
@@ -2019,15 +2038,15 @@ function buildRobotCalculationCards(scenarios, minuteMarkup) {
                 <table class="calculation-table">
                     <tbody>
                         <tr>
-                            <td>Минуты (${formatNumber(requiredMinutes)} мин × ${formatRate(minuteRate)})</td>
+                            <td>Минуты (${formatNumber(billedMinutes)} мин × ${formatRate(minuteRate)})</td>
                             <td class="calculation-price">${formatNumber(packageTotal)}</td>
                         </tr>
                         <tr>
-                            <td>${scenario.serviceName} (${formatNumber(requiredMinutes)} мин × ${formatRate(serviceRate)})</td>
+                            <td>${scenario.serviceName} (${formatNumber(billedMinutes)} мин × ${formatRate(serviceRate)})</td>
                             <td class="calculation-price">${formatNumber(serviceTotal)}</td>
                         </tr>
                         <tr>
-                            <td>Телефония клиента (своя, ${formatNumber(requiredMinutes)} мин × 1,25)</td>
+                            <td>Телефония клиента (своя, ${formatNumber(billedMinutes)} мин × 1,25)</td>
                             <td class="calculation-price">${formatNumber(telephonyTotal)}</td>
                         </tr>
                         <tr>
@@ -2048,7 +2067,7 @@ function buildRobotCalculationCards(scenarios, minuteMarkup) {
                         </tr>
                     </tbody>
                 </table>
-                <p class="calculation-note">дозвон 50%, диалог 30 сек; минут к оплате: ${formatNumber(requiredMinutes)}</p>
+                <p class="calculation-note">дозвон 50%, диалог 30 сек; расчёт: ${formatNumber(requiredMinutes)} мин → ${packageNote}</p>
                 <div class="calculation-total">
                     <span>Итого за первый месяц</span>
                     <span class="calculation-total-price">${formatNumber(total)}</span>
