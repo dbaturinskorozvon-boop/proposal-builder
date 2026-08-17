@@ -857,6 +857,13 @@ function getFilteredProposals() {
     });
 }
 
+function proposalTypeLabel(type) {
+    if (type === "skorozvon") return "КОР-2";
+    if (type === "discovery") return "Дискавери";
+    if (type === "both") return "КОР-2 + Дискавери";
+    return type || "—";
+}
+
 function renderReport() {
     if (proposalsData === null) return;
     const filtered = getFilteredProposals();
@@ -870,13 +877,18 @@ function renderReport() {
     document.getElementById("reportExtrasSum").textContent = formatMoney(totalExtras);
     document.getElementById("reportTotalSum").textContent = formatMoney(totalAll);
 
-    const byManager = new Map();
+    const byRow = new Map();
     filtered.forEach(p => {
-        const key = proposalManagerKey(p);
-        if (!byManager.has(key)) {
-            byManager.set(key, { name: p.managerName || "Не указан", count: 0, product: 0, extras: 0, total: 0 });
+        const key = proposalManagerKey(p) + "|" + (p.company || "") + "|" + (p.proposalType || "");
+        if (!byRow.has(key)) {
+            byRow.set(key, {
+                name: p.managerName || "Не указан",
+                company: p.company || "—",
+                direction: proposalTypeLabel(p.proposalType),
+                count: 0, product: 0, extras: 0, total: 0
+            });
         }
-        const row = byManager.get(key);
+        const row = byRow.get(key);
         row.count += 1;
         row.product += p.productTotal || 0;
         row.extras += p.extrasTotal || 0;
@@ -885,13 +897,15 @@ function renderReport() {
 
     const managersTbody = document.querySelector("#reportManagersTable tbody");
     managersTbody.innerHTML = "";
-    if (byManager.size === 0) {
-        managersTbody.innerHTML = '<tr><td colspan="5" class="empty-state">Нет данных за выбранный период</td></tr>';
+    if (byRow.size === 0) {
+        managersTbody.innerHTML = '<tr><td colspan="7" class="empty-state">Нет данных за выбранный период</td></tr>';
     } else {
-        Array.from(byManager.values()).sort((a, b) => b.total - a.total).forEach(row => {
+        Array.from(byRow.values()).sort((a, b) => b.total - a.total || a.name.localeCompare(b.name)).forEach(row => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${escapeHtml(row.name)}</td>
+                <td>${escapeHtml(row.company)}</td>
+                <td>${escapeHtml(row.direction)}</td>
                 <td>${row.count}</td>
                 <td>${formatMoney(row.product)}</td>
                 <td>${formatMoney(row.extras)}</td>
@@ -904,7 +918,7 @@ function renderReport() {
     const proposalsTbody = document.querySelector("#reportProposalsTable tbody");
     proposalsTbody.innerHTML = "";
     if (filtered.length === 0) {
-        proposalsTbody.innerHTML = '<tr><td colspan="6" class="empty-state">Нет данных за выбранный период</td></tr>';
+        proposalsTbody.innerHTML = '<tr><td colspan="7" class="empty-state">Нет данных за выбранный период</td></tr>';
     } else {
         filtered.slice().sort((a, b) => (b.date || "").localeCompare(a.date || "")).forEach(p => {
             const tr = document.createElement("tr");
@@ -913,6 +927,7 @@ function renderReport() {
                 <td>${date}</td>
                 <td>${escapeHtml(p.managerName || "Не указан")}</td>
                 <td>${escapeHtml(p.company || "—")}</td>
+                <td>${escapeHtml(proposalTypeLabel(p.proposalType))}</td>
                 <td>${formatMoney(p.productTotal)}</td>
                 <td>${formatMoney(p.extrasTotal)}</td>
                 <td>${formatMoney(p.total)}</td>
