@@ -7,31 +7,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
-    <div class="builder-login" id="builderLogin">
-        <div class="builder-login-card">
-            <div class="builder-login-logo">Скорозвон</div>
-            <h1>Конструктор КП</h1>
-            <p class="builder-login-subtitle">Вход для менеджеров</p>
-            <form id="builderLoginForm" class="builder-login-form">
-                <label>
-                    <span>Email</span>
-                    <input type="email" id="builderLoginEmail" placeholder="aivanova@skorozvon.ru" required>
-                </label>
-                <label>
-                    <span>Пароль</span>
-                    <input type="password" id="builderLoginPassword" placeholder="••••••••" required>
-                </label>
-                <button type="submit" class="btn-primary">Войти</button>
-            </form>
-            <div class="builder-login-hint">Доступ выдаёт руководитель отдела продаж</div>
-            <div id="builderLoginError" class="builder-login-error"></div>
-        </div>
-    </div>
-
-    <div class="app" id="builderApp" style="display: none;">
+    <div class="app">
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h1>Конструктор КП</h1>
@@ -553,9 +532,7 @@
             </div>
 
             <div class="sidebar-footer">
-                <div class="sidebar-user" id="sidebarUser"></div>
                 <button class="btn-primary" id="downloadPdf">Скачать PDF</button>
-                <a href="#" class="admin-link" id="builderLogout">Выйти</a>
                 <a href="admin.html" class="admin-link">Войти в админку</a>
             </div>
         </aside>
@@ -1694,6 +1671,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="app.js?v=5"></script>
+    <script src="app.js?v=4"></script>
 </body>
 </html>

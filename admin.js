@@ -184,8 +184,6 @@ function init() {
     document.getElementById("addBonusBtn").addEventListener("click", () => openBonusModal());
     document.getElementById("saveTokenBtn").addEventListener("click", saveToken);
     document.getElementById("testTokenBtn").addEventListener("click", testToken);
-    document.getElementById("publishTokenBtn").addEventListener("click", publishWriteToken);
-    document.getElementById("revokeTokenBtn").addEventListener("click", revokeWriteToken);
 
     document.getElementById("managersDirectionFilter").addEventListener("change", renderManagers);
     document.getElementById("offersDirectionFilter").addEventListener("change", renderSpecialOffers);
@@ -533,41 +531,6 @@ function renderDirections() {
 function renderSettings() {
     const input = document.getElementById("githubTokenInput");
     input.value = githubToken ? "••••••••••••••••••••••••••" : "";
-    renderPublishTokenStatus();
-}
-
-function renderPublishTokenStatus() {
-    const statusEl = document.getElementById("publishTokenStatus");
-    if (!statusEl) return;
-    if (adminData && adminData.proposalsWriteToken) {
-        statusEl.textContent = "Токен опубликован — КП менеджеров сохраняются в отчёт автоматически";
-        statusEl.style.color = "var(--success)";
-    } else {
-        statusEl.textContent = "Токен не опубликован — КП менеджеров не попадут в отчёт";
-        statusEl.style.color = "var(--danger)";
-    }
-}
-
-function publishWriteToken() {
-    const statusEl = document.getElementById("publishTokenStatus");
-    if (!githubToken) {
-        statusEl.textContent = "Сначала введите и сохраните GitHub-токен в карточке выше";
-        statusEl.style.color = "var(--danger)";
-        return;
-    }
-    if (!confirm("Токен будет сохранён в data.json и станет виден любому, кто откроет исходный код сайта. Рекомендуется использовать fine-grained токен с доступом только к этому репозиторию. Продолжить?")) {
-        return;
-    }
-    adminData.proposalsWriteToken = githubToken;
-    saveData();
-}
-
-function revokeWriteToken() {
-    if (!confirm("Отозвать опубликованный токен? КП менеджеров перестанут попадать в отчёт.")) {
-        return;
-    }
-    delete adminData.proposalsWriteToken;
-    saveData();
 }
 
 function saveToken() {
@@ -681,16 +644,10 @@ function openManagerModal(id) {
                 <small>Оставьте пустым, если фото нет</small>
             </div>
         </div>
-        <div class="form-group">
-            <label>Пароль для входа в конструктор</label>
-            <input type="text" id="managerPassword" value="" placeholder="${manager && manager.passwordHash ? "Оставьте пустым, чтобы не менять" : "Задайте пароль"}">
-            <small>Менеджер входит в конструктор по email и этому паролю. Без пароля доступа нет.</small>
-        </div>
         ${directionCheckboxesHtml(manager ? manager.directions : ["kor2"], "managerDirections")}
     `;
 
-    openModal(manager ? "Изменить менеджера" : "Добавить менеджера", body, async () => {
-        const password = document.getElementById("managerPassword").value.trim();
+    openModal(manager ? "Изменить менеджера" : "Добавить менеджера", body, () => {
         const newManager = {
             id: manager ? manager.id : Date.now(),
             name: document.getElementById("managerName").value.trim(),
@@ -699,17 +656,11 @@ function openManagerModal(id) {
             telegram: document.getElementById("managerTelegram").value.trim(),
             max: document.getElementById("managerMax").value.trim(),
             photo: document.getElementById("managerPhoto").value.trim(),
-            passwordHash: password ? await sha256(password) : (manager && manager.passwordHash) || "",
             directions: getCheckedDirections("managerDirections")
         };
 
         if (!newManager.name) {
             alert("Укажите ФИО");
-            return;
-        }
-
-        if (password && !newManager.email) {
-            alert("Для входа в конструктор менеджеру нужен email");
             return;
         }
 
@@ -988,7 +939,6 @@ async function saveData() {
     try {
         await saveToGitHub(adminData);
         renderDashboard();
-        renderPublishTokenStatus();
         if (document.getElementById("managersSection").classList.contains("active")) renderManagers();
         if (document.getElementById("specialOffersSection").classList.contains("active")) renderSpecialOffers();
         if (document.getElementById("bonusesSection").classList.contains("active")) renderBonuses();
