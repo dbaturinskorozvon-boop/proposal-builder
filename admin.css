@@ -639,6 +639,27 @@ body {
     border-radius: 12px;
 }
 
+.report-filters {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.report-filters input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.report-subtitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 28px 0 14px;
+}
+
 @media (max-width: 900px) {
     .admin-layout {
         flex-direction: column;

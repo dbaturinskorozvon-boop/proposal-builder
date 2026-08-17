@@ -42,6 +42,7 @@ let currentUser = null;
 let githubToken = localStorage.getItem("proposalBuilder_githubToken") || "";
 let dataSha = null;
 let adminData = null;
+let proposalsData = null;
 let isLoading = false;
 
 async function loadData() {
@@ -188,6 +189,22 @@ function init() {
     document.getElementById("offersDirectionFilter").addEventListener("change", renderSpecialOffers);
     document.getElementById("bonusesDirectionFilter").addEventListener("change", renderBonuses);
 
+    document.getElementById("reportDateFrom").addEventListener("change", renderReport);
+    document.getElementById("reportDateTo").addEventListener("change", renderReport);
+    document.getElementById("reportManagerFilter").addEventListener("change", renderReport);
+    document.getElementById("refreshReportBtn").addEventListener("click", async () => {
+        showGlobalLoading(true);
+        try {
+            proposalsData = await loadProposals();
+            populateReportManagerFilter();
+            renderReport();
+        } catch (e) {
+            alert("Не удалось загрузить proposals.json: " + e.message);
+        } finally {
+            showGlobalLoading(false);
+        }
+    });
+
     const savedUser = sessionStorage.getItem("proposalBuilder_currentUser");
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
@@ -290,6 +307,7 @@ function showSection(section) {
     if (section === "bonuses") renderBonuses();
     if (section === "directions") renderDirections();
     if (section === "settings") renderSettings();
+    if (section === "report") showReport();
 }
 
 function renderDashboard() {
@@ -759,6 +777,149 @@ function openBonusModal(id) {
         saveData();
         closeModal();
     });
+}
+
+async function loadProposals() {
+    const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/proposals.json?t=${Date.now()}`);
+    if (response.status === 404) return [];
+    if (!response.ok) throw new Error("код " + response.status);
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+}
+
+async function showReport() {
+    if (proposalsData === null) {
+        showGlobalLoading(true);
+        try {
+            proposalsData = await loadProposals();
+        } catch (e) {
+            proposalsData = [];
+            alert("Не удалось загрузить proposals.json: " + e.message);
+        } finally {
+            showGlobalLoading(false);
+        }
+        initReportDates();
+        populateReportManagerFilter();
+    }
+    renderReport();
+}
+
+function initReportDates() {
+    const from = document.getElementById("reportDateFrom");
+    const to = document.getElementById("reportDateTo");
+    if (!from.value) {
+        const d = new Date();
+        d.setDate(1);
+        from.value = d.toISOString().split("T")[0];
+    }
+    if (!to.value) {
+        to.value = new Date().toISOString().split("T")[0];
+    }
+}
+
+function proposalManagerKey(p) {
+    return p.managerId ? String(p.managerId) : "name:" + (p.managerName || "Не указан");
+}
+
+function populateReportManagerFilter() {
+    const select = document.getElementById("reportManagerFilter");
+    const currentValue = select.value;
+    const names = new Map();
+    (adminData.managers || []).forEach(m => names.set(String(m.id), m.name));
+    (proposalsData || []).forEach(p => {
+        const key = proposalManagerKey(p);
+        if (!names.has(key)) names.set(key, p.managerName || "Не указан");
+    });
+    select.innerHTML = '<option value="all">Все</option>';
+    names.forEach((name, id) => {
+        const option = document.createElement("option");
+        option.value = id;
+        option.textContent = name;
+        select.appendChild(option);
+    });
+    select.value = currentValue || "all";
+}
+
+function formatMoney(value) {
+    return new Intl.NumberFormat("ru-RU").format(Math.round(value || 0)) + " ₽";
+}
+
+function getFilteredProposals() {
+    const from = document.getElementById("reportDateFrom").value;
+    const to = document.getElementById("reportDateTo").value;
+    const manager = document.getElementById("reportManagerFilter").value;
+    return (proposalsData || []).filter(p => {
+        const day = (p.date || "").split("T")[0];
+        if (from && day < from) return false;
+        if (to && day > to) return false;
+        if (manager !== "all" && proposalManagerKey(p) !== manager) return false;
+        return true;
+    });
+}
+
+function renderReport() {
+    if (proposalsData === null) return;
+    const filtered = getFilteredProposals();
+
+    const totalProduct = filtered.reduce((s, p) => s + (p.productTotal || 0), 0);
+    const totalExtras = filtered.reduce((s, p) => s + (p.extrasTotal || 0), 0);
+    const totalAll = filtered.reduce((s, p) => s + (p.total || 0), 0);
+
+    document.getElementById("reportCount").textContent = filtered.length;
+    document.getElementById("reportProductSum").textContent = formatMoney(totalProduct);
+    document.getElementById("reportExtrasSum").textContent = formatMoney(totalExtras);
+    document.getElementById("reportTotalSum").textContent = formatMoney(totalAll);
+
+    const byManager = new Map();
+    filtered.forEach(p => {
+        const key = proposalManagerKey(p);
+        if (!byManager.has(key)) {
+            byManager.set(key, { name: p.managerName || "Не указан", count: 0, product: 0, extras: 0, total: 0 });
+        }
+        const row = byManager.get(key);
+        row.count += 1;
+        row.product += p.productTotal || 0;
+        row.extras += p.extrasTotal || 0;
+        row.total += p.total || 0;
+    });
+
+    const managersTbody = document.querySelector("#reportManagersTable tbody");
+    managersTbody.innerHTML = "";
+    if (byManager.size === 0) {
+        managersTbody.innerHTML = '<tr><td colspan="5" class="empty-state">Нет данных за выбранный период</td></tr>';
+    } else {
+        Array.from(byManager.values()).sort((a, b) => b.total - a.total).forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${escapeHtml(row.name)}</td>
+                <td>${row.count}</td>
+                <td>${formatMoney(row.product)}</td>
+                <td>${formatMoney(row.extras)}</td>
+                <td>${formatMoney(row.total)}</td>
+            `;
+            managersTbody.appendChild(tr);
+        });
+    }
+
+    const proposalsTbody = document.querySelector("#reportProposalsTable tbody");
+    proposalsTbody.innerHTML = "";
+    if (filtered.length === 0) {
+        proposalsTbody.innerHTML = '<tr><td colspan="6" class="empty-state">Нет данных за выбранный период</td></tr>';
+    } else {
+        filtered.slice().sort((a, b) => (b.date || "").localeCompare(a.date || "")).forEach(p => {
+            const tr = document.createElement("tr");
+            const date = p.date ? new Date(p.date).toLocaleDateString("ru-RU") : "";
+            tr.innerHTML = `
+                <td>${date}</td>
+                <td>${escapeHtml(p.managerName || "Не указан")}</td>
+                <td>${escapeHtml(p.company || "—")}</td>
+                <td>${formatMoney(p.productTotal)}</td>
+                <td>${formatMoney(p.extrasTotal)}</td>
+                <td>${formatMoney(p.total)}</td>
+            `;
+            proposalsTbody.appendChild(tr);
+        });
+    }
 }
 
 function directionName(id) {

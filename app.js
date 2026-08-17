@@ -2765,6 +2765,82 @@ function printProposal() {
     window.print();
 }
 
+const PROPOSALS_LOG_CONFIG = {
+    owner: "dbaturinskorozvon-boop",
+    repo: "proposal-builder",
+    branch: "main",
+    logPath: "proposals.json"
+};
+
+function buildProposalLogEvent() {
+    const totals = calculate();
+    const periodMonths = totals.periodMonths;
+    const productTotal = totals.licensePeriod + (totals.moduleMonthly + totals.incomingMonthly) * periodMonths + totals.incomingSetup;
+    const extrasTotal = totals.periodTotal - productTotal;
+
+    const manager = getManager(state.managerId) || getManager(state.discoveryManagerId);
+
+    return {
+        id: "p-" + Date.now(),
+        date: new Date().toISOString(),
+        managerId: manager ? String(manager.id) : "",
+        managerName: manager ? manager.name : "Не указан",
+        company: (state.clientName || "").trim(),
+        proposalType: state.proposalType,
+        productTotal: Math.round(productTotal),
+        extrasTotal: Math.round(extrasTotal),
+        total: Math.round(totals.periodTotal)
+    };
+}
+
+async function logProposalEvent() {
+    const token = localStorage.getItem("proposalBuilder_githubToken");
+    if (!token) return;
+
+    const apiUrl = `https://api.github.com/repos/${PROPOSALS_LOG_CONFIG.owner}/${PROPOSALS_LOG_CONFIG.repo}/contents/${PROPOSALS_LOG_CONFIG.logPath}`;
+    const headers = {
+        "Authorization": `token ${token}`,
+        "Accept": "application/vnd.github.v3+json"
+    };
+
+    try {
+        let proposals = [];
+        let sha = null;
+
+        const getResp = await fetch(`${apiUrl}?ref=${PROPOSALS_LOG_CONFIG.branch}`, { headers });
+        if (getResp.ok) {
+            const file = await getResp.json();
+            sha = file.sha;
+            try {
+                proposals = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g, "")))));
+                if (!Array.isArray(proposals)) proposals = [];
+            } catch (e) {
+                proposals = [];
+            }
+        } else if (getResp.status !== 404) {
+            throw new Error("Не удалось прочитать proposals.json");
+        }
+
+        proposals.push(buildProposalLogEvent());
+
+        const body = {
+            message: "log proposal from builder",
+            content: btoa(unescape(encodeURIComponent(JSON.stringify(proposals, null, 2)))),
+            branch: PROPOSALS_LOG_CONFIG.branch
+        };
+        if (sha) body.sha = sha;
+
+        const putResp = await fetch(apiUrl, {
+            method: "PUT",
+            headers: { ...headers, "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        if (!putResp.ok) throw new Error("Не удалось сохранить proposals.json");
+    } catch (e) {
+        console.warn("Proposal logging failed:", e);
+    }
+}
+
 async function downloadPdf() {
     const btn = document.getElementById("downloadPdf");
     const originalText = btn.textContent;
@@ -2838,6 +2914,7 @@ async function downloadPdf() {
         const clientName = document.getElementById("clientName")?.value?.trim() || "Клиент";
         const safeName = clientName.replace(/[^a-zA-Z0-9а-яА-Я\-_]/g, "_").substring(0, 60);
         pdf.save(`КП для ${safeName} | Скорозвон.pdf`);
+        logProposalEvent();
     } catch (err) {
         console.error("PDF generation failed:", err);
         alert("Не удалось сгенерировать PDF. Попробуйте через Печать / PDF.");

@@ -47,6 +47,7 @@
                     <a href="#" class="admin-nav-item" data-section="managers">Менеджеры</a>
                     <a href="#" class="admin-nav-item" data-section="special-offers">Спецпредложения</a>
                     <a href="#" class="admin-nav-item" data-section="bonuses">Бонусы</a>
+                    <a href="#" class="admin-nav-item" data-section="report">Отчёт</a>
                     <a href="#" class="admin-nav-item" data-section="directions" id="directionsNav" style="display: none;">Направления</a>
                     <a href="#" class="admin-nav-item" data-section="settings">Настройки</a>
                 </nav>
@@ -146,6 +147,82 @@
                         </label>
                     </div>
                     <div class="cards-list" id="bonusesList"></div>
+                </section>
+
+                <section class="admin-section" id="reportSection">
+                    <div class="admin-section-header">
+                        <h1>Отчёт по выставленным КП</h1>
+                        <button class="btn-secondary btn-small" id="refreshReportBtn">Обновить данные</button>
+                    </div>
+                    <div class="admin-filter report-filters">
+                        <label>
+                            <span>Период с</span>
+                            <input type="date" id="reportDateFrom">
+                        </label>
+                        <label>
+                            <span>Период по</span>
+                            <input type="date" id="reportDateTo">
+                        </label>
+                        <label>
+                            <span>Менеджер</span>
+                            <select id="reportManagerFilter">
+                                <option value="all">Все</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="dashboard-cards" id="reportSummaryCards">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value" id="reportCount">0</div>
+                            <div class="dashboard-card-label">КП выставлено</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value" id="reportProductSum">0 ₽</div>
+                            <div class="dashboard-card-label">Продукт</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value" id="reportExtrasSum">0 ₽</div>
+                            <div class="dashboard-card-label">Доп. услуги</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value" id="reportTotalSum">0 ₽</div>
+                            <div class="dashboard-card-label">Итого</div>
+                        </div>
+                    </div>
+                    <h2 class="report-subtitle">По менеджерам</h2>
+                    <div class="data-table-wrapper">
+                        <table class="data-table" id="reportManagersTable">
+                            <thead>
+                                <tr>
+                                    <th>Менеджер</th>
+                                    <th>КП</th>
+                                    <th>Продукт</th>
+                                    <th>Доп. услуги</th>
+                                    <th>Итого</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <h2 class="report-subtitle">Все КП за период</h2>
+                    <div class="data-table-wrapper">
+                        <table class="data-table" id="reportProposalsTable">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Менеджер</th>
+                                    <th>Компания</th>
+                                    <th>Продукт</th>
+                                    <th>Доп. услуги</th>
+                                    <th>Итого</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="admin-note">
+                        <h3>Откуда данные</h3>
+                        <p>КП записываются автоматически при скачивании PDF в конструкторе. Чтобы запись работала, у менеджера в браузере должен быть сохранён GitHub-токен (тот же, что в настройках админки).</p>
+                    </div>
                 </section>
 
                 <section class="admin-section" id="directionsSection">
