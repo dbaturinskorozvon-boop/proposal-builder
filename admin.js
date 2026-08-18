@@ -1,9 +1,8 @@
-const GITHUB_CONFIG = {
-    owner: "dbaturinskorozvon-boop",
-    repo: "proposal-builder",
-    branch: "main",
-    dataPath: "data.json"
-};
+async function loadData() {
+    const data = await dsReadJsonPublic(DATA_FILES.data);
+    if (!data) throw new Error("Failed to load data");
+    return data;
+}
 
 const DIRECTIONS = [
     { id: "kor2", name: "КОР-2", label: "Основной продукт" },
@@ -44,12 +43,6 @@ let dataSha = null;
 let adminData = null;
 let proposalsData = null;
 let isLoading = false;
-
-async function loadData() {
-    const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.dataPath}?t=${Date.now()}`);
-    if (!response.ok) throw new Error("Failed to load data");
-    return await response.json();
-}
 
 function getDefaultAdminData() {
     return {
@@ -556,12 +549,7 @@ async function testToken() {
     }
 
     try {
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}`, {
-            headers: {
-                "Authorization": `token ${githubToken}`,
-                "Accept": "application/vnd.github.v3+json"
-            }
-        });
+        const response = await dsTestToken(githubToken);
         if (response.ok) {
             statusEl.textContent = "Токен работает";
             statusEl.style.color = "var(--success)";
@@ -780,10 +768,8 @@ function openBonusModal(id) {
 }
 
 async function loadProposals() {
-    const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/proposals.json?t=${Date.now()}`);
-    if (response.status === 404) return [];
-    if (!response.ok) throw new Error("код " + response.status);
-    const data = await response.json();
+    const data = await dsReadJsonPublic(DATA_FILES.proposals);
+    if (data === null) return [];
     return Array.isArray(data) ? data : [];
 }
 
@@ -976,41 +962,8 @@ async function saveData() {
     }
 }
 
-async function getFileSha() {
-    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.dataPath}?ref=${GITHUB_CONFIG.branch}`, {
-        headers: {
-            "Authorization": `token ${githubToken}`,
-            "Accept": "application/vnd.github.v3+json"
-        }
-    });
-    if (!response.ok) throw new Error("Не удалось получить информацию о файле");
-    const data = await response.json();
-    return data.sha;
-}
-
 async function saveToGitHub(data) {
-    const sha = await getFileSha();
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-
-    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.dataPath}`, {
-        method: "PUT",
-        headers: {
-            "Authorization": `token ${githubToken}`,
-            "Accept": "application/vnd.github.v3+json",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            message: "update data from admin panel",
-            content: content,
-            sha: sha,
-            branch: GITHUB_CONFIG.branch
-        })
-    });
-
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Ошибка сохранения в GitHub");
-    }
+    await dsWriteJson(DATA_FILES.data, data, githubToken, "update data from admin panel");
 }
 
 function escapeHtml(text) {
