@@ -1995,10 +1995,15 @@ function getClassicRobotRate(rates, minutes) {
 const CLASSIC_ROBOT_PACKAGES = [
     { minutes: 2000, name: "Старт" },
     { minutes: 5000, name: "XS" },
+    { minutes: 7000, name: "" },
     { minutes: 10000, name: "S" },
+    { minutes: 15000, name: "" },
     { minutes: 20000, name: "M" },
+    { minutes: 30000, name: "" },
     { minutes: 40000, name: "L" },
-    { minutes: 100000, name: "Enterprise" }
+    { minutes: 60000, name: "" },
+    { minutes: 100000, name: "Enterprise" },
+    { minutes: 200000, name: "" }
 ];
 
 function getClassicRobotPackage(minutes) {
@@ -2028,8 +2033,9 @@ function buildRobotCalculationCards(scenarios, minuteMarkup) {
         const assemblyOneTime = parseInt(state[scenario.assemblyState]) || 0;
         const trunkLabel = scenario.trunkOneTime === 30000 ? "Транки (3 шт, разово)" : "Транк (разово)";
         const total = packageTotal + serviceTotal + telephonyTotal + numbersTotal + CLASSIC_ROBOT_CALC.licenseMonthly + scenario.trunkOneTime + assemblyOneTime;
+        const packageLabel = robotPackage && robotPackage.name ? `«${robotPackage.name}» ` : "";
         const packageNote = robotPackage && billedMinutes !== requiredMinutes
-            ? `пакет «${robotPackage.name}», минут к оплате: ${formatNumber(billedMinutes)}`
+            ? `пакет ${packageLabel}${formatNumber(billedMinutes)} мин к оплате`
             : `минут к оплате: ${formatNumber(billedMinutes)}`;
 
         return `
