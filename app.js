@@ -2023,7 +2023,7 @@ function buildRobotCalculationCards(scenarios, minuteMarkup) {
         const packageTotal = calcClassicRobotMoney(billedMinutes * minuteRate);
         const serviceTotal = calcClassicRobotMoney(billedMinutes * serviceRate);
         const numbersCount = Math.ceil(contacts / CLASSIC_ROBOT_CALC.contactsPerNumber);
-        const telephonyTotal = calcClassicRobotMoney(billedMinutes * CLASSIC_ROBOT_CALC.ownTelephonyRate);
+        const telephonyTotal = calcClassicRobotMoney(requiredMinutes * CLASSIC_ROBOT_CALC.ownTelephonyRate);
         const numbersTotal = numbersCount * CLASSIC_ROBOT_CALC.numberPrice;
         const assemblyOneTime = parseInt(state[scenario.assemblyState]) || 0;
         const trunkLabel = scenario.trunkOneTime === 30000 ? "Транки (3 шт, разово)" : "Транк (разово)";
@@ -2046,7 +2046,7 @@ function buildRobotCalculationCards(scenarios, minuteMarkup) {
                             <td class="calculation-price">${formatNumber(serviceTotal)}</td>
                         </tr>
                         <tr>
-                            <td>Телефония клиента (своя, ${formatNumber(billedMinutes)} мин × 1,25)</td>
+                            <td>Телефония клиента (своя, ${formatNumber(requiredMinutes)} мин × 1,25)</td>
                             <td class="calculation-price">${formatNumber(telephonyTotal)}</td>
                         </tr>
                         <tr>
