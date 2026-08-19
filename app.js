@@ -135,7 +135,7 @@ const adminData = {
         {
             id: "so-easy-start",
             title: "Легкий старт",
-            description: "Начните работу без крупных вложений: тариф «Ежедневно» по специальной цене 3 600 ₽/мес вместо 4 500 ₽/мес. Выгода — 900 ₽ ежемесячно на каждого пользователя и полная свобода: платите только за дни использования, без долгосрочных обязательств.",
+            description: "Тариф «Ежедневно» по специальной цене 3 600 ₽/мес за пользователя вместо 4 500 ₽/мес. Выгода — 900 ₽ на каждого пользователя в первый месяц.",
             bonuses: []
         }
     ],
@@ -1199,6 +1199,7 @@ function bindEvents() {
     document.getElementById("operatorsCount").addEventListener("input", e => {
         state.operatorsCount = e.target.value;
         updateCalculations();
+        updateSpecialOffer();
     });
 
     document.getElementById("startAmountInput").addEventListener("input", e => {
@@ -1969,6 +1970,19 @@ function updateProblem() {
     }
 }
 
+function getSpecialOfferDescription(offer) {
+    if (offer.id === EASY_START_OFFER_ID) {
+        const operators = parseInt(state.operatorsCount) || 0;
+        let text = "Тариф «Ежедневно» по специальной цене 3 600 ₽/мес за пользователя вместо 4 500 ₽/мес. Выгода — 900 ₽ на каждого пользователя в первый месяц.";
+        if (operators > 1) {
+            const benefit = operators * 900;
+            text += ` Для вашей команды из ${operators} ${declineWord(operators, "пользователя", "пользователей", "пользователей")} выгода в первый месяц составит ${formatNumber(benefit)} ₽.`;
+        }
+        return text;
+    }
+    return offer.description;
+}
+
 function updateSpecialOffer() {
     const section = document.getElementById("specialOfferSection");
     const offer = getSpecialOffer(state.selectedSpecialOffer);
@@ -1980,7 +1994,7 @@ function updateSpecialOffer() {
 
     section.style.display = "block";
     document.getElementById("previewSpecialOfferTitle").textContent = offer.title;
-    document.getElementById("previewSpecialOfferDescription").textContent = offer.description;
+    document.getElementById("previewSpecialOfferDescription").textContent = getSpecialOfferDescription(offer);
 
     const bonusesContainer = document.getElementById("previewSpecialOfferBonuses");
     bonusesContainer.innerHTML = offer.bonuses.map(bonus => `
