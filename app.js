@@ -131,6 +131,22 @@ const adminData = {
                     ]
                 }
             ]
+        },
+        {
+            id: "so-easy-start",
+            title: "Легкий старт",
+            description: "Начните работу без крупных вложений: тариф «Ежедневно» по специальной цене 3 600 ₽/мес вместо 4 500 ₽/мес. Выгода — 900 ₽ ежемесячно на каждого пользователя и полная свобода: платите только за дни использования, без долгосрочных обязательств.",
+            bonuses: [
+                {
+                    title: "Скидка на тариф «Ежедневно»",
+                    intro: "На время действия спецпредложения:",
+                    items: [
+                        "Стоимость лицензии на тарифе «Ежедневно» — 3 600 ₽/мес за пользователя вместо 4 500 ₽/мес.",
+                        "Выгода — 900 ₽ в месяц на каждого пользователя.",
+                        "Скидка действует только на тариф «Ежедневно». Пакеты на 3, 6 и 12 месяцев идут по стандартным ценам — они уже включают скидку."
+                    ]
+                }
+            ]
         }
     ],
 
@@ -428,6 +444,9 @@ const state = {
 };
 
 const INTERNOD_MAV_ATTEMPT_PRICE = 0.7;
+
+const EASY_START_OFFER_ID = "so-easy-start";
+const EASY_START_DAILY_MONTHLY_PRICE = 3600;
 
 const CLASSIC_ROBOT_MINUTE_RATES = [
     { max: 2000, rate: 6 },
@@ -847,8 +866,12 @@ function calculate() {
 
     const licensePricePerPeriod = getLicensePricePerPeriod(state.tariff, state.period);
     const dailyMultiplier = state.period === "daily" ? 30 : 1;
-    const licenseMonthly = operators * licensePricePerPeriod * dailyMultiplier;
+    const baseLicenseMonthly = operators * licensePricePerPeriod * dailyMultiplier;
+    const easyStartActive = isDaily && state.selectedSpecialOffer === EASY_START_OFFER_ID
+        && baseLicenseMonthly > operators * EASY_START_DAILY_MONTHLY_PRICE;
+    const licenseMonthly = easyStartActive ? operators * EASY_START_DAILY_MONTHLY_PRICE : baseLicenseMonthly;
     const licensePeriod = licenseMonthly * periodMonths;
+    const easyStartBenefit = easyStartActive ? (baseLicenseMonthly - licenseMonthly) * periodMonths : 0;
 
     const minutesPricePerMin = getMinutesPrice(minutes);
     const minutesMonthly = minutes * minutesPricePerMin;
@@ -914,6 +937,7 @@ function calculate() {
         licensePricePerPeriod,
         licenseMonthly,
         licensePeriod,
+        easyStartBenefit,
         minutesMonthly,
         telephonyMonthly,
         internodMavAttemptsCount,
@@ -1261,6 +1285,7 @@ function bindEvents() {
     document.getElementById("specialOfferSelect").addEventListener("change", e => {
         state.selectedSpecialOffer = e.target.value;
         updateSpecialOffer();
+        updateCalculations();
     });
 
     document.getElementById("clientProblemSelect").addEventListener("change", e => {
@@ -2510,6 +2535,7 @@ function updateCalculations() {
     const dailyPricePerPeriod = adminData.tariffs.operatorLicense[state.tariff].daily;
     const dailyPerLicenseMonthly = dailyPricePerPeriod * 30;
     const dailyTotalMonthly = operators * dailyPerLicenseMonthly;
+    const easyStartSelected = state.selectedSpecialOffer === EASY_START_OFFER_ID;
 
     periods.forEach((period, index) => {
         const pricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][period];
@@ -2520,10 +2546,18 @@ function updateCalculations() {
         const paymentTotal = totalMonthly * months;
         const benefit = Math.max(0, (dailyTotalMonthly - totalMonthly) * months);
 
-        document.getElementById(cardTotalIds[index]).textContent = formatNumber(totalMonthly) + " ₽/мес";
-        document.getElementById(cardPerUserIds[index]).textContent = formatNumber(perLicenseMonthly) + " ₽ за 1 пользователя";
-        document.getElementById(cardPaymentIds[index]).textContent = formatNumber(paymentTotal) + " ₽";
-        document.getElementById(cardBenefitIds[index]).textContent = isDailyPeriod ? "Базовая цена" : `Выгода ${formatNumber(benefit)} ₽`;
+        const easyStartDaily = isDailyPeriod && easyStartSelected && perLicenseMonthly > EASY_START_DAILY_MONTHLY_PRICE;
+        const displayPerLicenseMonthly = easyStartDaily ? EASY_START_DAILY_MONTHLY_PRICE : perLicenseMonthly;
+        const displayTotalMonthly = operators * displayPerLicenseMonthly;
+        const displayPaymentTotal = displayTotalMonthly * months;
+        const easyStartCardBenefit = easyStartDaily ? (totalMonthly - displayTotalMonthly) * months : 0;
+
+        document.getElementById(cardTotalIds[index]).textContent = formatNumber(displayTotalMonthly) + " ₽/мес";
+        document.getElementById(cardPerUserIds[index]).textContent = formatNumber(displayPerLicenseMonthly) + " ₽ за 1 пользователя";
+        document.getElementById(cardPaymentIds[index]).textContent = formatNumber(displayPaymentTotal) + " ₽";
+        document.getElementById(cardBenefitIds[index]).textContent = easyStartDaily
+            ? `Выгода ${formatNumber(easyStartCardBenefit)} ₽ по акции «Легкий старт»`
+            : (isDailyPeriod ? "Базовая цена" : `Выгода ${formatNumber(benefit)} ₽`);
     });
 
     document.querySelectorAll(".license-card").forEach(card => {
@@ -2726,6 +2760,16 @@ function updateCalculations() {
     document.getElementById("summaryLicenseTotal").textContent = formatPrice(calc.licensePeriod);
     document.getElementById("summaryAdditionalTotal").textContent = formatPrice(additionalTotal);
     document.getElementById("summaryAdditionalRow").style.display = additionalTotal > 0 ? "" : "none";
+
+    const discountRow = document.getElementById("summaryDiscountRow");
+    if (discountRow) {
+        if (calc.easyStartBenefit > 0) {
+            discountRow.style.display = "";
+            document.getElementById("summaryDiscountTotal").textContent = formatPrice(calc.easyStartBenefit);
+        } else {
+            discountRow.style.display = "none";
+        }
+    }
 
     updateDiscoveryPreview();
 }
