@@ -101,16 +101,7 @@ function getDefaultAdminData() {
                 title: "Легкий старт",
                 description: "Начните работу без крупных вложений: тариф «Ежедневно» по специальной цене 3 600 ₽/мес вместо 4 500 ₽/мес. Выгода — 900 ₽ ежемесячно на каждого пользователя и полная свобода: платите только за дни использования, без долгосрочных обязательств.",
                 directions: ["kor2"],
-                bonuses: [
-                    {
-                        title: "Скидка на тариф «Ежедневно»",
-                        intro: "На время действия спецпредложения:",
-                        items: [
-                            "Стоимость лицензии на тарифе «Ежедневно» — 3 600 ₽/мес за пользователя вместо 4 500 ₽/мес.",
-                            "Выгода — 900 ₽ в месяц на каждого пользователя."
-                        ]
-                    }
-                ]
+                bonuses: []
             }
         ],
         bonuses: [
@@ -710,16 +701,17 @@ function openOfferModal(id) {
     `;
 
     openModal(offer ? "Изменить спецпредложение" : "Добавить спецпредложение", body, () => {
+        const bonusTitle = document.getElementById("offerBonusTitle").value.trim();
+        const bonusIntro = document.getElementById("offerBonusIntro").value.trim();
+        const bonusItems = document.getElementById("offerBonusItems").value.split("\n").map(i => i.trim()).filter(i => i);
         const newOffer = {
             id: offer ? offer.id : "so-" + Date.now(),
             title: document.getElementById("offerTitle").value.trim(),
             description: document.getElementById("offerDescription").value.trim(),
             directions: getCheckedDirections("offerDirections"),
-            bonuses: [{
-                title: document.getElementById("offerBonusTitle").value.trim(),
-                intro: document.getElementById("offerBonusIntro").value.trim(),
-                items: document.getElementById("offerBonusItems").value.split("\n").map(i => i.trim()).filter(i => i)
-            }]
+            bonuses: (bonusTitle || bonusIntro || bonusItems.length > 0)
+                ? [{ title: bonusTitle, intro: bonusIntro, items: bonusItems }]
+                : []
         };
 
         if (!newOffer.title) {
