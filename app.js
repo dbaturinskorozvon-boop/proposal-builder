@@ -861,7 +861,6 @@ function calculate() {
         && baseLicenseMonthly > operators * EASY_START_DAILY_MONTHLY_PRICE;
     const licenseMonthly = easyStartActive ? operators * EASY_START_DAILY_MONTHLY_PRICE : baseLicenseMonthly;
     const licensePeriod = licenseMonthly * periodMonths;
-    const easyStartBenefit = easyStartActive ? (baseLicenseMonthly - licenseMonthly) * periodMonths : 0;
 
     const minutesPricePerMin = getMinutesPrice(minutes);
     const minutesMonthly = minutes * minutesPricePerMin;
@@ -927,7 +926,6 @@ function calculate() {
         licensePricePerPeriod,
         licenseMonthly,
         licensePeriod,
-        easyStartBenefit,
         minutesMonthly,
         telephonyMonthly,
         internodMavAttemptsCount,
@@ -2749,16 +2747,6 @@ function updateCalculations() {
     document.getElementById("summaryLicenseTotal").textContent = formatPrice(calc.licensePeriod);
     document.getElementById("summaryAdditionalTotal").textContent = formatPrice(additionalTotal);
     document.getElementById("summaryAdditionalRow").style.display = additionalTotal > 0 ? "" : "none";
-
-    const discountRow = document.getElementById("summaryDiscountRow");
-    if (discountRow) {
-        if (calc.easyStartBenefit > 0) {
-            discountRow.style.display = "";
-            document.getElementById("summaryDiscountTotal").textContent = formatPrice(calc.easyStartBenefit);
-        } else {
-            discountRow.style.display = "none";
-        }
-    }
 
     updateDiscoveryPreview();
 }
