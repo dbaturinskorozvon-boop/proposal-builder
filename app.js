@@ -2549,13 +2549,12 @@ function updateCalculations() {
         const displayPerLicenseMonthly = easyStartDaily ? EASY_START_DAILY_MONTHLY_PRICE : perLicenseMonthly;
         const displayTotalMonthly = operators * displayPerLicenseMonthly;
         const displayPaymentTotal = displayTotalMonthly * months;
-        const easyStartCardBenefit = easyStartDaily ? (totalMonthly - displayTotalMonthly) * months : 0;
 
         document.getElementById(cardTotalIds[index]).textContent = formatNumber(displayTotalMonthly) + " ₽/мес";
         document.getElementById(cardPerUserIds[index]).textContent = formatNumber(displayPerLicenseMonthly) + " ₽ за 1 пользователя";
         document.getElementById(cardPaymentIds[index]).textContent = formatNumber(displayPaymentTotal) + " ₽";
         document.getElementById(cardBenefitIds[index]).textContent = easyStartDaily
-            ? `Выгода ${formatNumber(easyStartCardBenefit)} ₽ по акции «Легкий старт»`
+            ? ""
             : (isDailyPeriod ? "Базовая цена" : `Выгода ${formatNumber(benefit)} ₽`);
     });
 
