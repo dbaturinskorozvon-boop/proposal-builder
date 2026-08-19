@@ -857,7 +857,7 @@ function calculate() {
     const licensePricePerPeriod = getLicensePricePerPeriod(state.tariff, state.period);
     const dailyMultiplier = state.period === "daily" ? 30 : 1;
     const baseLicenseMonthly = operators * licensePricePerPeriod * dailyMultiplier;
-    const easyStartActive = isDaily && state.selectedSpecialOffer === EASY_START_OFFER_ID
+    const easyStartActive = isDaily && state.tariff === "pro" && state.selectedSpecialOffer === EASY_START_OFFER_ID
         && baseLicenseMonthly > operators * EASY_START_DAILY_MONTHLY_PRICE;
     const licenseMonthly = easyStartActive ? operators * EASY_START_DAILY_MONTHLY_PRICE : baseLicenseMonthly;
     const licensePeriod = licenseMonthly * periodMonths;
@@ -2525,7 +2525,7 @@ function updateCalculations() {
     const dailyPricePerPeriod = adminData.tariffs.operatorLicense[state.tariff].daily;
     const dailyPerLicenseMonthly = dailyPricePerPeriod * 30;
     const dailyTotalMonthly = operators * dailyPerLicenseMonthly;
-    const easyStartSelected = state.selectedSpecialOffer === EASY_START_OFFER_ID;
+    const easyStartSelected = state.tariff === "pro" && state.selectedSpecialOffer === EASY_START_OFFER_ID;
 
     periods.forEach((period, index) => {
         const pricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][period];
