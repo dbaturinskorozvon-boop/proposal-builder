@@ -55,7 +55,11 @@ function getDefaultAdminData() {
             { id: 6, name: "Лешкин Виталий", email: "vlyoshkin@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] },
             { id: 7, name: "Куренкова Анастасия", email: "akurenkova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] },
             { id: 8, name: "Гущин Владислав", email: "vgushhin@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] },
-            { id: 9, name: "Ширинкин Александр", email: "ashirinkin@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] }
+            { id: 9, name: "Ширинкин Александр", email: "ashirinkin@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] },
+            { id: 10, name: "Липатникова Диана", email: "dlipatnikova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2", "discovery"] },
+            { id: 11, name: "Козлов Никита", email: "nkozlov@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2", "discovery"] },
+            { id: 12, name: "Басаргин Юрий", email: "ybasargin@skorozvon.ru", phone: "8 800 333 97 02, +7 986 342-59-39", telegram: "", max: "", photo: "", directions: ["kor2", "discovery"] },
+            { id: 13, name: "Моторин Владимир", email: "vmotorin@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2", "discovery"] }
         ],
         specialOffers: [
             {

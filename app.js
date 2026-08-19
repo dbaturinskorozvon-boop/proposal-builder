@@ -2493,7 +2493,7 @@ function updateManagerBlock() {
             <a href="mailto:${manager.email}" class="manager-contact-link">
                 ${getIcon("email")}${manager.email}
             </a>
-            ${shared.phones.map(phone => `<span class="manager-contact-text">${getIcon("phone")}${phone}</span>`).join("")}
+            ${(manager.phone ? manager.phone.split(",").map(p => p.trim()).filter(p => p) : shared.phones).map(phone => `<span class="manager-contact-text">${getIcon("phone")}${phone}</span>`).join("")}
         </div>
     `);
 

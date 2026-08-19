@@ -89,6 +89,46 @@
       "max": "",
       "photo": "",
       "directions": ["discovery"]
+    },
+    {
+      "id": 10,
+      "name": "Липатникова Диана",
+      "email": "dlipatnikova@skorozvon.ru",
+      "phone": "",
+      "telegram": "",
+      "max": "",
+      "photo": "",
+      "directions": ["kor2", "discovery"]
+    },
+    {
+      "id": 11,
+      "name": "Козлов Никита",
+      "email": "nkozlov@skorozvon.ru",
+      "phone": "",
+      "telegram": "",
+      "max": "",
+      "photo": "",
+      "directions": ["kor2", "discovery"]
+    },
+    {
+      "id": 12,
+      "name": "Басаргин Юрий",
+      "email": "ybasargin@skorozvon.ru",
+      "phone": "8 800 333 97 02, +7 986 342-59-39",
+      "telegram": "",
+      "max": "",
+      "photo": "",
+      "directions": ["kor2", "discovery"]
+    },
+    {
+      "id": 13,
+      "name": "Моторин Владимир",
+      "email": "vmotorin@skorozvon.ru",
+      "phone": "",
+      "telegram": "",
+      "max": "",
+      "photo": "",
+      "directions": ["kor2", "discovery"]
     }
   ],
   "sharedContacts": {
