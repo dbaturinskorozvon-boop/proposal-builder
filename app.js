@@ -2293,7 +2293,7 @@ function updateScoringCalculation() {
 
     container.innerHTML = `
             <div class="calculation-card">
-                <h3>Скоринг баз номеров</h3>
+                <h3>Расчет стоимости</h3>
                 <table class="calculation-table">
                     <tbody>
                         <tr>
