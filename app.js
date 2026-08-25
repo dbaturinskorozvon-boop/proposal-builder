@@ -767,7 +767,7 @@ function getTelephonyPrice(telephonyType, minutes) {
                 { min: 60000, max: 79999, price: 1.4 },
                 { min: 80000, max: 119999, price: 1.3 },
                 { min: 120000, max: 399999, price: 0.8 },
-                { min: 400000, max: Infinity, price: 0.6 }
+                { min: 400000, max: Infinity, price: 0.5 }
             ]
         },
         md_max: {
@@ -807,7 +807,7 @@ function getTelephonyRate(telephonyType, minutes) {
             { min: 60000, max: 79999, rate: 1.4 },
             { min: 80000, max: 119999, rate: 1.3 },
             { min: 120000, max: 399999, rate: 0.8 },
-            { min: 400000, max: Infinity, rate: 0.6 }
+            { min: 400000, max: Infinity, rate: 0.5 }
         ],
         md_max: [
             { min: 0, max: 1999, rate: 3.5 },
