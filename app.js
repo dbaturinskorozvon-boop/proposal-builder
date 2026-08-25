@@ -748,6 +748,7 @@ function getMinutesPrice(minutes) {
 }
 
 function getTelephonyPrice(telephonyType, minutes) {
+    if (telephonyType === "md_extended" && minutes === 10000000) return 126000 * 0.5;
     if (telephonyType === "none") return 0;
     if (telephonyType === "internod") {
         const rate = state.internodRate || 2.15;
@@ -795,6 +796,7 @@ function getTelephonyPrice(telephonyType, minutes) {
 }
 
 function getTelephonyRate(telephonyType, minutes) {
+    if (telephonyType === "md_extended" && minutes === 10000000) return 0.5;
     if (telephonyType === "internod") return state.internodRate || 2.15;
     if (telephonyType === "md_basic") return 0.25;
 
@@ -2721,8 +2723,9 @@ function updateCalculations() {
 
     if (state.proposalType !== "discovery") {
         if (state.telephonyType !== "none") {
-            const minutes = parseInt(state.minutesCount) || 0;
-            const rate = getTelephonyRate(state.telephonyType, minutes);
+            let minutes = parseInt(state.minutesCount) || 0;
+            if (state.telephonyType === "md_extended" && minutes === 10000000) minutes = 126000;
+            const rate = getTelephonyRate(state.telephonyType, parseInt(state.minutesCount) || 0);
             const periodType = getTelephonyPeriodType(state.telephonyType);
             const telephonyName = getTelephonyName(state.telephonyType);
 
