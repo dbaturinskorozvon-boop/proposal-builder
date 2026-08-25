@@ -421,6 +421,15 @@ const state = {
     autoInformerAsr: false,
     autoInformerTransfer: false,
     autoInformerRecording: false,
+    showScoring: false,
+    scoringBaseSize: 4000000,
+    scoringAttempts: 4,
+    scoringMavPrice: 0.3,
+    scoringMarkingPrice: 0.3,
+    scoringTelephonyRate: 1.7,
+    scoringAttemptDuration: 15,
+    scoringCutPercent: 20,
+    scoringNumberPrice: 0.2,
     aiTrainerEnabled: false,
     aiTrainerTariff: "xs",
     aiTrainerPeriod: "1",
@@ -1663,6 +1672,35 @@ function bindEvents() {
         });
     }
 
+    const scoringToggle = document.getElementById("scoringToggle");
+    if (scoringToggle) {
+        scoringToggle.addEventListener("change", e => {
+            state.showScoring = e.target.checked;
+            const options = document.getElementById("scoringOptions");
+            if (options) options.style.display = state.showScoring ? "block" : "none";
+            updatePreviewForTab();
+        });
+    }
+
+    [
+        { id: "scoringBaseSize", key: "scoringBaseSize" },
+        { id: "scoringAttempts", key: "scoringAttempts" },
+        { id: "scoringMavPrice", key: "scoringMavPrice" },
+        { id: "scoringMarkingPrice", key: "scoringMarkingPrice" },
+        { id: "scoringTelephonyRate", key: "scoringTelephonyRate" },
+        { id: "scoringAttemptDuration", key: "scoringAttemptDuration" },
+        { id: "scoringCutPercent", key: "scoringCutPercent" },
+        { id: "scoringNumberPrice", key: "scoringNumberPrice" }
+    ].forEach(field => {
+        const input = document.getElementById(field.id);
+        if (input) {
+            input.addEventListener("input", e => {
+                state[field.key] = parseFloat(e.target.value) || 0;
+                updatePreviewForTab();
+            });
+        }
+    });
+
     const aiTrainerToggle = document.getElementById("aiTrainerToggle");
     if (aiTrainerToggle) {
         aiTrainerToggle.addEventListener("change", e => {
@@ -2230,6 +2268,65 @@ function updateAutoInformerCalculation() {
         `;
 }
 
+function updateScoringCalculation() {
+    const container = document.getElementById("scoringCalculationContent");
+    if (!container) return;
+
+    const base = parseInt(state.scoringBaseSize) || 0;
+    if (base <= 0) {
+        container.innerHTML = "";
+        return;
+    }
+
+    const attempts = parseFloat(state.scoringAttempts) || 0;
+    const regulatoryPerAttempt = (parseFloat(state.scoringMavPrice) || 0) + (parseFloat(state.scoringMarkingPrice) || 0);
+    const attemptMinutes = (parseFloat(state.scoringAttemptDuration) || 0) / 60;
+    const telephonyPerAttempt = (parseFloat(state.scoringTelephonyRate) || 0) * attemptMinutes;
+    const attemptCost = regulatoryPerAttempt + telephonyPerAttempt;
+    const numberCost = attempts * attemptCost;
+    const cutPercent = parseFloat(state.scoringCutPercent) || 0;
+    const cutNumbers = Math.round(base * cutPercent / 100);
+    const savings = cutNumbers * numberCost;
+    const scoringCost = base * (parseFloat(state.scoringNumberPrice) || 0);
+    const netSavings = savings - scoringCost;
+    const roi = scoringCost > 0 ? netSavings / scoringCost : 0;
+
+    container.innerHTML = `
+            <div class="calculation-card">
+                <h3>Скоринг баз номеров</h3>
+                <table class="calculation-table">
+                    <tbody>
+                        <tr>
+                            <td>Стоимость 1 попытки (МАВ + маркировка ${formatRate(regulatoryPerAttempt.toFixed(2))} ₽ + телефония ${formatRate(telephonyPerAttempt.toFixed(2))} ₽)</td>
+                            <td class="calculation-price">${formatRate(attemptCost.toFixed(2))} ₽</td>
+                        </tr>
+                        <tr>
+                            <td>Обработка 1 номера без скоринга (${attempts} попытки)</td>
+                            <td class="calculation-price">${formatRate(numberCost.toFixed(2))} ₽</td>
+                        </tr>
+                        <tr>
+                            <td>Отсечено номеров (${cutPercent}% от ${formatNumber(base)})</td>
+                            <td class="calculation-price">${formatNumber(cutNumbers)}</td>
+                        </tr>
+                        <tr>
+                            <td>Экономия на недозвонах</td>
+                            <td class="calculation-price">${formatNumber(savings)}</td>
+                        </tr>
+                        <tr>
+                            <td>Затраты на скоринг базы (${formatNumber(base)} × ${formatRate(String(parseFloat(state.scoringNumberPrice) || 0))} ₽)</td>
+                            <td class="calculation-price">${formatNumber(scoringCost)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="calculation-note">ROI скоринга: ${formatRate(roi.toFixed(2))} — рублей чистой экономии на 1 ₽ затрат</p>
+                <div class="calculation-total">
+                    <span>Чистая экономия</span>
+                    <span class="calculation-total-price">${formatNumber(netSavings)}</span>
+                </div>
+            </div>
+        `;
+}
+
 function updatePreviewForTab() {
     const activeTabButton = document.querySelector('.tab-button.active');
     const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
@@ -2254,6 +2351,7 @@ function updatePreviewForTab() {
     const humanVoiceSection = document.getElementById("humanVoicePreviewSection");
     const templateRobotsSection = document.getElementById("templateRobotsPreviewSection");
     const autoInformerSection = document.getElementById("autoInformerPreviewSection");
+    const scoringSection = document.getElementById("scoringPreviewSection");
     const aiTrainerSection = document.getElementById("aiTrainerPreviewSection");
     const managerSection = document.getElementById("managerSection");
     const onboardingSection = document.getElementById("onboardingSection");
@@ -2265,6 +2363,7 @@ function updatePreviewForTab() {
     const hasHumanVoiceCalculation = state.showHumanVoice && HUMAN_VOICE_SCENARIOS.some(scenario => (parseInt(state[scenario.contactsState]) || 0) > 0);
     const hasTemplateRobotsCalculation = state.showTemplateRobots && (state.templateRobotsSelected.length > 0 || (parseInt(state.templateRobotContacts) || 0) > 0);
     const hasAutoInformerCalculation = state.showAutoInformer && (parseInt(state.autoInformerContacts) || 0) > 0;
+    const hasScoringCalculation = state.showScoring && (parseInt(state.scoringBaseSize) || 0) > 0;
 
     if (isDiscovery) {
         if (problemSection) problemSection.style.display = "none";
@@ -2292,6 +2391,8 @@ function updatePreviewForTab() {
         if (hasTemplateRobotsCalculation) updateTemplateRobotsCalculation();
         if (autoInformerSection) autoInformerSection.style.display = hasAutoInformerCalculation ? "block" : "none";
         if (hasAutoInformerCalculation) updateAutoInformerCalculation();
+        if (scoringSection) scoringSection.style.display = hasScoringCalculation ? "block" : "none";
+        if (hasScoringCalculation) updateScoringCalculation();
         if (aiTrainerSection) aiTrainerSection.style.display = state.aiTrainerEnabled ? "block" : "none";
     } else {
         if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
@@ -2313,6 +2414,7 @@ function updatePreviewForTab() {
         if (humanVoiceSection) humanVoiceSection.style.display = "none";
         if (templateRobotsSection) templateRobotsSection.style.display = "none";
         if (autoInformerSection) autoInformerSection.style.display = "none";
+        if (scoringSection) scoringSection.style.display = "none";
         if (aiTrainerSection) aiTrainerSection.style.display = "none";
     }
 
@@ -2437,6 +2539,26 @@ function syncDiscoveryClientFields() {
 
     const autoInformerRecording = document.getElementById("autoInformerRecording");
     if (autoInformerRecording) autoInformerRecording.checked = state.autoInformerRecording;
+
+    const scoringToggle = document.getElementById("scoringToggle");
+    if (scoringToggle) scoringToggle.checked = state.showScoring;
+
+    const scoringOptions = document.getElementById("scoringOptions");
+    if (scoringOptions) scoringOptions.style.display = state.showScoring ? "block" : "none";
+
+    [
+        { id: "scoringBaseSize", key: "scoringBaseSize" },
+        { id: "scoringAttempts", key: "scoringAttempts" },
+        { id: "scoringMavPrice", key: "scoringMavPrice" },
+        { id: "scoringMarkingPrice", key: "scoringMarkingPrice" },
+        { id: "scoringTelephonyRate", key: "scoringTelephonyRate" },
+        { id: "scoringAttemptDuration", key: "scoringAttemptDuration" },
+        { id: "scoringCutPercent", key: "scoringCutPercent" },
+        { id: "scoringNumberPrice", key: "scoringNumberPrice" }
+    ].forEach(field => {
+        const input = document.getElementById(field.id);
+        if (input) input.value = state[field.key];
+    });
 
     const aiTrainerToggle = document.getElementById("aiTrainerToggle");
     if (aiTrainerToggle) aiTrainerToggle.checked = state.aiTrainerEnabled;

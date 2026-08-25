@@ -515,6 +515,50 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="form-section">
+                    <div class="section-header-toggle">
+                        <h2>10. Скоринг баз</h2>
+                        <label class="switch" aria-label="Показать скоринг баз">
+                            <input type="checkbox" id="scoringToggle">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div id="scoringOptions" style="display: none;">
+                        <label style="margin-left: 24px; margin-top: 8px;">
+                            <span>Объем базы номеров</span>
+                            <input type="number" id="scoringBaseSize" min="0" step="1000" value="4000000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Среднее кол-во попыток на номер</span>
+                            <input type="number" id="scoringAttempts" min="1" step="1" value="4">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость МАВ, ₽</span>
+                            <input type="number" id="scoringMavPrice" min="0" step="0.01" value="0.3">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость маркировки, ₽</span>
+                            <input type="number" id="scoringMarkingPrice" min="0" step="0.01" value="0.3">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость телефонии, ₽/мин</span>
+                            <input type="number" id="scoringTelephonyRate" min="0" step="0.01" value="1.7">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Средняя длительность попытки, сек</span>
+                            <input type="number" id="scoringAttemptDuration" min="0" step="1" value="15">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Процент отсеченных скорингом, %</span>
+                            <input type="number" id="scoringCutPercent" min="0" max="100" step="1" value="20">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость скоринга за номер, ₽</span>
+                            <input type="number" id="scoringNumberPrice" min="0" step="0.01" value="0.2">
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-content" data-tab="active">
@@ -1450,6 +1494,15 @@
 
                         <div class="ai-calculation-disclaimer">
                             <p>Оплата списывается только за совершённые звонки. Робот детектирует до 98% автоответчиков и голосовых почт, что экономит на нецелевых соединениях</p>
+                        </div>
+                    </section>
+
+                    <section class="proposal-calculation" id="scoringPreviewSection" style="display: none;">
+                        <h2>Расчет — скоринг баз</h2>
+                        <div id="scoringCalculationContent"></div>
+
+                        <div class="ai-calculation-disclaimer">
+                            <p>Скоринг анализирует номера базы на дозваниваемость и отсекает «мусорные» номера до обзвона — вы не тратите бюджет на недозвоны, регуляторные сборы и телефонию по пустым номерам</p>
                         </div>
                     </section>
 
