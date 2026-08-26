@@ -3135,4 +3135,8 @@ function updateUI() {
     fitHeaderTitle();
 }
 
+document.addEventListener("wheel", e => {
+    if (e.target.matches('input[type="number"], select')) e.preventDefault();
+}, { passive: false });
+
 window.addEventListener("DOMContentLoaded", init);
