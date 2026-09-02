@@ -89,6 +89,28 @@
                         <option value="12">12 месяцев</option>
                     </select>
                 </label>
+                <div class="package-visibility">
+                    <span>Пакеты в превью</span>
+                    <div class="package-visibility-list">
+                        <label class="package-visibility-item">
+                            <input type="checkbox" id="pkgVisibleDaily" data-period="daily" checked>
+                            <span>Ежедневно</span>
+                        </label>
+                        <label class="package-visibility-item">
+                            <input type="checkbox" id="pkgVisible3" data-period="3" checked>
+                            <span>3 месяца</span>
+                        </label>
+                        <label class="package-visibility-item">
+                            <input type="checkbox" id="pkgVisible6" data-period="6" checked>
+                            <span>6 месяцев</span>
+                        </label>
+                        <label class="package-visibility-item">
+                            <input type="checkbox" id="pkgVisible12" data-period="12" checked>
+                            <span>12 месяцев</span>
+                        </label>
+                    </div>
+                    <p class="field-hint">Отключите пакеты, которые не нужно показывать клиенту. Выгода считается от самого младшего из включённых пакетов.</p>
+                </div>
                 <label>
                     <span>Для старта работы (₽)</span>
                     <input type="number" id="startAmountInput" min="0" step="1000" placeholder="15000">

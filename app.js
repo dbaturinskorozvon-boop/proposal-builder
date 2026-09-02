@@ -366,6 +366,7 @@ const state = {
     tariff: "pro",
     period: "3",
     operatorsCount: 3,
+    visiblePeriods: { daily: true, "3": true, "6": true, "12": true },
     startAmount: 0,
     startAmountDesc: "Рекомендуемая сумма для внесения на баланс.\nЭтого хватит на первое время работы.",
     minutesCount: 1000,
@@ -1205,6 +1206,18 @@ function bindEvents() {
     document.getElementById("periodSelect").addEventListener("change", e => {
         state.period = e.target.value;
         updateCalculations();
+    });
+
+    document.querySelectorAll('.package-visibility-item input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener("change", e => {
+            const period = e.target.dataset.period;
+            state.visiblePeriods[period] = e.target.checked;
+            if (!Object.values(state.visiblePeriods).some(v => v)) {
+                state.visiblePeriods[period] = true;
+                e.target.checked = true;
+            }
+            updateCalculations();
+        });
     });
 
     document.getElementById("operatorsCount").addEventListener("input", e => {
@@ -2658,19 +2671,25 @@ function updateCalculations() {
     const cardPaymentIds = ["cardDailyPayment", "card3mPayment", "card6mPayment", "card12mPayment"];
     const cardBenefitIds = ["cardDailyBenefit", "card3mBenefit", "card6mBenefit", "card12mBenefit"];
 
-    const dailyPricePerPeriod = adminData.tariffs.operatorLicense[state.tariff].daily;
-    const dailyPerLicenseMonthly = dailyPricePerPeriod * 30;
-    const dailyTotalMonthly = operators * dailyPerLicenseMonthly;
     const easyStartSelected = state.tariff === "pro" && state.selectedSpecialOffer === EASY_START_OFFER_ID;
 
+    const visiblePeriodList = periods.filter(p => !state.visiblePeriods || state.visiblePeriods[p] !== false);
+    const basePeriod = visiblePeriodList[0] || "daily";
+    const basePricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][basePeriod];
+    const baseTotalMonthly = operators * (basePeriod === "daily" ? basePricePerPeriod * 30 : basePricePerPeriod);
+
     periods.forEach((period, index) => {
+        const card = document.querySelector(`.license-card[data-period="${period}"]`);
+        const isVisible = visiblePeriodList.includes(period);
+        if (card) card.style.display = isVisible ? "" : "none";
+
         const pricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][period];
         const isDailyPeriod = period === "daily";
         const months = isDailyPeriod ? 1 : parseInt(period);
         const perLicenseMonthly = isDailyPeriod ? pricePerPeriod * 30 : pricePerPeriod;
         const totalMonthly = operators * perLicenseMonthly;
         const paymentTotal = totalMonthly * months;
-        const benefit = Math.max(0, (dailyTotalMonthly - totalMonthly) * months);
+        const benefit = Math.max(0, (baseTotalMonthly - totalMonthly) * months);
 
         const easyStartDaily = isDailyPeriod && easyStartSelected && perLicenseMonthly > EASY_START_DAILY_MONTHLY_PRICE;
         const displayPerLicenseMonthly = easyStartDaily ? EASY_START_DAILY_MONTHLY_PRICE : perLicenseMonthly;
@@ -2682,7 +2701,7 @@ function updateCalculations() {
         document.getElementById(cardPaymentIds[index]).textContent = formatNumber(displayPaymentTotal) + " ₽";
         document.getElementById(cardBenefitIds[index]).textContent = easyStartDaily
             ? ""
-            : (isDailyPeriod ? "Базовая цена" : `Выгода ${formatNumber(benefit)} ₽`);
+            : (period === basePeriod ? "Базовая цена" : `Выгода ${formatNumber(benefit)} ₽`);
     });
 
     document.querySelectorAll(".license-card").forEach(card => {
