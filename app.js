@@ -1216,8 +1216,9 @@ function bindEvents() {
                 state.visiblePeriods[period] = true;
                 e.target.checked = true;
             }
-            if (!state.visiblePeriods[state.period]) {
-                state.period = ["daily", "3", "6", "12"].find(p => state.visiblePeriods[p]);
+            const smallestVisible = ["daily", "3", "6", "12"].find(p => state.visiblePeriods[p]);
+            if (state.period !== smallestVisible) {
+                state.period = smallestVisible;
                 document.getElementById("periodSelect").value = state.period;
             }
             updateCalculations();
@@ -2681,6 +2682,11 @@ function updateCalculations() {
     const basePeriod = visiblePeriodList[0] || "daily";
     const basePricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][basePeriod];
     const baseTotalMonthly = operators * (basePeriod === "daily" ? basePricePerPeriod * 30 : basePricePerPeriod);
+
+    const licenseCardsEl = document.getElementById("licenseCards");
+    if (licenseCardsEl) {
+        licenseCardsEl.style.gridTemplateColumns = `repeat(${Math.max(visiblePeriodList.length, 1)}, 1fr)`;
+    }
 
     periods.forEach((period, index) => {
         const card = document.querySelector(`.license-card[data-period="${period}"]`);
