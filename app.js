@@ -1216,6 +1216,10 @@ function bindEvents() {
                 state.visiblePeriods[period] = true;
                 e.target.checked = true;
             }
+            if (!state.visiblePeriods[state.period]) {
+                state.period = ["daily", "3", "6", "12"].find(p => state.visiblePeriods[p]);
+                document.getElementById("periodSelect").value = state.period;
+            }
             updateCalculations();
         });
     });
