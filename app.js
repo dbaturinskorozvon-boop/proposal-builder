@@ -360,6 +360,7 @@ const state = {
     proposalType: "skorozvon",
     managerId: "",
     discoveryManagerId: "",
+    serviceManagerId: "",
     clientName: "",
     date: new Date().toISOString().split("T")[0],
     validUntil: "",
@@ -983,6 +984,7 @@ async function init() {
 
     populateManagers();
     populateDiscoveryManagers();
+    populateServiceManagers();
     populateClientProblems();
     populateSpecialOffers();
     populateFeatures();
@@ -1012,6 +1014,17 @@ function populateDiscoveryManagers() {
     const select = document.getElementById("discoveryManagerSelect");
     if (!select) return;
     getManagersByDirection("discovery").forEach(manager => {
+        const option = document.createElement("option");
+        option.value = manager.id;
+        option.textContent = manager.name;
+        select.appendChild(option);
+    });
+}
+
+function populateServiceManagers() {
+    const select = document.getElementById("serviceManagerSelect");
+    if (!select) return;
+    getManagersByDirection("service").forEach(manager => {
         const option = document.createElement("option");
         option.value = manager.id;
         option.textContent = manager.name;
@@ -1176,6 +1189,8 @@ function bindEvents() {
         state.clientName = e.target.value;
         const discoveryClientName = document.getElementById("discoveryClientName");
         if (discoveryClientName) discoveryClientName.value = state.clientName;
+        const serviceClientName = document.getElementById("serviceClientName");
+        if (serviceClientName) serviceClientName.value = state.clientName;
         updateClientPreview();
         fitHeaderTitle();
     });
@@ -1188,6 +1203,10 @@ function bindEvents() {
         if (discoveryProposalDate) discoveryProposalDate.value = state.date;
         const discoveryValidUntilDate = document.getElementById("discoveryValidUntilDate");
         if (discoveryValidUntilDate) discoveryValidUntilDate.value = state.validUntil;
+        const serviceProposalDate = document.getElementById("serviceProposalDate");
+        if (serviceProposalDate) serviceProposalDate.value = state.date;
+        const serviceValidUntilDate = document.getElementById("serviceValidUntilDate");
+        if (serviceValidUntilDate) serviceValidUntilDate.value = state.validUntil;
         updateDate();
     });
 
@@ -1195,6 +1214,8 @@ function bindEvents() {
         state.validUntil = e.target.value;
         const discoveryValidUntilDate = document.getElementById("discoveryValidUntilDate");
         if (discoveryValidUntilDate) discoveryValidUntilDate.value = state.validUntil;
+        const serviceValidUntilDate = document.getElementById("serviceValidUntilDate");
+        if (serviceValidUntilDate) serviceValidUntilDate.value = state.validUntil;
         updateDate();
     });
 
@@ -1444,6 +1465,8 @@ function bindEvents() {
         discoveryClientName.addEventListener("input", e => {
             state.clientName = e.target.value;
             document.getElementById("clientName").value = state.clientName;
+            const serviceClientName = document.getElementById("serviceClientName");
+            if (serviceClientName) serviceClientName.value = state.clientName;
             updateClientPreview();
             fitHeaderTitle();
         });
@@ -1457,6 +1480,10 @@ function bindEvents() {
             state.validUntil = addDays(state.date, 14);
             document.getElementById("validUntilDate").value = state.validUntil;
             document.getElementById("discoveryValidUntilDate").value = state.validUntil;
+            const serviceProposalDate = document.getElementById("serviceProposalDate");
+            if (serviceProposalDate) serviceProposalDate.value = state.date;
+            const serviceValidUntilDate = document.getElementById("serviceValidUntilDate");
+            if (serviceValidUntilDate) serviceValidUntilDate.value = state.validUntil;
             updateDate();
         });
     }
@@ -1466,6 +1493,55 @@ function bindEvents() {
         discoveryValidUntilDate.addEventListener("change", e => {
             state.validUntil = e.target.value;
             document.getElementById("validUntilDate").value = state.validUntil;
+            const serviceValidUntilDate = document.getElementById("serviceValidUntilDate");
+            if (serviceValidUntilDate) serviceValidUntilDate.value = state.validUntil;
+            updateDate();
+        });
+    }
+
+    const serviceManagerSelect = document.getElementById("serviceManagerSelect");
+    if (serviceManagerSelect) {
+        serviceManagerSelect.addEventListener("change", e => {
+            state.serviceManagerId = e.target.value;
+            updateManagerBlock();
+        });
+    }
+
+    const serviceClientName = document.getElementById("serviceClientName");
+    if (serviceClientName) {
+        serviceClientName.addEventListener("input", e => {
+            state.clientName = e.target.value;
+            document.getElementById("clientName").value = state.clientName;
+            const discoveryClientNameInput = document.getElementById("discoveryClientName");
+            if (discoveryClientNameInput) discoveryClientNameInput.value = state.clientName;
+            updateClientPreview();
+            fitHeaderTitle();
+        });
+    }
+
+    const serviceProposalDate = document.getElementById("serviceProposalDate");
+    if (serviceProposalDate) {
+        serviceProposalDate.addEventListener("change", e => {
+            state.date = e.target.value;
+            document.getElementById("proposalDate").value = state.date;
+            state.validUntil = addDays(state.date, 14);
+            document.getElementById("validUntilDate").value = state.validUntil;
+            const discoveryProposalDateInput = document.getElementById("discoveryProposalDate");
+            if (discoveryProposalDateInput) discoveryProposalDateInput.value = state.date;
+            const discoveryValidUntilDateInput = document.getElementById("discoveryValidUntilDate");
+            if (discoveryValidUntilDateInput) discoveryValidUntilDateInput.value = state.validUntil;
+            document.getElementById("serviceValidUntilDate").value = state.validUntil;
+            updateDate();
+        });
+    }
+
+    const serviceValidUntilDate = document.getElementById("serviceValidUntilDate");
+    if (serviceValidUntilDate) {
+        serviceValidUntilDate.addEventListener("change", e => {
+            state.validUntil = e.target.value;
+            document.getElementById("validUntilDate").value = state.validUntil;
+            const discoveryValidUntilDateInput = document.getElementById("discoveryValidUntilDate");
+            if (discoveryValidUntilDateInput) discoveryValidUntilDateInput.value = state.validUntil;
             updateDate();
         });
     }
@@ -1758,6 +1834,11 @@ function bindEvents() {
     document.getElementById("validUntilDate").value = state.validUntil;
     document.getElementById("discoveryProposalDate").value = state.date;
     document.getElementById("discoveryValidUntilDate").value = state.validUntil;
+
+    const serviceProposalDateInput = document.getElementById("serviceProposalDate");
+    if (serviceProposalDateInput) serviceProposalDateInput.value = state.date;
+    const serviceValidUntilDateInput = document.getElementById("serviceValidUntilDate");
+    if (serviceValidUntilDateInput) serviceValidUntilDateInput.value = state.validUntil;
 }
 
 function updateOnboarding() {
@@ -2457,6 +2538,18 @@ function syncDiscoveryClientFields() {
     const discoveryValidUntilDate = document.getElementById("discoveryValidUntilDate");
     if (discoveryValidUntilDate) discoveryValidUntilDate.value = state.validUntil;
 
+    const serviceManagerSelect = document.getElementById("serviceManagerSelect");
+    if (serviceManagerSelect) serviceManagerSelect.value = state.serviceManagerId;
+
+    const serviceClientName = document.getElementById("serviceClientName");
+    if (serviceClientName) serviceClientName.value = state.clientName;
+
+    const serviceProposalDate = document.getElementById("serviceProposalDate");
+    if (serviceProposalDate) serviceProposalDate.value = state.date;
+
+    const serviceValidUntilDate = document.getElementById("serviceValidUntilDate");
+    if (serviceValidUntilDate) serviceValidUntilDate.value = state.validUntil;
+
     const discoveryTariffsToggle = document.getElementById("discoveryTariffsToggle");
     if (discoveryTariffsToggle) discoveryTariffsToggle.checked = state.showDiscoveryTariffs;
 
@@ -2605,7 +2698,7 @@ function getIcon(name) {
 function updateManagerBlock() {
     const activeTabButton = document.querySelector('.tab-button.active');
     const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
-    const managerId = activeTab === 'discovery' ? state.discoveryManagerId : state.managerId;
+    const managerId = activeTab === 'discovery' ? state.discoveryManagerId : activeTab === 'service' ? state.serviceManagerId : state.managerId;
     const manager = getManager(managerId);
     const managerSection = document.getElementById("managerSection");
     const photo = document.getElementById("managerPhoto");

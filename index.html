@@ -20,7 +20,7 @@
             <div class="proposal-tabs">
                 <button class="tab-button active" data-tab="kor2">КОР-2</button>
                 <button class="tab-button" data-tab="discovery">Дискавери</button>
-                <button class="tab-button disabled" data-tab="service" disabled>Сервисные <span class="soon-badge">Август</span></button>
+                <button class="tab-button" data-tab="service">Сервисные</button>
             </div>
 
             <div class="tab-content active" data-tab="kor2">
@@ -590,9 +590,26 @@
             </div>
 
             <div class="tab-content" data-tab="service">
-                <div class="form-section placeholder-section disabled-placeholder">
-                    <h2>Сервисные</h2>
-                    <p>Раздел в разработке. <span class="soon-badge">СКОРО</span></p>
+                <div class="form-section">
+                    <h2>1. Менеджер и клиент</h2>
+                    <label>
+                        <span>Менеджер</span>
+                        <select id="serviceManagerSelect">
+                            <option value="">Выберите менеджера</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Название компании</span>
+                        <input type="text" id="serviceClientName" placeholder="ИП Василек">
+                    </label>
+                    <label>
+                        <span>Дата создания</span>
+                        <input type="date" id="serviceProposalDate">
+                    </label>
+                    <label>
+                        <span>Действует до</span>
+                        <input type="date" id="serviceValidUntilDate">
+                    </label>
                 </div>
             </div>
 
