@@ -66,7 +66,7 @@ const adminData = {
     ],
 
     sharedContacts: {
-        phones: ["8 800 333 97 00", "+7 (495) 449-97-02"],
+        phones: ["8 800 505 86 80", "+7 (495) 449-97-02"],
         whatsapp: "+7 922 104 08 45",
         whatsappNote: "Добавьте нас в контакты и напишите сообщение, чтобы мы смогли вам ответить",
         telegram: "@skorozvon_tg",
