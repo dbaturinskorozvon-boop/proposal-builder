@@ -356,11 +356,18 @@ const adminData = {
     ]
 };
 
+const SERVICE_BONUS_DAYS_DEFAULTS = { daily: 0, "3": 5, "6": 10, "12": 21 };
+
 const state = {
     proposalType: "skorozvon",
     managerId: "",
     discoveryManagerId: "",
     serviceManagerId: "",
+    serviceTariff: "pro",
+    serviceOperatorsCount: 3,
+    servicePeriod: "3",
+    serviceVisiblePeriods: { daily: true, "3": true, "6": true, "12": true },
+    serviceBonusDays: 5,
     clientName: "",
     date: new Date().toISOString().split("T")[0],
     validUntil: "",
@@ -1229,7 +1236,7 @@ function bindEvents() {
         updateCalculations();
     });
 
-    document.querySelectorAll('.package-visibility-item input[type="checkbox"]').forEach(checkbox => {
+    document.querySelectorAll('#skorozvonSection .package-visibility-item input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener("change", e => {
             const period = e.target.dataset.period;
             state.visiblePeriods[period] = e.target.checked;
@@ -1543,6 +1550,62 @@ function bindEvents() {
             const discoveryValidUntilDateInput = document.getElementById("discoveryValidUntilDate");
             if (discoveryValidUntilDateInput) discoveryValidUntilDateInput.value = state.validUntil;
             updateDate();
+        });
+    }
+
+    const serviceTariffSelect = document.getElementById("serviceTariffSelect");
+    if (serviceTariffSelect) {
+        serviceTariffSelect.addEventListener("change", e => {
+            state.serviceTariff = e.target.value;
+            updateServiceCalculations();
+        });
+    }
+
+    const servicePeriodSelect = document.getElementById("servicePeriodSelect");
+    if (servicePeriodSelect) {
+        servicePeriodSelect.addEventListener("change", e => {
+            state.servicePeriod = e.target.value;
+            state.serviceBonusDays = SERVICE_BONUS_DAYS_DEFAULTS[state.servicePeriod] || 0;
+            const serviceBonusDaysInput = document.getElementById("serviceBonusDays");
+            if (serviceBonusDaysInput) serviceBonusDaysInput.value = state.serviceBonusDays;
+            updateServiceCalculations();
+        });
+    }
+
+    const serviceOperatorsCount = document.getElementById("serviceOperatorsCount");
+    if (serviceOperatorsCount) {
+        serviceOperatorsCount.addEventListener("input", e => {
+            state.serviceOperatorsCount = e.target.value;
+            updateServiceCalculations();
+        });
+    }
+
+    document.querySelectorAll('.service-package-visibility-item input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener("change", e => {
+            const period = e.target.dataset.period;
+            state.serviceVisiblePeriods[period] = e.target.checked;
+            if (!Object.values(state.serviceVisiblePeriods).some(v => v)) {
+                state.serviceVisiblePeriods[period] = true;
+                e.target.checked = true;
+            }
+            const smallestVisible = ["daily", "3", "6", "12"].find(p => state.serviceVisiblePeriods[p]);
+            if (state.servicePeriod !== smallestVisible) {
+                state.servicePeriod = smallestVisible;
+                const periodSelect = document.getElementById("servicePeriodSelect");
+                if (periodSelect) periodSelect.value = state.servicePeriod;
+                state.serviceBonusDays = SERVICE_BONUS_DAYS_DEFAULTS[state.servicePeriod] || 0;
+                const serviceBonusDaysInput = document.getElementById("serviceBonusDays");
+                if (serviceBonusDaysInput) serviceBonusDaysInput.value = state.serviceBonusDays;
+            }
+            updateServiceCalculations();
+        });
+    });
+
+    const serviceBonusDaysInput = document.getElementById("serviceBonusDays");
+    if (serviceBonusDaysInput) {
+        serviceBonusDaysInput.addEventListener("input", e => {
+            state.serviceBonusDays = parseInt(e.target.value) || 0;
+            updateServiceCalculations();
         });
     }
 
@@ -2443,6 +2506,7 @@ function updatePreviewForTab() {
     const twoColumns = document.querySelector(".two-columns");
 
     const discoverySection = document.getElementById("discoveryTariffsPreviewSection");
+    const serviceCalcSection = document.getElementById("serviceCalcPreviewSection");
     const calculationSection = document.getElementById("calculationPreviewSection");
     const classicRobotSection = document.getElementById("classicRobotPreviewSection");
     const aiRobotSection = document.getElementById("aiRobotPreviewSection");
@@ -2496,13 +2560,14 @@ function updatePreviewForTab() {
         if (scoringSection) scoringSection.style.display = hasScoringCalculation ? "block" : "none";
         if (hasScoringCalculation) updateScoringCalculation();
         if (aiTrainerSection) aiTrainerSection.style.display = state.aiTrainerEnabled ? "block" : "none";
+        if (serviceCalcSection) serviceCalcSection.style.display = "none";
     } else {
-        if (problemSection) problemSection.style.display = state.clientProblemId ? "block" : "none";
-        if (specialOfferSection) specialOfferSection.style.display = state.selectedSpecialOffer ? "block" : "none";
-        if (calcSection) calcSection.style.display = "block";
-        if (bonusesSection) bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
-        if (onboardingSection) onboardingSection.style.display = state.registrationStatus ? "block" : "none";
-        if (partnersSection) partnersSection.style.display = state.partnersNeeded === "yes" ? "block" : "none";
+        if (problemSection) problemSection.style.display = !isService && state.clientProblemId ? "block" : "none";
+        if (specialOfferSection) specialOfferSection.style.display = !isService && state.selectedSpecialOffer ? "block" : "none";
+        if (calcSection) calcSection.style.display = isService ? "none" : "block";
+        if (bonusesSection) bonusesSection.style.display = !isService && state.selectedBonuses.length > 0 ? "block" : "none";
+        if (onboardingSection) onboardingSection.style.display = !isService && state.registrationStatus ? "block" : "none";
+        if (partnersSection) partnersSection.style.display = !isService && state.partnersNeeded === "yes" ? "block" : "none";
         if (aboutSection) aboutSection.style.display = isService ? "none" : "block";
         if (twoColumns) twoColumns.style.display = isService ? "none" : "grid";
         if (discoverySection) discoverySection.style.display = "none";
@@ -2518,6 +2583,10 @@ function updatePreviewForTab() {
         if (autoInformerSection) autoInformerSection.style.display = "none";
         if (scoringSection) scoringSection.style.display = "none";
         if (aiTrainerSection) aiTrainerSection.style.display = "none";
+        if (serviceCalcSection) {
+            serviceCalcSection.style.display = isService ? "block" : "none";
+            if (isService) updateServiceCalculations();
+        }
     }
 
     if (managerSection) managerSection.style.display = "";
@@ -3013,6 +3082,76 @@ function updateCalculations() {
     updateDiscoveryPreview();
 }
 
+function updateServiceCalculations() {
+    const section = document.getElementById("serviceCalcPreviewSection");
+    if (!section) return;
+
+    const operators = parseInt(state.serviceOperatorsCount) || 0;
+    const tariff = adminData.tariffs.operatorLicense[state.serviceTariff];
+    const tariffName = tariff.name;
+
+    document.getElementById("servicePreviewLicenseCaption").textContent = `Тариф «${tariffName}» для ${operators} ${declineWord(operators, "пользователя", "пользователей", "пользователей")}`;
+
+    const periods = ["daily", "3", "6", "12"];
+    const cardPrefixes = { daily: "svcCardDaily", "3": "svcCard3m", "6": "svcCard6m", "12": "svcCard12m" };
+
+    const visiblePeriodList = periods.filter(p => !state.serviceVisiblePeriods || state.serviceVisiblePeriods[p] !== false);
+    const basePeriod = visiblePeriodList[0] || "daily";
+    const basePricePerPeriod = tariff[basePeriod];
+    const baseTotalMonthly = operators * (basePeriod === "daily" ? basePricePerPeriod * 30 : basePricePerPeriod);
+
+    const licenseCardsEl = document.getElementById("serviceLicenseCards");
+    if (licenseCardsEl) {
+        licenseCardsEl.style.gridTemplateColumns = `repeat(${Math.max(visiblePeriodList.length, 1)}, 1fr)`;
+    }
+
+    periods.forEach(period => {
+        const prefix = cardPrefixes[period];
+        const card = document.querySelector(`#serviceLicenseCards .license-card[data-period="${period}"]`);
+        const isVisible = visiblePeriodList.includes(period);
+        if (card) card.style.display = isVisible ? "" : "none";
+
+        const pricePerPeriod = tariff[period];
+        const isDailyPeriod = period === "daily";
+        const months = isDailyPeriod ? 1 : parseInt(period);
+        const perLicenseMonthly = isDailyPeriod ? pricePerPeriod * 30 : pricePerPeriod;
+        const totalMonthly = operators * perLicenseMonthly;
+        const paymentTotal = totalMonthly * months;
+        const benefit = Math.max(0, (baseTotalMonthly - totalMonthly) * months);
+
+        document.getElementById(prefix + "Total").textContent = formatNumber(totalMonthly) + " ₽/мес";
+        document.getElementById(prefix + "PerUser").textContent = formatNumber(perLicenseMonthly) + " ₽ за 1 пользователя";
+        document.getElementById(prefix + "Payment").textContent = formatNumber(paymentTotal) + " ₽";
+        document.getElementById(prefix + "Benefit").textContent = period === basePeriod ? "Базовая цена" : `Выгода ${formatNumber(benefit)} ₽`;
+
+        const bonusEl = document.getElementById(prefix + "Bonus");
+        const bonusDays = parseInt(state.serviceBonusDays) || 0;
+        if (bonusEl) {
+            bonusEl.textContent = period === state.servicePeriod && bonusDays > 0
+                ? `+ ${bonusDays} ${declineWord(bonusDays, "день", "дня", "дней")} в подарок`
+                : "";
+        }
+
+        if (card) {
+            card.classList.toggle("license-card-active", period === state.servicePeriod);
+            const badge = card.querySelector(".license-card-badge");
+            if (badge) badge.textContent = period === state.servicePeriod ? "Ваш тариф" : "";
+        }
+    });
+
+    const summaryLabels = { daily: "30 дней", "3": "90 дней", "6": "180 дней", "12": "360 дней" };
+    document.getElementById("servicePreviewPeriodLabel").textContent = summaryLabels[state.servicePeriod] || state.servicePeriod;
+
+    const selectedPricePerPeriod = tariff[state.servicePeriod];
+    const selectedMonths = state.servicePeriod === "daily" ? 1 : parseInt(state.servicePeriod);
+    const selectedPerLicenseMonthly = state.servicePeriod === "daily" ? selectedPricePerPeriod * 30 : selectedPricePerPeriod;
+    const selectedTotal = operators * selectedPerLicenseMonthly * selectedMonths;
+
+    document.getElementById("serviceSummaryTariffName").textContent = tariffName;
+    document.getElementById("serviceSummaryLicenseTotal").textContent = formatPrice(selectedTotal);
+    document.getElementById("servicePreviewCalcTotal").textContent = formatPrice(selectedTotal);
+}
+
 function updateBonuses() {
     const section = document.getElementById("bonusesSection");
     const container = document.getElementById("previewBonuses");
@@ -3253,6 +3392,7 @@ function updateUI() {
     updatePartners();
     updateAiTrainer();
     updateCalculations();
+    updateServiceCalculations();
     updatePreviewForTab();
     syncDiscoveryClientFields();
     fitHeaderTitle();

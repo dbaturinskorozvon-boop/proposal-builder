@@ -611,6 +611,57 @@
                         <input type="date" id="serviceValidUntilDate">
                     </label>
                 </div>
+
+                <div class="form-section">
+                    <h2>2. Тарификация</h2>
+                    <label>
+                        <span>Тариф</span>
+                        <select id="serviceTariffSelect">
+                            <option value="basic">Базовый</option>
+                            <option value="pro" selected>Профессиональный</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Количество операторов</span>
+                        <input type="number" id="serviceOperatorsCount" min="1" value="3">
+                    </label>
+                    <label>
+                        <span>Период подписки</span>
+                        <select id="servicePeriodSelect">
+                            <option value="daily">1 день</option>
+                            <option value="3" selected>90 дней</option>
+                            <option value="6">180 дней</option>
+                            <option value="12">360 дней</option>
+                        </select>
+                    </label>
+                    <div class="package-visibility">
+                        <span>Пакеты в превью</span>
+                        <div class="package-visibility-list">
+                            <label class="package-visibility-item service-package-visibility-item">
+                                <input type="checkbox" id="svcPkgVisibleDaily" data-period="daily" checked>
+                                <span>1 день</span>
+                            </label>
+                            <label class="package-visibility-item service-package-visibility-item">
+                                <input type="checkbox" id="svcPkgVisible3" data-period="3" checked>
+                                <span>90 дней</span>
+                            </label>
+                            <label class="package-visibility-item service-package-visibility-item">
+                                <input type="checkbox" id="svcPkgVisible6" data-period="6" checked>
+                                <span>180 дней</span>
+                            </label>
+                            <label class="package-visibility-item service-package-visibility-item">
+                                <input type="checkbox" id="svcPkgVisible12" data-period="12" checked>
+                                <span>360 дней</span>
+                            </label>
+                        </div>
+                        <p class="field-hint">Отключите пакеты, которые не нужно показывать клиенту. Выгода считается от самого младшего из включённых пакетов.</p>
+                    </div>
+                    <label>
+                        <span>Бонусные дни к выбранному пакету</span>
+                        <input type="number" id="serviceBonusDays" min="0" value="5">
+                    </label>
+                    <p class="field-hint">По умолчанию: 90 дней — 5 бонусных, 180 дней — 10, 360 дней — 21. Можно изменить вручную.</p>
+                </div>
             </div>
 
             <div class="sidebar-footer">
@@ -1639,6 +1690,79 @@
                                 <div class="start-amount-desc" id="startAmountDesc"></div>
                             </div>
                             <div class="start-amount-value" id="startAmountValue"></div>
+                        </div>
+                    </section>
+
+                    <section class="proposal-calc" id="serviceCalcPreviewSection" style="display: none;">
+                        <h2>Тарификация</h2>
+
+                        <div class="license-table-wrap">
+                            <div class="license-table-caption">
+                                <span id="servicePreviewLicenseCaption">Тариф «Профессиональный» для 3 пользователей</span>
+                            </div>
+
+                            <div class="license-cards" id="serviceLicenseCards">
+                                <div class="license-card" data-period="daily">
+                                    <div class="license-card-badge" id="svcCardDailyBadge"></div>
+                                    <div class="license-card-header">1 день</div>
+                                    <div class="license-card-price" id="svcCardDailyTotal"></div>
+                                    <div class="license-card-per-user" id="svcCardDailyPerUser"></div>
+                                    <div class="license-card-divider"></div>
+                                    <div class="license-card-payment-label">Итого к оплате:</div>
+                                    <div class="license-card-payment-value" id="svcCardDailyPayment"></div>
+                                    <div class="license-card-benefit" id="svcCardDailyBenefit"></div>
+                                    <div class="license-card-benefit license-card-benefit-positive" id="svcCardDailyBonus"></div>
+                                </div>
+
+                                <div class="license-card" data-period="3">
+                                    <div class="license-card-badge" id="svcCard3mBadge"></div>
+                                    <div class="license-card-header">90 дней</div>
+                                    <div class="license-card-price" id="svcCard3mTotal"></div>
+                                    <div class="license-card-per-user" id="svcCard3mPerUser"></div>
+                                    <div class="license-card-divider"></div>
+                                    <div class="license-card-payment-label">Итого за 90 дней:</div>
+                                    <div class="license-card-payment-value" id="svcCard3mPayment"></div>
+                                    <div class="license-card-benefit" id="svcCard3mBenefit"></div>
+                                    <div class="license-card-benefit license-card-benefit-positive" id="svcCard3mBonus"></div>
+                                </div>
+
+                                <div class="license-card" data-period="6">
+                                    <div class="license-card-badge" id="svcCard6mBadge"></div>
+                                    <div class="license-card-header">180 дней</div>
+                                    <div class="license-card-price" id="svcCard6mTotal"></div>
+                                    <div class="license-card-per-user" id="svcCard6mPerUser"></div>
+                                    <div class="license-card-divider"></div>
+                                    <div class="license-card-payment-label">Итого за 180 дней:</div>
+                                    <div class="license-card-payment-value" id="svcCard6mPayment"></div>
+                                    <div class="license-card-benefit" id="svcCard6mBenefit"></div>
+                                    <div class="license-card-benefit license-card-benefit-positive" id="svcCard6mBonus"></div>
+                                </div>
+
+                                <div class="license-card" data-period="12">
+                                    <div class="license-card-badge" id="svcCard12mBadge"></div>
+                                    <div class="license-card-header">360 дней</div>
+                                    <div class="license-card-price" id="svcCard12mTotal"></div>
+                                    <div class="license-card-per-user" id="svcCard12mPerUser"></div>
+                                    <div class="license-card-divider"></div>
+                                    <div class="license-card-payment-label">Итого за 360 дней:</div>
+                                    <div class="license-card-payment-value" id="svcCard12mPayment"></div>
+                                    <div class="license-card-benefit" id="svcCard12mBenefit"></div>
+                                    <div class="license-card-benefit license-card-benefit-positive" id="svcCard12mBonus"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="calc-summary-row">
+                            <div class="calc-summary-left">
+                                <div class="calc-summary-label">Итого за <span id="servicePreviewPeriodLabel">90 дней</span></div>
+                                <div class="calc-summary-breakdown">
+                                    <div class="calc-summary-line">
+                                        <span class="calc-summary-line-name">Тариф «<span id="serviceSummaryTariffName"></span>»</span>
+                                        <span class="calc-summary-line-value" id="serviceSummaryLicenseTotal"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="calc-summary-value" id="servicePreviewCalcTotal">0 ₽</div>
                         </div>
                     </section>
 
