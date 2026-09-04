@@ -2433,6 +2433,7 @@ function updatePreviewForTab() {
     const activeTab = activeTabButton ? activeTabButton.dataset.tab : 'kor2';
 
     const isDiscovery = activeTab === 'discovery';
+    const isService = activeTab === 'service';
 
     const problemSection = document.getElementById("problemSection");
     const specialOfferSection = document.getElementById("specialOfferSection");
@@ -2502,8 +2503,8 @@ function updatePreviewForTab() {
         if (bonusesSection) bonusesSection.style.display = state.selectedBonuses.length > 0 ? "block" : "none";
         if (onboardingSection) onboardingSection.style.display = state.registrationStatus ? "block" : "none";
         if (partnersSection) partnersSection.style.display = state.partnersNeeded === "yes" ? "block" : "none";
-        if (aboutSection) aboutSection.style.display = "block";
-        if (twoColumns) twoColumns.style.display = "grid";
+        if (aboutSection) aboutSection.style.display = isService ? "none" : "block";
+        if (twoColumns) twoColumns.style.display = isService ? "none" : "grid";
         if (discoverySection) discoverySection.style.display = "none";
         if (calculationSection) calculationSection.style.display = "none";
         if (classicRobotSection) classicRobotSection.style.display = "none";
