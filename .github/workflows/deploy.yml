@@ -16,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Clean non-site files from source
+        run: rm -rf .git .github v1 .DS_Store README.md
+
       - name: Sync static site to server
         uses: easingthemes/ssh-deploy@v5.1.2
         env:
