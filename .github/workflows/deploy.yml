@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync static site to server
+        uses: easingthemes/ssh-deploy@v5.1.2
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          ARGS: "-rltgoD --delete --delay-updates -O --checksum"
+          SOURCE: "./"
+          REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
+          REMOTE_USER: ${{ secrets.DEPLOY_USER }}
+          TARGET: "/opt/kpbuilder/public/"
+          EXCLUDE: "/.git/, .github/, v1/, README.md, .DS_Store"
+
+      - name: Reload app
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          script: |
+            cd /opt/kpbuilder
+            pm2 reload ecosystem.config.cjs || pm2 restart kpbuilder
+            sleep 1
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/)
+            echo "health $code"
+            [ "$code" = "302" ] || [ "$code" = "200" ] || pm2 logs kpbuilder --lines 15 --nostream
