@@ -1,0 +1,21 @@
+name: kpbuilder
+services:
+  app:
+    build: /opt/kpbuilder/app
+    image: kpbuilder:latest
+    container_name: kpbuilder
+    restart: unless-stopped
+    env_file:
+      - /opt/stacks/secrets/kpbuilder.env
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.kpb.rule=Host(`kpbuilder.skorozvon.isite.app`)
+      - traefik.http.routers.kpb.entrypoints=websecure
+      - traefik.http.routers.kpb.tls.certresolver=le
+      - traefik.http.services.kpb.loadbalancer.server.port=8000
+networks:
+  proxy:
+    external: true
