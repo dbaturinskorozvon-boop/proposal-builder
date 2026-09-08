@@ -2,13 +2,12 @@
   "name": "proposal-builder-gateway",
   "version": "1.0.0",
   "private": true,
-  "description": "Static gateway for konstructor KP with Naumen SSO (Keycloak OIDC)",
+  "description": "Static gateway for konstructor KP with HTTP Basic auth",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "express-session": "^1.18.0"
+    "express": "^4.19.2"
   }
 }

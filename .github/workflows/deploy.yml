@@ -47,4 +47,4 @@ jobs:
             docker compose -p kpbuilder ps
             code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/)
             echo "health: $code"
-            [ "$code" = "302" ] || [ "$code" = "200" ]
+            [ "$code" = "401" ] || [ "$code" = "302" ] || [ "$code" = "200" ]
