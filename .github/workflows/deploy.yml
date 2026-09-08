@@ -19,14 +19,19 @@ jobs:
         run: rm -rf .git .github v1 .DS_Store
 
       - name: Sync app source to server
-        uses: easingthemes/ssh-deploy@v5
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          ARGS: "-rltgoDzvO --delete --exclude node_modules"
-          SOURCE: "./"
-          REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
-          REMOTE_USER: ${{ secrets.DEPLOY_USER }}
-          TARGET: "/opt/kpbuilder/app/"
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+          rsync -rltgoDzvO --delete --exclude node_modules \
+            -e "ssh -i ~/.ssh/id_ed25519" \
+            ./ "$USER@$HOST:/opt/kpbuilder/app/"
 
       - name: Rebuild and restart container
         uses: appleboy/ssh-action@v1
