@@ -445,13 +445,13 @@ textarea:focus-visible {
 }
 
 .ai-trainer-description {
-    margin-bottom: 60px;
+    margin-bottom: 28px;
 }
 
 .ai-trainer-card {
     position: relative;
     border: 2px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 20px 16px 16px;
     background: var(--white);
     text-align: center;
@@ -460,20 +460,23 @@ textarea:focus-visible {
 .ai-trainer-card-active {
     border-color: var(--primary);
     background: #FFF8F7;
+    padding-top: 24px;
 }
 
 .ai-trainer-card-badge {
     position: absolute;
-    top: -10px;
+    top: -12px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--primary);
     color: var(--white);
     font-size: 11px;
     font-weight: 700;
-    padding: 5px 10px;
+    line-height: 1;
+    padding: 6px 10px;
     border-radius: 20px;
     white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(232, 74, 60, 0.35);
 }
 
 .ai-trainer-card-badge:empty {
@@ -532,6 +535,7 @@ textarea:focus-visible {
 
 .ai-trainer-card-economy {
     font-size: 12px;
+    line-height: 1.4;
     color: var(--primary);
     margin-bottom: 16px;
 }
@@ -1432,9 +1436,9 @@ section p {
 
 .license-table-wrap {
     margin-bottom: 24px;
-    padding: 20px;
+    padding: 24px;
     background: var(--accent-bg);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
 }
 
 .license-table-caption {
@@ -1466,7 +1470,7 @@ section p {
 .license-card {
     background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 16px 12px;
     display: flex;
     flex-direction: column;
@@ -1477,8 +1481,9 @@ section p {
 .license-card-header {
     font-size: 13px;
     font-weight: 700;
+    line-height: 1.3;
     color: var(--text);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     min-height: 34px;
 }
 
@@ -1486,25 +1491,28 @@ section p {
     font-size: 16px;
     font-weight: 700;
     color: var(--text);
-    line-height: 1.2;
+    line-height: 1.25;
     margin-bottom: 6px;
     white-space: nowrap;
 }
 
 .license-card-per-user {
     font-size: 10px;
+    line-height: 1.35;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
+    min-height: 27px;
 }
 
 .license-card-divider {
     height: 1px;
     background: var(--border);
-    margin: 8px 0 12px;
+    margin: 0 0 12px;
 }
 
 .license-card-payment-label {
     font-size: 12px;
+    line-height: 1.35;
     color: var(--text-secondary);
     margin-bottom: 4px;
 }
@@ -1513,19 +1521,33 @@ section p {
     font-size: 16px;
     font-weight: 700;
     color: var(--text);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     white-space: nowrap;
 }
 
 .license-card-benefit {
     font-size: 11px;
     font-weight: 600;
-    color: var(--text-muted);
-    padding: 5px 8px;
+    line-height: 1.3;
+    color: var(--text-secondary);
+    background: var(--accent-bg);
+    padding: 5px 10px;
     border-radius: 20px;
     display: inline-block;
     align-self: flex-start;
     white-space: nowrap;
+}
+
+.license-card-benefit:empty {
+    display: none;
+}
+
+.license-card > .license-card-benefit:first-of-type {
+    margin-top: auto;
+}
+
+.license-card > .license-card-benefit + .license-card-benefit {
+    margin-top: 6px;
 }
 
 .license-card-benefit-positive {
@@ -1537,20 +1559,23 @@ section p {
 .license-card-active {
     border: 2px solid var(--primary);
     background: #FFF8F7;
+    padding-top: 22px;
 }
 
 .license-card-badge {
     position: absolute;
-    top: -10px;
+    top: -11px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--primary);
     color: var(--white);
     font-size: 11px;
     font-weight: 700;
-    padding: 5px 10px;
+    line-height: 1;
+    padding: 6px 10px;
     border-radius: 20px;
     white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(232, 74, 60, 0.35);
 }
 
 .license-card-badge:empty {
