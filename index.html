@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
     <div class="app">
@@ -17,10 +17,10 @@
                 <p class="subtitle">Собери персональное коммерческое предложение для клиента всего за несколько кликов и перевыполняйте план продаж</p>
             </div>
 
-            <div class="proposal-tabs">
-                <button class="tab-button active" data-tab="kor2">КОР-2</button>
-                <button class="tab-button" data-tab="discovery">Дискавери</button>
-                <button class="tab-button" data-tab="service">Сервисные</button>
+            <div class="proposal-tabs" role="tablist" aria-label="Тип предложения">
+                <button class="tab-button active" data-tab="kor2" role="tab" aria-selected="true">КОР-2</button>
+                <button class="tab-button" data-tab="discovery" role="tab" aria-selected="false">Дискавери</button>
+                <button class="tab-button" data-tab="service" role="tab" aria-selected="false">Сервисные</button>
             </div>
 
             <div class="tab-content active" data-tab="kor2">
@@ -1894,9 +1894,11 @@
 
     <div id="pdfExportContainer" style="position: fixed; left: -9999px; top: 0; width: 210mm; z-index: -1;"></div>
 
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="datastore.js?v=5"></script>
-    <script src="app.js?v=5"></script>
+    <script src="datastore.js?v=6"></script>
+    <script src="app.js?v=6"></script>
 </body>
 </html>

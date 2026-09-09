@@ -1446,10 +1446,14 @@ function bindEvents() {
         btn.addEventListener('click', () => {
             if (btn.disabled) return;
 
-            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
             btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
             const tabId = btn.dataset.tab;
             const content = document.querySelector(`.tab-content[data-tab="${tabId}"]`);
             if (content) content.classList.add('active');
@@ -3256,10 +3260,23 @@ async function logProposalEvent() {
     }
 }
 
+function showToast(message, type) {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+    const toast = document.createElement("div");
+    toast.className = "toast" + (type ? " toast-" + type : "");
+    toast.setAttribute("role", "status");
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add("toast-leaving");
+        setTimeout(() => toast.remove(), 300);
+    }, 4200);
+}
+
 async function downloadPdf() {
     const btn = document.getElementById("downloadPdf");
-    const originalText = btn.textContent;
-    btn.textContent = "Генерация PDF...";
+    btn.classList.add("is-loading");
     btn.disabled = true;
 
     try {
@@ -3330,11 +3347,12 @@ async function downloadPdf() {
         const safeName = clientName.replace(/[^a-zA-Z0-9а-яА-Я\-_]/g, "_").substring(0, 60);
         pdf.save(`КП для ${safeName} | Скорозвон.pdf`);
         logProposalEvent();
+        showToast("PDF сохранён: КП для " + clientName, "success");
     } catch (err) {
         console.error("PDF generation failed:", err);
-        alert("Не удалось сгенерировать PDF. Попробуйте через Печать / PDF.");
+        showToast("Не удалось сгенерировать PDF. Попробуйте «Печать / PDF».", "error");
     } finally {
-        btn.textContent = originalText;
+        btn.classList.remove("is-loading");
         btn.disabled = false;
     }
 }
