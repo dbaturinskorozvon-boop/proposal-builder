@@ -45,6 +45,7 @@ jobs:
             docker compose -p kpbuilder -f /opt/stacks/kpbuilder-stack.yml up -d --build
             sleep 5
             docker compose -p kpbuilder ps
-            code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/)
+            IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' kpbuilder)
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://$IP:8000/)
             echo "health: $code"
             [ "$code" = "401" ] || [ "$code" = "302" ] || [ "$code" = "200" ]
