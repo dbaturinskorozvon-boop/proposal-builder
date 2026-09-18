@@ -369,6 +369,8 @@ const state = {
     servicePeriod: "3",
     serviceVisiblePeriods: { daily: true, "3": true, "6": true, "12": true },
     serviceBonusDays: { daily: 0, "3": 5, "6": 10, "12": 20 },
+    serviceSelectedFeatures: [],
+    serviceFeatureQuantities: {},
     clientName: "",
     date: new Date().toISOString().split("T")[0],
     validUntil: "",
@@ -1004,6 +1006,7 @@ async function init() {
     populateClientProblems();
     populateSpecialOffers();
     populateFeatures();
+    populateServiceFeatures();
     populateDiscovery();
     populateBonuses();
     populateClientLogos();
@@ -1074,81 +1077,96 @@ function populateFeatures() {
         const wrapper = document.createElement("div");
         wrapper.className = "feature-form-item";
         wrapper.dataset.featureId = feature.id;
-
-        let priceLabel = "";
-        if (feature.price === null) {
-            priceLabel = "по запросу";
-        } else if (feature.period === "monthly_per_guest") {
-            priceLabel = `${formatPrice(feature.price)}/мес за гостя`;
-        } else if (feature.period === "monthly_per_admin") {
-            priceLabel = `${formatPrice(feature.price)}/мес за админ`;
-        } else if (feature.period === "dedicated") {
-            priceLabel = `${formatPrice(feature.price)} за ${feature.defaultMonths} мес`;
-        } else {
-            priceLabel = `${formatPrice(feature.price)}/мес`;
-        }
-
-        let quantityInput = "";
-        if (feature.period === "monthly_per_guest") {
-            quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
-                    <label>
-                        <span>Количество гостевых доступов</span>
-                        <input type="number" min="1" value="1" data-feature-quantity="${feature.id}">
-                    </label>
-                </div>
-            `;
-        }
-
-        if (feature.period === "monthly_per_admin") {
-            quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
-                    <label>
-                        <span>Количество администраторов</span>
-                        <input type="number" min="1" value="1" data-feature-quantity="${feature.id}">
-                    </label>
-                </div>
-            `;
-        }
-
-        if (feature.period === "dedicated") {
-            quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
-                    <label class="feature-quantity-label">
-                        <span>Стоимость, ₽</span>
-                        <input type="number" min="0" step="1000" value="${feature.price}" data-feature-custom-price="${feature.id}">
-                    </label>
-                    <label class="feature-quantity-label" style="margin-top: 8px;">
-                        <span>Количество месяцев</span>
-                        <input type="number" min="1" step="1" value="${feature.defaultMonths}" data-feature-months="${feature.id}-months">
-                    </label>
-                </div>
-            `;
-        }
-
-        if (feature.price === null) {
-            quantityInput = `
-                <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
-                    <label class="feature-quantity-label">
-                        <span>Стоимость, ₽</span>
-                        <input type="number" min="0" step="1000" value="" placeholder="Укажите стоимость" data-feature-custom-price="${feature.id}">
-                    </label>
-                </div>
-            `;
-        }
-
-        wrapper.innerHTML = `
-            <label class="checkbox-item">
-                <input type="checkbox" value="${feature.id}" data-type="feature">
-                <div class="item-info">
-                    <div class="item-name">${feature.name}</div>
-                </div>
-                <div class="item-price">${priceLabel}</div>
-            </label>
-            ${quantityInput}
-        `;
+        wrapper.innerHTML = buildFeatureItemHtml(feature);
         container.appendChild(wrapper);
     });
+}
+
+function populateServiceFeatures() {
+    const container = document.getElementById("serviceFeaturesList");
+    if (!container) return;
+    adminData.features.forEach(feature => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "feature-form-item";
+        wrapper.dataset.featureId = feature.id;
+        wrapper.innerHTML = buildFeatureItemHtml(feature);
+        container.appendChild(wrapper);
+    });
+}
+
+function buildFeatureItemHtml(feature) {
+    let priceLabel = "";
+    if (feature.price === null) {
+        priceLabel = "по запросу";
+    } else if (feature.period === "monthly_per_guest") {
+        priceLabel = `${formatPrice(feature.price)}/мес за гостя`;
+    } else if (feature.period === "monthly_per_admin") {
+        priceLabel = `${formatPrice(feature.price)}/мес за админ`;
+    } else if (feature.period === "dedicated") {
+        priceLabel = `${formatPrice(feature.price)} за ${feature.defaultMonths} мес`;
+    } else {
+        priceLabel = `${formatPrice(feature.price)}/мес`;
+    }
+
+    let quantityInput = "";
+    if (feature.period === "monthly_per_guest") {
+        quantityInput = `
+            <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
+                <label>
+                    <span>Количество гостевых доступов</span>
+                    <input type="number" min="1" value="1" data-feature-quantity="${feature.id}">
+                </label>
+            </div>
+        `;
+    }
+
+    if (feature.period === "monthly_per_admin") {
+        quantityInput = `
+            <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
+                <label>
+                    <span>Количество администраторов</span>
+                    <input type="number" min="1" value="1" data-feature-quantity="${feature.id}">
+                </label>
+            </div>
+        `;
+    }
+
+    if (feature.period === "dedicated") {
+        quantityInput = `
+            <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
+                <label class="feature-quantity-label">
+                    <span>Стоимость, ₽</span>
+                    <input type="number" min="0" step="1000" value="${feature.price}" data-feature-custom-price="${feature.id}">
+                </label>
+                <label class="feature-quantity-label" style="margin-top: 8px;">
+                    <span>Количество месяцев</span>
+                    <input type="number" min="1" step="1" value="${feature.defaultMonths}" data-feature-months="${feature.id}-months">
+                </label>
+            </div>
+        `;
+    }
+
+    if (feature.price === null) {
+        quantityInput = `
+            <div class="feature-quantity" style="display: none; margin-top: 8px; padding-left: 28px;">
+                <label class="feature-quantity-label">
+                    <span>Стоимость, ₽</span>
+                    <input type="number" min="0" step="1000" value="" placeholder="Укажите стоимость" data-feature-custom-price="${feature.id}">
+                </label>
+            </div>
+        `;
+    }
+
+    return `
+        <label class="checkbox-item">
+            <input type="checkbox" value="${feature.id}" data-type="feature">
+            <div class="item-info">
+                <div class="item-name">${feature.name}</div>
+            </div>
+            <div class="item-price">${priceLabel}</div>
+        </label>
+        ${quantityInput}
+    `;
 }
 
 function populateDiscovery() {
@@ -1626,6 +1644,41 @@ function bindEvents() {
             updateServiceCalculations();
         });
     });
+
+    const serviceFeaturesList = document.getElementById("serviceFeaturesList");
+    if (serviceFeaturesList) {
+        serviceFeaturesList.addEventListener("change", e => {
+            if (e.target.dataset.type === "feature") {
+                const value = e.target.value;
+                const wrapper = e.target.closest(".feature-form-item");
+                const quantityDiv = wrapper ? wrapper.querySelector(".feature-quantity") : null;
+
+                if (e.target.checked) {
+                    state.serviceSelectedFeatures.push(value);
+                    if (quantityDiv) quantityDiv.style.display = "block";
+                } else {
+                    state.serviceSelectedFeatures = state.serviceSelectedFeatures.filter(id => id !== value);
+                    if (quantityDiv) quantityDiv.style.display = "none";
+                }
+                updateServiceCalculations();
+            }
+        });
+
+        serviceFeaturesList.addEventListener("input", e => {
+            if (e.target.dataset.featureQuantity) {
+                state.serviceFeatureQuantities[e.target.dataset.featureQuantity] = e.target.value;
+                updateServiceCalculations();
+            }
+            if (e.target.dataset.featureCustomPrice) {
+                state.serviceFeatureQuantities[e.target.dataset.featureCustomPrice] = e.target.value;
+                updateServiceCalculations();
+            }
+            if (e.target.dataset.featureMonths) {
+                state.serviceFeatureQuantities[e.target.dataset.featureMonths] = e.target.value;
+                updateServiceCalculations();
+            }
+        });
+    }
 
     const discoveryTariffsToggle = document.getElementById("discoveryTariffsToggle");
     if (discoveryTariffsToggle) {
@@ -3165,11 +3218,66 @@ function updateServiceCalculations() {
     const selectedPricePerPeriod = tariff[state.servicePeriod];
     const selectedMonths = state.servicePeriod === "daily" ? 1 : parseInt(state.servicePeriod);
     const selectedPerLicenseMonthly = state.servicePeriod === "daily" ? selectedPricePerPeriod * 30 : selectedPricePerPeriod;
-    const selectedTotal = operators * selectedPerLicenseMonthly * selectedMonths;
+    const licenseTotal = operators * selectedPerLicenseMonthly * selectedMonths;
+
+    const detailsListEl = document.getElementById("serviceCalcDetailsList");
+    const detailsBlock = document.getElementById("serviceCalcDetails");
+    let additionalTotal = 0;
+    if (detailsBlock) detailsBlock.style.display = "none";
+    if (detailsListEl) detailsListEl.innerHTML = "";
+
+    state.serviceSelectedFeatures.forEach(featureId => {
+        const feature = adminData.features.find(f => f.id === featureId);
+        if (!feature) return;
+        let monthlyPrice = 0;
+        let isOneTime = false;
+        let descText = feature.description;
+
+        if (feature.price === null) {
+            monthlyPrice = parseInt(state.serviceFeatureQuantities[feature.id]) || 0;
+        } else if (feature.period === "monthly_per_guest") {
+            const qty = parseInt(state.serviceFeatureQuantities[feature.id]) || 1;
+            monthlyPrice = feature.price * qty;
+            descText = `${qty} ${declineWord(qty, "гостевой доступ", "гостевых доступа", "гостевых доступов")}`;
+        } else if (feature.period === "monthly_per_admin") {
+            const qty = parseInt(state.serviceFeatureQuantities[feature.id]) || 1;
+            monthlyPrice = feature.price * qty;
+            descText = `${qty} ${declineWord(qty, "администратор", "администратора", "администраторов")}`;
+        } else if (feature.period === "dedicated") {
+            monthlyPrice = parseInt(state.serviceFeatureQuantities[feature.id]) || feature.price;
+            isOneTime = true;
+            const months = parseInt(state.serviceFeatureQuantities[`${feature.id}-months`]) || feature.defaultMonths;
+            descText = `за ${months} ${declineWord(months, "месяц", "месяца", "месяцев")}`;
+        } else {
+            monthlyPrice = feature.price;
+        }
+
+        additionalTotal += isOneTime ? monthlyPrice : monthlyPrice * selectedMonths;
+        if (detailsListEl) {
+            detailsListEl.innerHTML += `
+                <div class="calc-detail-item">
+                    <div>
+                        <div class="calc-detail-name">${feature.name}</div>
+                        <div class="calc-detail-desc">${descText}</div>
+                    </div>
+                    ${renderCalcDetailPrice(monthlyPrice, selectedMonths, isOneTime)}
+                </div>
+            `;
+        }
+    });
+
+    if (detailsBlock) detailsBlock.style.display = state.serviceSelectedFeatures.length > 0 ? "" : "none";
+
+    const summaryAdditionalRow = document.getElementById("serviceSummaryAdditionalRow");
+    const summaryAdditionalTotal = document.getElementById("serviceSummaryAdditionalTotal");
+    if (summaryAdditionalRow) summaryAdditionalRow.style.display = additionalTotal > 0 ? "" : "none";
+    if (summaryAdditionalTotal) summaryAdditionalTotal.textContent = formatPrice(additionalTotal);
+
+    const serviceTotal = licenseTotal + additionalTotal;
 
     document.getElementById("serviceSummaryTariffName").textContent = tariffName;
-    document.getElementById("serviceSummaryLicenseTotal").textContent = formatPrice(selectedTotal);
-    document.getElementById("servicePreviewCalcTotal").textContent = formatPrice(selectedTotal);
+    document.getElementById("serviceSummaryLicenseTotal").textContent = formatPrice(licenseTotal);
+    document.getElementById("servicePreviewCalcTotal").textContent = formatPrice(serviceTotal);
 }
 
 function updateBonuses() {
