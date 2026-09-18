@@ -1033,6 +1033,50 @@ input[type="checkbox"], input[type="radio"] {
     width: 72px;
 }
 
+/* Сервисные: баннер дополнительных продуктов */
+.proposal-products-banner {
+    margin: 32px 0;
+}
+
+.proposal-products-banner h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: #1a1a2e;
+}
+
+.products-banner-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.product-banner-card {
+    background: linear-gradient(135deg, #f7f8fc 0%, #eef0f8 100%);
+    border: 1px solid #e3e6f0;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.product-banner-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+}
+
+.product-banner-desc {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #55586b;
+}
+
+@media (max-width: 900px) {
+    .products-banner-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .field-hint {
     font-size: 12px;
     color: var(--text-muted);

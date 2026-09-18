@@ -371,6 +371,7 @@ const state = {
     serviceBonusDays: { daily: 0, "3": 5, "6": 10, "12": 20 },
     serviceSelectedFeatures: [],
     serviceFeatureQuantities: {},
+    showServiceProductsBanner: true,
     clientName: "",
     date: new Date().toISOString().split("T")[0],
     validUntil: "",
@@ -1645,6 +1646,14 @@ function bindEvents() {
         });
     });
 
+    const serviceProductsBannerToggle = document.getElementById("serviceProductsBannerToggle");
+    if (serviceProductsBannerToggle) {
+        serviceProductsBannerToggle.addEventListener("change", e => {
+            state.showServiceProductsBanner = e.target.checked;
+            updateServicePreviewBanner();
+        });
+    }
+
     const serviceFeaturesList = document.getElementById("serviceFeaturesList");
     if (serviceFeaturesList) {
         serviceFeaturesList.addEventListener("change", e => {
@@ -2665,6 +2674,7 @@ function updatePreviewForTab() {
 
     updateManagerBlock();
     updateClientPreview();
+    updateServicePreviewBanner();
     fitHeaderTitle();
 }
 
@@ -3155,6 +3165,14 @@ function updateCalculations() {
     updateDiscoveryPreview();
 }
 
+function updateServicePreviewBanner() {
+    const section = document.getElementById("serviceProductsBannerSection");
+    if (!section) return;
+    const activeTabButton = document.querySelector('.tab-button.active');
+    const isService = activeTabButton && activeTabButton.dataset.tab === 'service';
+    section.style.display = isService && state.showServiceProductsBanner ? "block" : "none";
+}
+
 function updateServiceCalculations() {
     const section = document.getElementById("serviceCalcPreviewSection");
     if (!section) return;
@@ -3540,6 +3558,7 @@ function updateUI() {
     updateOnboarding();
     updatePartners();
     updateAiTrainer();
+    updateServicePreviewBanner();
     updateCalculations();
     updateServiceCalculations();
     updatePreviewForTab();
