@@ -1058,6 +1058,18 @@ input[type="checkbox"], input[type="radio"] {
     padding: 22px;
 }
 
+.product-banner-card-violet {
+    background: #322a4d;
+}
+
+.product-banner-card-teal {
+    background: #1f3a3d;
+}
+
+.product-banner-card-crimson {
+    background: #4a2430;
+}
+
 .product-banner-card-wide {
     grid-column: 1 / -1;
 }
@@ -1072,34 +1084,6 @@ input[type="checkbox"], input[type="radio"] {
 .product-banner-wide-head .product-banner-icon {
     margin-bottom: 0;
     flex-shrink: 0;
-}
-
-.product-banner-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px 24px;
-}
-
-.product-banner-list li {
-    position: relative;
-    padding-left: 18px;
-    font-size: 13px;
-    line-height: 1.5;
-    color: #b7bbd0;
-}
-
-.product-banner-list li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 7px;
-    width: 6px;
-    height: 6px;
-    background: #ff7a6e;
-    border-radius: 2px;
 }
 
 .product-banner-icon {
@@ -1140,8 +1124,7 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 @media (max-width: 900px) {
-    .products-banner-panel,
-    .product-banner-list {
+    .products-banner-panel {
         grid-template-columns: 1fr;
     }
 }
