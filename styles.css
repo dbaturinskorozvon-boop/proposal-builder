@@ -1045,36 +1045,44 @@ input[type="checkbox"], input[type="radio"] {
     color: #1a1a2e;
 }
 
-.products-banner-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+.products-banner-panel {
+    background: #f7f8fc;
+    border: 1px solid #e8eaf3;
+    border-radius: 14px;
+    padding: 4px 24px;
 }
 
-.product-banner-card {
-    background: linear-gradient(135deg, #f7f8fc 0%, #eef0f8 100%);
-    border: 1px solid #e3e6f0;
-    border-radius: 14px;
-    padding: 20px;
+.product-banner-row {
+    display: flex;
+    gap: 16px;
+    padding: 18px 0;
+}
+
+.product-banner-row + .product-banner-row {
+    border-top: 1px solid #e8eaf3;
+}
+
+.product-banner-marker {
+    width: 8px;
+    height: 8px;
+    background: var(--primary);
+    border-radius: 2px;
+    margin-top: 7px;
+    flex-shrink: 0;
 }
 
 .product-banner-name {
     font-size: 15px;
     font-weight: 700;
     color: #1a1a2e;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .product-banner-desc {
     font-size: 13px;
     line-height: 1.55;
     color: #55586b;
-}
-
-@media (max-width: 900px) {
-    .products-banner-grid {
-        grid-template-columns: 1fr;
-    }
+    max-width: 60ch;
 }
 
 .field-hint {
