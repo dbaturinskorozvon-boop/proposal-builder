@@ -1109,6 +1109,31 @@ input[type="checkbox"], input[type="radio"] {
     font-size: 13px;
     line-height: 1.55;
     color: #b7bbd0;
+    margin-bottom: 14px;
+}
+
+.product-banner-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.product-banner-metric {
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.product-banner-metric-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ff7a6e;
+    margin-bottom: 4px;
+}
+
+.product-banner-metric-label {
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: #8f93ab;
 }
 
 .products-banner-cta {
@@ -1124,7 +1149,8 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 @media (max-width: 900px) {
-    .products-banner-panel {
+    .products-banner-panel,
+    .product-banner-metrics {
         grid-template-columns: 1fr;
     }
 }
