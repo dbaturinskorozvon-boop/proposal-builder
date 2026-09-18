@@ -3151,7 +3151,7 @@ function updateServiceCalculations() {
         const bonusEl = document.getElementById(prefix + "Bonus");
         const bonusDays = parseInt(state.serviceBonusDays) || 0;
         if (bonusEl) {
-            bonusEl.textContent = period === state.servicePeriod && bonusDays > 0
+            bonusEl.textContent = bonusDays > 0
                 ? `+ ${bonusDays} ${declineWord(bonusDays, "день", "дня", "дней")} в подарок`
                 : "";
         }
