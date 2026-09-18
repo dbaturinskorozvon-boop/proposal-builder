@@ -3215,6 +3215,13 @@ function updateServiceCalculations() {
     const summaryLabels = { daily: "30 дней", "3": "90 дней", "6": "180 дней", "12": "360 дней" };
     document.getElementById("servicePreviewPeriodLabel").textContent = summaryLabels[state.servicePeriod] || state.servicePeriod;
 
+    const periodHeaderLabels = { daily: "за 30 дней", "3": "за 90 дней", "6": "за 180 дней", "12": "за 360 дней" };
+    const periodHeaderLabel = document.getElementById("servicePeriodPriceHeader");
+    if (periodHeaderLabel) {
+        periodHeaderLabel.textContent = periodHeaderLabels[state.servicePeriod] || `за ${state.servicePeriod}`;
+        periodHeaderLabel.style.display = state.servicePeriod === "daily" ? "none" : "";
+    }
+
     const selectedPricePerPeriod = tariff[state.servicePeriod];
     const selectedMonths = state.servicePeriod === "daily" ? 1 : parseInt(state.servicePeriod);
     const selectedPerLicenseMonthly = state.servicePeriod === "daily" ? selectedPricePerPeriod * 30 : selectedPricePerPeriod;
