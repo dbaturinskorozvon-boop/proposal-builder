@@ -363,6 +363,7 @@ const state = {
     managerId: "",
     discoveryManagerId: "",
     serviceManagerId: "",
+    serviceClientId: "",
     serviceTariff: "pro",
     serviceOperatorsCount: 3,
     servicePeriod: "3",
@@ -684,7 +685,15 @@ function formatClientCompany(raw) {
 function updateClientPreview() {
     const company = formatClientCompany(state.clientName);
     const line = document.getElementById("previewClientNameLine");
-    if (line) line.textContent = company ? `для компании ${company}` : "";
+    if (!line) return;
+    if (!company) {
+        line.textContent = "";
+        return;
+    }
+    const activeTabButton = document.querySelector('.tab-button.active');
+    const isService = activeTabButton && activeTabButton.dataset.tab === 'service';
+    const clientId = (state.serviceClientId || "").trim();
+    line.textContent = isService && clientId ? `для компании ${company} · ID ${clientId}` : `для компании ${company}`;
 }
 
 function renderCalcDetailPrice(monthlyPrice, periodMonths, isOneTime = false) {
@@ -1525,6 +1534,15 @@ function bindEvents() {
             document.getElementById("clientName").value = state.clientName;
             const discoveryClientNameInput = document.getElementById("discoveryClientName");
             if (discoveryClientNameInput) discoveryClientNameInput.value = state.clientName;
+            updateClientPreview();
+            fitHeaderTitle();
+        });
+    }
+
+    const serviceClientId = document.getElementById("serviceClientId");
+    if (serviceClientId) {
+        serviceClientId.addEventListener("input", e => {
+            state.serviceClientId = e.target.value;
             updateClientPreview();
             fitHeaderTitle();
         });
@@ -2597,6 +2615,8 @@ function updatePreviewForTab() {
     if (header) header.style.display = "";
 
     updateManagerBlock();
+    updateClientPreview();
+    fitHeaderTitle();
 }
 
 function syncDiscoveryClientFields() {
