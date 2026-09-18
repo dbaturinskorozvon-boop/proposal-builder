@@ -660,11 +660,26 @@
                         </div>
                         <p class="field-hint">Отключите пакеты, которые не нужно показывать клиенту. Выгода считается от самого младшего из включённых пакетов.</p>
                     </div>
-                    <label>
-                        <span>Бонусные дни к выбранному пакету</span>
-                        <input type="number" id="serviceBonusDays" min="0" value="5">
-                    </label>
-                    <p class="field-hint">По умолчанию: 90 дней — 5 бонусных, 180 дней — 10, 360 дней — 21. Можно изменить вручную.</p>
+                    <div class="bonus-days-block">
+                        <span class="bonus-days-title">Бонусные дни по пакетам</span>
+                        <label class="bonus-days-item">
+                            <span>30 дней</span>
+                            <input type="number" id="serviceBonusDaily" data-period="daily" min="0" value="0">
+                        </label>
+                        <label class="bonus-days-item">
+                            <span>90 дней</span>
+                            <input type="number" id="serviceBonus3" data-period="3" min="0" value="5">
+                        </label>
+                        <label class="bonus-days-item">
+                            <span>180 дней</span>
+                            <input type="number" id="serviceBonus6" data-period="6" min="0" value="10">
+                        </label>
+                        <label class="bonus-days-item">
+                            <span>360 дней</span>
+                            <input type="number" id="serviceBonus12" data-period="12" min="0" value="20">
+                        </label>
+                    </div>
+                    <p class="field-hint">Дефолт: 30 дней — 0, 90 дней — 5, 180 дней — 10, 360 дней — 20. Можно изменить вручную.</p>
                 </div>
             </div>
 

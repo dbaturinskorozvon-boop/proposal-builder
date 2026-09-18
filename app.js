@@ -356,7 +356,7 @@ const adminData = {
     ]
 };
 
-const SERVICE_BONUS_DAYS_DEFAULTS = { daily: 0, "3": 5, "6": 10, "12": 21 };
+const SERVICE_BONUS_DAYS_DEFAULTS = { daily: 0, "3": 5, "6": 10, "12": 20 };
 
 const state = {
     proposalType: "skorozvon",
@@ -368,7 +368,7 @@ const state = {
     serviceOperatorsCount: 3,
     servicePeriod: "3",
     serviceVisiblePeriods: { daily: true, "3": true, "6": true, "12": true },
-    serviceBonusDays: 5,
+    serviceBonusDays: { daily: 0, "3": 5, "6": 10, "12": 20 },
     clientName: "",
     date: new Date().toISOString().split("T")[0],
     validUntil: "",
@@ -1587,9 +1587,6 @@ function bindEvents() {
     if (servicePeriodSelect) {
         servicePeriodSelect.addEventListener("change", e => {
             state.servicePeriod = e.target.value;
-            state.serviceBonusDays = SERVICE_BONUS_DAYS_DEFAULTS[state.servicePeriod] || 0;
-            const serviceBonusDaysInput = document.getElementById("serviceBonusDays");
-            if (serviceBonusDaysInput) serviceBonusDaysInput.value = state.serviceBonusDays;
             updateServiceCalculations();
         });
     }
@@ -1615,21 +1612,20 @@ function bindEvents() {
                 state.servicePeriod = smallestVisible;
                 const periodSelect = document.getElementById("servicePeriodSelect");
                 if (periodSelect) periodSelect.value = state.servicePeriod;
-                state.serviceBonusDays = SERVICE_BONUS_DAYS_DEFAULTS[state.servicePeriod] || 0;
-                const serviceBonusDaysInput = document.getElementById("serviceBonusDays");
-                if (serviceBonusDaysInput) serviceBonusDaysInput.value = state.serviceBonusDays;
             }
             updateServiceCalculations();
         });
     });
 
-    const serviceBonusDaysInput = document.getElementById("serviceBonusDays");
-    if (serviceBonusDaysInput) {
-        serviceBonusDaysInput.addEventListener("input", e => {
-            state.serviceBonusDays = parseInt(e.target.value) || 0;
+    const serviceBonusDaysInputs = document.querySelectorAll('[id^="serviceBonus"]');
+    serviceBonusDaysInputs.forEach(input => {
+        input.addEventListener("input", e => {
+            const period = e.target.dataset.period;
+            if (!period) return;
+            state.serviceBonusDays[period] = parseInt(e.target.value) || 0;
             updateServiceCalculations();
         });
-    }
+    });
 
     const discoveryTariffsToggle = document.getElementById("discoveryTariffsToggle");
     if (discoveryTariffsToggle) {
@@ -3149,7 +3145,7 @@ function updateServiceCalculations() {
         document.getElementById(prefix + "Benefit").textContent = period === basePeriod ? "Базовая цена" : `Выгода ${formatNumber(benefit)} ₽`;
 
         const bonusEl = document.getElementById(prefix + "Bonus");
-        const bonusDays = parseInt(state.serviceBonusDays) || 0;
+        const bonusDays = parseInt((state.serviceBonusDays || {})[period]) || 0;
         if (bonusEl) {
             bonusEl.textContent = bonusDays > 0
                 ? `+ ${bonusDays} ${declineWord(bonusDays, "день", "дня", "дней")} в подарок`
