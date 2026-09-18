@@ -1048,29 +1048,26 @@ input[type="checkbox"], input[type="radio"] {
 .products-banner-panel {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    background: #20243a;
-    border-radius: 14px;
-    padding: 28px;
+    gap: 16px;
 }
 
-.product-banner-item {
-    position: relative;
-    padding-left: 44px;
+.product-banner-card {
+    background: #2a2f4a;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 22px;
 }
 
 .product-banner-icon {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ff7a6e;
     background: rgba(232, 74, 60, 0.16);
     border-radius: 10px;
+    margin-bottom: 14px;
 }
 
 .product-banner-name {
@@ -1084,6 +1081,18 @@ input[type="checkbox"], input[type="radio"] {
     font-size: 13px;
     line-height: 1.55;
     color: #b7bbd0;
+}
+
+.products-banner-cta {
+    margin-top: 16px;
+    padding: 16px 22px;
+    background: #f7f8fc;
+    border: 1px dashed #d5d9e6;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #55586b;
+    text-align: center;
 }
 
 @media (max-width: 900px) {
