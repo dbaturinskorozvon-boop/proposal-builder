@@ -1047,7 +1047,7 @@ input[type="checkbox"], input[type="radio"] {
 
 .products-banner-panel {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
 }
 
@@ -1056,6 +1056,50 @@ input[type="checkbox"], input[type="radio"] {
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 14px;
     padding: 22px;
+}
+
+.product-banner-card-wide {
+    grid-column: 1 / -1;
+}
+
+.product-banner-wide-head {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.product-banner-wide-head .product-banner-icon {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.product-banner-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 24px;
+}
+
+.product-banner-list li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #b7bbd0;
+}
+
+.product-banner-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    background: #ff7a6e;
+    border-radius: 2px;
 }
 
 .product-banner-icon {
@@ -1096,7 +1140,8 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 @media (max-width: 900px) {
-    .products-banner-panel {
+    .products-banner-panel,
+    .product-banner-list {
         grid-template-columns: 1fr;
     }
 }
