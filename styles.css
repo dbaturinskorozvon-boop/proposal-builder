@@ -1046,43 +1046,50 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .products-banner-panel {
-    background: #f7f8fc;
-    border: 1px solid #e8eaf3;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    background: #20243a;
     border-radius: 14px;
-    padding: 4px 24px;
+    padding: 28px;
 }
 
-.product-banner-row {
+.product-banner-item {
+    position: relative;
+    padding-left: 44px;
+}
+
+.product-banner-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 34px;
+    height: 34px;
     display: flex;
-    gap: 16px;
-    padding: 18px 0;
-}
-
-.product-banner-row + .product-banner-row {
-    border-top: 1px solid #e8eaf3;
-}
-
-.product-banner-marker {
-    width: 8px;
-    height: 8px;
-    background: var(--primary);
-    border-radius: 2px;
-    margin-top: 7px;
-    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    color: #ff7a6e;
+    background: rgba(232, 74, 60, 0.16);
+    border-radius: 10px;
 }
 
 .product-banner-name {
     font-size: 15px;
     font-weight: 700;
-    color: #1a1a2e;
+    color: #ffffff;
     margin-bottom: 6px;
 }
 
 .product-banner-desc {
     font-size: 13px;
     line-height: 1.55;
-    color: #55586b;
-    max-width: 60ch;
+    color: #b7bbd0;
+}
+
+@media (max-width: 900px) {
+    .products-banner-panel {
+        grid-template-columns: 1fr;
+    }
 }
 
 .field-hint {
