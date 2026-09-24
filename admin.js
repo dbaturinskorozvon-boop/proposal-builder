@@ -59,7 +59,13 @@ function getDefaultAdminData() {
             { id: 10, name: "Липатникова Диана", email: "dlipatnikova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2", "discovery"] },
             { id: 11, name: "Козлов Никита", email: "nkozlov@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2", "discovery"] },
             { id: 12, name: "Басаргин Юрий", email: "ybasargin@skorozvon.ru", phone: "8 800 333 97 02, +7 986 342-59-39", telegram: "", max: "", photo: "", directions: ["kor2", "discovery"] },
-            { id: 13, name: "Моторин Владимир", email: "vmotorin@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2", "discovery"] }
+            { id: 13, name: "Моторин Владимир", email: "vmotorin@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["kor2", "discovery"] },
+            { id: 14, name: "Папиж Софья", email: "spapizh@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] },
+            { id: 15, name: "Ретегова Татьяна", email: "tretegova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] },
+            { id: 16, name: "Ильиных Валентина", email: "vilinykh@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] },
+            { id: 17, name: "Мансурова Александра", email: "amansurova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] },
+            { id: 18, name: "Евграшина Дарья", email: "devgrashina@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] },
+            { id: 19, name: "Харченко Александра", email: "akharchenko@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] }
         ],
         specialOffers: [
             {

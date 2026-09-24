@@ -64,42 +64,42 @@ const adminData = {
             directions: ["discovery"]
         },
         {
-            id: 10,
+            id: 14,
             name: "Папиж Софья",
             email: "spapizh@skorozvon.ru",
             photo: "",
             directions: ["service"]
         },
         {
-            id: 11,
+            id: 15,
             name: "Ретегова Татьяна",
             email: "tretegova@skorozvon.ru",
             photo: "",
             directions: ["service"]
         },
         {
-            id: 12,
+            id: 16,
             name: "Ильиных Валентина",
             email: "vilinykh@skorozvon.ru",
             photo: "",
             directions: ["service"]
         },
         {
-            id: 13,
+            id: 17,
             name: "Мансурова Александра",
             email: "amansurova@skorozvon.ru",
             photo: "",
             directions: ["service"]
         },
         {
-            id: 14,
+            id: 18,
             name: "Евграшина Дарья",
             email: "devgrashina@skorozvon.ru",
             photo: "",
             directions: ["service"]
         },
         {
-            id: 15,
+            id: 19,
             name: "Харченко Александра",
             email: "akharchenko@skorozvon.ru",
             photo: "",
