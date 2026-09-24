@@ -62,6 +62,48 @@ const adminData = {
             email: "ashirinkin@skorozvon.ru",
             photo: "",
             directions: ["discovery"]
+        },
+        {
+            id: 10,
+            name: "Папиж Софья",
+            email: "spapizh@skorozvon.ru",
+            photo: "",
+            directions: ["service"]
+        },
+        {
+            id: 11,
+            name: "Ретегова Татьяна",
+            email: "tretegova@skorozvon.ru",
+            photo: "",
+            directions: ["service"]
+        },
+        {
+            id: 12,
+            name: "Ильиных Валентина",
+            email: "vilinykh@skorozvon.ru",
+            photo: "",
+            directions: ["service"]
+        },
+        {
+            id: 13,
+            name: "Мансурова Александра",
+            email: "amansurova@skorozvon.ru",
+            photo: "",
+            directions: ["service"]
+        },
+        {
+            id: 14,
+            name: "Евграшина Дарья",
+            email: "devgrashina@skorozvon.ru",
+            photo: "",
+            directions: ["service"]
+        },
+        {
+            id: 15,
+            name: "Харченко Александра",
+            email: "akharchenko@skorozvon.ru",
+            photo: "",
+            directions: ["service"]
         }
     ],
 
