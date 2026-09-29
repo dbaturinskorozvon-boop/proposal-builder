@@ -411,6 +411,7 @@ const state = {
     servicePeriod: "3",
     serviceVisiblePeriods: { daily: true, "3": true, "6": true, "12": true },
     serviceBonusDays: { daily: 0, "3": 5, "6": 10, "12": 20 },
+    serviceUserPrices: { daily: null, "3": null, "6": null, "12": null },
     serviceSelectedFeatures: [],
     serviceFeatureQuantities: {},
     showServiceProductsBanner: true,
@@ -1046,6 +1047,7 @@ async function init() {
     populateManagers();
     populateDiscoveryManagers();
     populateServiceManagers();
+    syncServiceUserPriceInputs();
     populateClientProblems();
     populateSpecialOffers();
     populateFeatures();
@@ -1091,6 +1093,34 @@ function populateServiceManagers() {
         option.value = manager.id;
         option.textContent = manager.name;
         select.appendChild(option);
+    });
+}
+
+const SERVICE_PRICING_PERIODS = ["daily", "3", "6", "12"];
+
+const SERVICE_PRICING_INPUT_IDS = { daily: "servicePriceDaily", "3": "servicePrice3", "6": "servicePrice6", "12": "servicePrice12" };
+
+function serviceDefaultUserPrice(tariff, period) {
+    if (period === "daily") return (tariff.daily || 0) * 30;
+    return tariff[period] || 0;
+}
+
+function serviceUserPriceFor(period) {
+    const tariff = adminData.tariffs.operatorLicense[state.serviceTariff];
+    const override = (state.serviceUserPrices || {})[period];
+    const hasOverride = override !== null && override !== undefined && override !== "";
+    const value = hasOverride ? Number(override) : serviceDefaultUserPrice(tariff, period);
+    return isNaN(value) ? 0 : value;
+}
+
+function syncServiceUserPriceInputs() {
+    const tariff = adminData.tariffs.operatorLicense[state.serviceTariff];
+    SERVICE_PRICING_PERIODS.forEach(period => {
+        const input = document.getElementById(SERVICE_PRICING_INPUT_IDS[period]);
+        if (!input) return;
+        const override = (state.serviceUserPrices || {})[period];
+        const hasOverride = override !== null && override !== undefined && override !== "";
+        input.value = hasOverride ? override : serviceDefaultUserPrice(tariff, period);
     });
 }
 
@@ -1640,6 +1670,7 @@ function bindEvents() {
     if (serviceTariffSelect) {
         serviceTariffSelect.addEventListener("change", e => {
             state.serviceTariff = e.target.value;
+            syncServiceUserPriceInputs();
             updateServiceCalculations();
         });
     }
@@ -1684,6 +1715,17 @@ function bindEvents() {
             const period = e.target.dataset.period;
             if (!period) return;
             state.serviceBonusDays[period] = parseInt(e.target.value) || 0;
+            updateServiceCalculations();
+        });
+    });
+
+    const servicePriceInputs = document.querySelectorAll('[id^="servicePrice"]');
+    servicePriceInputs.forEach(input => {
+        input.addEventListener("input", e => {
+            const period = e.target.dataset.period;
+            if (!period) return;
+            const value = e.target.value.trim();
+            state.serviceUserPrices[period] = value === "" ? null : Number(value);
             updateServiceCalculations();
         });
     });
@@ -2736,6 +2778,8 @@ function syncDiscoveryClientFields() {
     const serviceManagerSelect = document.getElementById("serviceManagerSelect");
     if (serviceManagerSelect) serviceManagerSelect.value = state.serviceManagerId;
 
+    if (state.serviceUserPrices) syncServiceUserPriceInputs();
+
     const serviceClientName = document.getElementById("serviceClientName");
     if (serviceClientName) serviceClientName.value = state.clientName;
 
@@ -3230,8 +3274,7 @@ function updateServiceCalculations() {
 
     const visiblePeriodList = periods.filter(p => !state.serviceVisiblePeriods || state.serviceVisiblePeriods[p] !== false);
     const basePeriod = visiblePeriodList[0] || "daily";
-    const basePricePerPeriod = tariff[basePeriod];
-    const baseTotalMonthly = operators * (basePeriod === "daily" ? basePricePerPeriod * 30 : basePricePerPeriod);
+    const baseTotalMonthly = operators * serviceUserPriceFor(basePeriod);
 
     const licenseCardsEl = document.getElementById("serviceLicenseCards");
     if (licenseCardsEl) {
@@ -3244,10 +3287,9 @@ function updateServiceCalculations() {
         const isVisible = visiblePeriodList.includes(period);
         if (card) card.style.display = isVisible ? "" : "none";
 
-        const pricePerPeriod = tariff[period];
         const isDailyPeriod = period === "daily";
         const months = isDailyPeriod ? 1 : parseInt(period);
-        const perLicenseMonthly = isDailyPeriod ? pricePerPeriod * 30 : pricePerPeriod;
+        const perLicenseMonthly = serviceUserPriceFor(period);
         const totalMonthly = operators * perLicenseMonthly;
         const paymentTotal = totalMonthly * months;
         const benefit = Math.max(0, (baseTotalMonthly - totalMonthly) * months);
@@ -3282,9 +3324,8 @@ function updateServiceCalculations() {
         periodHeaderLabel.style.display = state.servicePeriod === "daily" ? "none" : "";
     }
 
-    const selectedPricePerPeriod = tariff[state.servicePeriod];
     const selectedMonths = state.servicePeriod === "daily" ? 1 : parseInt(state.servicePeriod);
-    const selectedPerLicenseMonthly = state.servicePeriod === "daily" ? selectedPricePerPeriod * 30 : selectedPricePerPeriod;
+    const selectedPerLicenseMonthly = serviceUserPriceFor(state.servicePeriod);
     const licenseTotal = operators * selectedPerLicenseMonthly * selectedMonths;
 
     const detailsListEl = document.getElementById("serviceCalcDetailsList");

@@ -1033,6 +1033,10 @@ input[type="checkbox"], input[type="radio"] {
     width: 72px;
 }
 
+.bonus-days-item input.service-price-input {
+    width: 110px;
+}
+
 /* Сервисные: баннер дополнительных продуктов */
 .proposal-products-banner {
     margin: 32px 0;
