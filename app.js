@@ -503,6 +503,20 @@ const INTERNOD_MAV_ATTEMPT_PRICE = 0.7;
 const EASY_START_OFFER_ID = "so-easy-start";
 const EASY_START_DAILY_MONTHLY_PRICE = 3600;
 
+const KOR2_PRO_P3_PROMO_START = "2026-09-30";
+const KOR2_PRO_P3_PROMO_END = "2026-10-31";
+const KOR2_PRO_P3_PRICE_20_TO_39 = 2000;
+const KOR2_PRO_P3_PRICE_40_PLUS = 1600;
+
+function getKor2ProThreeMonthPromoPrice() {
+    const date = (state.date || "").split("T")[0];
+    if (!date || date < KOR2_PRO_P3_PROMO_START || date > KOR2_PRO_P3_PROMO_END) return null;
+    const operators = parseInt(state.operatorsCount) || 0;
+    if (operators >= 40) return KOR2_PRO_P3_PRICE_40_PLUS;
+    if (operators >= 20) return KOR2_PRO_P3_PRICE_20_TO_39;
+    return null;
+}
+
 const CLASSIC_ROBOT_MINUTE_RATES = [
     { max: 2000, rate: 6 },
     { max: 5000, rate: 5.5 },
@@ -910,7 +924,12 @@ function getTelephonyPeriodType(telephonyType) {
 }
 
 function getLicensePricePerPeriod(tariff, period) {
-    return adminData.tariffs.operatorLicense[tariff][period] || 0;
+    const base = adminData.tariffs.operatorLicense[tariff][period] || 0;
+    if (period === "3" && tariff === "pro") {
+        const promo = getKor2ProThreeMonthPromoPrice();
+        if (promo !== null) return promo;
+    }
+    return base;
 }
 
 function formatLicensePrice(value, period) {
@@ -1315,6 +1334,7 @@ function bindEvents() {
         const serviceValidUntilDate = document.getElementById("serviceValidUntilDate");
         if (serviceValidUntilDate) serviceValidUntilDate.value = state.validUntil;
         updateDate();
+        updateCalculations();
     });
 
     document.getElementById("validUntilDate").addEventListener("change", e => {
@@ -1596,6 +1616,7 @@ function bindEvents() {
             const serviceValidUntilDate = document.getElementById("serviceValidUntilDate");
             if (serviceValidUntilDate) serviceValidUntilDate.value = state.validUntil;
             updateDate();
+            updateCalculations();
         });
     }
 
@@ -1652,6 +1673,7 @@ function bindEvents() {
             if (discoveryValidUntilDateInput) discoveryValidUntilDateInput.value = state.validUntil;
             document.getElementById("serviceValidUntilDate").value = state.validUntil;
             updateDate();
+            updateCalculations();
         });
     }
 
@@ -3012,7 +3034,7 @@ function updateCalculations() {
 
     const visiblePeriodList = periods.filter(p => !state.visiblePeriods || state.visiblePeriods[p] !== false);
     const basePeriod = visiblePeriodList[0] || "daily";
-    const basePricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][basePeriod];
+    const basePricePerPeriod = getLicensePricePerPeriod(state.tariff, basePeriod);
     const baseTotalMonthly = operators * (basePeriod === "daily" ? basePricePerPeriod * 30 : basePricePerPeriod);
 
     const licenseCardsEl = document.getElementById("licenseCards");
@@ -3025,7 +3047,7 @@ function updateCalculations() {
         const isVisible = visiblePeriodList.includes(period);
         if (card) card.style.display = isVisible ? "" : "none";
 
-        const pricePerPeriod = adminData.tariffs.operatorLicense[state.tariff][period];
+        const pricePerPeriod = getLicensePricePerPeriod(state.tariff, period);
         const isDailyPeriod = period === "daily";
         const months = isDailyPeriod ? 1 : parseInt(period);
         const perLicenseMonthly = isDailyPeriod ? pricePerPeriod * 30 : pricePerPeriod;
