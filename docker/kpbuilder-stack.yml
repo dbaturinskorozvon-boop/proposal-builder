@@ -12,12 +12,17 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - traefik.http.routers.kpb.rule=Host(`kpbuilder.skorozvon.ru`)
-      - traefik.http.routers.kpb.entrypoints=websecure
-      - traefik.http.routers.kpb.tls.certresolver=le
-      - traefik.http.services.kpb.loadbalancer.server.port=8000
-      - traefik.http.middlewares.kpb-old-redirect.redirectregex.regex=^https://kpbuilder\.skorozvon\.isite\.app(/.*)?$
-      - traefik.http.middlewares.kpb-old-redirect.redirectregex.replacement=https://kpbuilder.skorozvon.ru$$1
+      # старый сабдомен kpbuilder.skorozvon.ru -> 301 на путь /kpbuilder
+      - traefik.http.middlewares.kpb-path-redirect.redirectregex.regex=^https://kpbuilder\.skorozvon\.ru(/.*)?$$
+      - traefik.http.middlewares.kpb-path-redirect.redirectregex.replacement=https://lead.skorozvon.ru/kpbuilder$$1
+      - traefik.http.middlewares.kpb-path-redirect.redirectregex.permanent=true
+      - traefik.http.routers.kpb-sub.rule=Host(`kpbuilder.skorozvon.ru`)
+      - traefik.http.routers.kpb-sub.entrypoints=websecure
+      - traefik.http.routers.kpb-sub.tls.certresolver=le
+      - traefik.http.routers.kpb-sub.middlewares=kpb-path-redirect
+      # legacy .isite.app -> тот же путь
+      - traefik.http.middlewares.kpb-old-redirect.redirectregex.regex=^https://kpbuilder\.skorozvon\.isite\.app(/.*)?$$
+      - traefik.http.middlewares.kpb-old-redirect.redirectregex.replacement=https://lead.skorozvon.ru/kpbuilder$$1
       - traefik.http.middlewares.kpb-old-redirect.redirectregex.permanent=true
       - traefik.http.routers.kpb-old.rule=Host(`kpbuilder.skorozvon.isite.app`)
       - traefik.http.routers.kpb-old.entrypoints=websecure
