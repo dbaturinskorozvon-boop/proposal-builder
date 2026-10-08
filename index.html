@@ -176,6 +176,29 @@
                         <input type="number" id="internodNumbersCount" min="1" value="1">
                     </label>
                 </div>
+                <div id="aiAmdOptions" class="internod-suboptions" style="display: none;">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="aiAmdEnabled">
+                        <div class="item-info">
+                            <div class="item-name">AI AMD: детекция автоответчиков</div>
+                            <div class="item-desc">AI-определение автоответчика на линии</div>
+                        </div>
+                    </label>
+                    <div id="aiAmdParams" style="display: none;">
+                        <label>
+                            <span>Количество номеров</span>
+                            <input type="number" id="aiAmdNumbers" min="0" step="1000" value="10000">
+                        </label>
+                        <label>
+                            <span>Количество дозвонов</span>
+                            <input type="number" id="aiAmdAttempts" min="0" step="1" value="3">
+                        </label>
+                        <label>
+                            <span>Стоимость 1 детекции, коп</span>
+                            <input type="number" id="aiAmdPrice" min="0" step="1" value="10">
+                        </label>
+                    </div>
+                </div>
                 <label>
                     <span>Количество входящих номеров</span>
                     <input type="number" id="incomingNumbers" min="0" value="0">

@@ -432,6 +432,10 @@ const state = {
     internodCarousel: false,
     internodNumbers: false,
     internodNumbersCount: 1,
+    aiAmdEnabled: false,
+    aiAmdNumbers: 10000,
+    aiAmdAttempts: 3,
+    aiAmdPrice: 10,
     incomingNumbers: 0,
     incomingAtcType: "none",
     atcType: "none",
@@ -499,6 +503,16 @@ const state = {
 };
 
 const INTERNOD_MAV_ATTEMPT_PRICE = 0.7;
+
+const AI_AMD_DEFAULT_PRICES = { md_extended: 6, md_basic: 10, internod: 10 };
+
+function isAiAmdAvailable() {
+    return state.telephonyType === "md_extended" || state.telephonyType === "md_basic" || state.telephonyType === "internod";
+}
+
+function getAiAmdDefaultPrice(telephonyType) {
+    return AI_AMD_DEFAULT_PRICES[telephonyType] || 10;
+}
 
 const EASY_START_OFFER_ID = "so-easy-start";
 const EASY_START_DAILY_MONTHLY_PRICE = 3600;
@@ -963,7 +977,12 @@ function calculate() {
     const internodMavMonthly = internodMavAttemptsCount * INTERNOD_MAV_ATTEMPT_PRICE;
     const internodCarouselMonthly = state.telephonyType === "internod" && state.internodCarousel ? 3000 : 0;
     const internodNumbersMonthly = state.telephonyType === "internod" && state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
-    const moduleMonthly = telephonyMonthly + internodMavMonthly + internodCarouselMonthly + internodNumbersMonthly;
+    const aiAmdActive = isAiAmdAvailable() && state.aiAmdEnabled;
+    const aiAmdNumbersCount = aiAmdActive ? (parseInt(state.aiAmdNumbers) || 0) : 0;
+    const aiAmdAttemptsCount = aiAmdActive ? (parseInt(state.aiAmdAttempts) || 0) : 0;
+    const aiAmdPriceKop = parseFloat(state.aiAmdPrice) || 0;
+    const aiAmdMonthly = aiAmdNumbersCount * aiAmdAttemptsCount * aiAmdPriceKop / 100;
+    const moduleMonthly = telephonyMonthly + internodMavMonthly + internodCarouselMonthly + internodNumbersMonthly + aiAmdMonthly;
     const incomingSetup = incomingNumbers * adminData.tariffs.incomingNumber.setup;
     const incomingMonthly = incomingNumbers * adminData.tariffs.incomingNumber.monthly;
 
@@ -1026,6 +1045,10 @@ function calculate() {
         internodMavMonthly,
         internodCarouselMonthly,
         internodNumbersMonthly,
+        aiAmdNumbersCount,
+        aiAmdAttemptsCount,
+        aiAmdPriceKop,
+        aiAmdMonthly,
         moduleMonthly,
         incomingSetup,
         incomingMonthly,
@@ -1400,6 +1423,35 @@ function bindEvents() {
         if (internodOptions) {
             internodOptions.style.display = state.telephonyType === "internod" ? "block" : "none";
         }
+        const aiAmdOptions = document.getElementById("aiAmdOptions");
+        if (aiAmdOptions) {
+            aiAmdOptions.style.display = isAiAmdAvailable() ? "block" : "none";
+        }
+        if (isAiAmdAvailable()) {
+            state.aiAmdPrice = getAiAmdDefaultPrice(state.telephonyType);
+            document.getElementById("aiAmdPrice").value = state.aiAmdPrice;
+        }
+        updateCalculations();
+    });
+
+    document.getElementById("aiAmdEnabled").addEventListener("change", e => {
+        state.aiAmdEnabled = e.target.checked;
+        document.getElementById("aiAmdParams").style.display = state.aiAmdEnabled ? "block" : "none";
+        updateCalculations();
+    });
+
+    document.getElementById("aiAmdNumbers").addEventListener("input", e => {
+        state.aiAmdNumbers = e.target.value;
+        updateCalculations();
+    });
+
+    document.getElementById("aiAmdAttempts").addEventListener("input", e => {
+        state.aiAmdAttempts = e.target.value;
+        updateCalculations();
+    });
+
+    document.getElementById("aiAmdPrice").addEventListener("input", e => {
+        state.aiAmdPrice = e.target.value;
         updateCalculations();
     });
 
@@ -3121,6 +3173,30 @@ function updateCalculations() {
                     ${renderCalcDetailPrice(calc.telephonyMonthly, calc.periodMonths)}
                 </div>
             `;
+
+            if (state.telephonyType === "md_max") {
+                calcDetailsList.innerHTML += `
+                    <div class="calc-detail-item">
+                        <div>
+                            <div class="calc-detail-name">AI AMD: детекция автоответчиков</div>
+                            <div class="calc-detail-desc">Включено в «МД Максимальный»</div>
+                        </div>
+                        ${renderCalcDetailPrice(0, calc.periodMonths)}
+                    </div>
+                `;
+            }
+
+            if (calc.aiAmdMonthly > 0) {
+                calcDetailsList.innerHTML += `
+                    <div class="calc-detail-item">
+                        <div>
+                            <div class="calc-detail-name">AI AMD: детекция автоответчиков</div>
+                            <div class="calc-detail-desc">${calc.aiAmdNumbersCount.toLocaleString("ru-RU")} ${declineWord(calc.aiAmdNumbersCount, "номер", "номера", "номеров")} × ${calc.aiAmdAttemptsCount} ${declineWord(calc.aiAmdAttemptsCount, "дозвон", "дозвона", "дозвонов")}, ${calc.aiAmdPriceKop} коп/детекция</div>
+                        </div>
+                        ${renderCalcDetailPrice(calc.aiAmdMonthly, calc.periodMonths)}
+                    </div>
+                `;
+            }
 
             if (calc.internodMavAttemptsCount > 0) {
                 calcDetailsList.innerHTML += `
