@@ -29,7 +29,8 @@ jobs:
           printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_ed25519 "$USER@$HOST" "sudo -n mkdir -p /opt/kpbuilder/app && sudo -n chown -R $USER:$USER /opt/kpbuilder"
+          ssh -i ~/.ssh/id_ed25519 "$USER@$HOST" "mkdir -p /opt/kpbuilder/app" \
+            || echo "::warning::Cannot create /opt/kpbuilder/app on server (no sudo). Create it manually: mkdir -p /opt/kpbuilder/app && chown -R $USER:$USER /opt/kpbuilder"
           rsync -rltgoDzvO --delete --exclude node_modules \
             -e "ssh -i ~/.ssh/id_ed25519" \
             ./ "$USER@$HOST:/opt/kpbuilder/app/"
