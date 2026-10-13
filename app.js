@@ -3625,6 +3625,29 @@ async function downloadPdf() {
         clone.style.transform = "none";
         container.appendChild(clone);
 
+        // html2canvas не поддерживает CSS Grid и раскладывает такие блоки иначе,
+        // из-за чего страница в PDF получается сплюснутой.
+        // Заменяем grid на flex, сохраняя реальные доли ширины колонок.
+        const gridContainers = [clone, ...clone.querySelectorAll("*")]
+            .filter(el => {
+                const display = getComputedStyle(el).display;
+                return display === "grid" || display === "inline-grid";
+            });
+        const gridLayouts = gridContainers.map(el => {
+            const width = el.getBoundingClientRect().width;
+            return [...el.children].map(child => {
+                const childWidth = child.getBoundingClientRect().width;
+                return width && childWidth ? (childWidth / width) * 100 : 100;
+            });
+        });
+        gridContainers.forEach((el, i) => {
+            el.style.display = "flex";
+            el.style.flexWrap = "wrap";
+            [...el.children].forEach((child, j) => {
+                child.style.width = `calc(${gridLayouts[i][j].toFixed(3)}% - 1px)`;
+            });
+        });
+
         await document.fonts.ready;
 
         const cloneRect = clone.getBoundingClientRect();
