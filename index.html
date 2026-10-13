@@ -219,18 +219,105 @@
                 <div id="featuresList" class="checkbox-list"></div>
             </div>
 
+            <div class="form-section">
+                <div class="section-header-toggle">
+                    <h2>6. Автоинформатор</h2>
+                    <label class="switch" aria-label="Показать автоинформатор">
+                        <input type="checkbox" id="kor2AutoInformerToggle">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <div id="kor2AutoInformerOptions" style="display: none;">
+                    <label style="margin-left: 24px; margin-top: 8px;">
+                        <span>Кол-во контактов</span>
+                        <input type="number" id="kor2AutoInformerContacts" min="0" step="1000" placeholder="20000">
+                    </label>
+                    <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                        <input type="checkbox" id="kor2AutoInformerAsr">
+                        <div class="item-info">
+                            <div class="item-name">Распознавание речи (1,6 ₽/мин)</div>
+                        </div>
+                    </label>
+                    <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                        <input type="checkbox" id="kor2AutoInformerTransfer">
+                        <div class="item-info">
+                            <div class="item-name">Перевод на менеджера (0,25 ₽/мин)</div>
+                        </div>
+                    </label>
+                    <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                        <input type="checkbox" id="kor2AutoInformerRecording">
+                        <div class="item-info">
+                            <div class="item-name">Запись звонка (0,02 ₽/мин)</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-header-toggle">
+                    <h2>7. Конструктор роботов</h2>
+                    <label class="switch" aria-label="Показать конструктор роботов">
+                        <input type="checkbox" id="kor2TemplateRobotsToggle">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <div id="kor2TemplateRobotsOptions" style="display: none;">
+                    <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px; margin-top: 8px;">
+                        <input type="checkbox" class="template-robot-checkbox-kor2" value="informer">
+                        <div class="item-info">
+                            <div class="item-name">Автоинформатор — 10 000 ₽</div>
+                        </div>
+                    </label>
+                    <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                        <input type="checkbox" class="template-robot-checkbox-kor2" value="question">
+                        <div class="item-info">
+                            <div class="item-name">Информирование + вопрос — 15 000 ₽</div>
+                        </div>
+                    </label>
+                    <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                        <input type="checkbox" class="template-robot-checkbox-kor2" value="warm">
+                        <div class="item-info">
+                            <div class="item-name">Теплые продажи — 30 000 ₽</div>
+                        </div>
+                    </label>
+                    <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                        <input type="checkbox" class="template-robot-checkbox-kor2" value="leadgen">
+                        <div class="item-info">
+                            <div class="item-name">Лидогенерация — 30 000 ₽</div>
+                        </div>
+                    </label>
+                    <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
+                        <input type="checkbox" class="template-robot-checkbox-kor2" value="warmPro">
+                        <div class="item-info">
+                            <div class="item-name">Теплые продажи PRO — 35 000 ₽</div>
+                        </div>
+                    </label>
+                    <label style="margin-left: 24px;">
+                        <span>Кол-во контактов</span>
+                        <input type="number" id="kor2TemplateRobotContacts" min="0" step="1000" placeholder="20000">
+                    </label>
+                    <label style="margin-left: 24px;">
+                        <span>Телефония</span>
+                        <select id="kor2TemplateRobotTelephony">
+                            <option value="own">Своя АТС (2,5 ₽/мин)</option>
+                            <option value="internod">Интернод (2,6 ₽/мин)</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
             <div class="form-section" id="discoverySection" style="display: none;">
-                <h2>6. Дискавери-продукты</h2>
+                <h2>8. Дискавери-продукты</h2>
                 <div id="discoveryList" class="checkbox-list"></div>
             </div>
 
             <div class="form-section">
-                <h2>7. Бонусы</h2>
+                <h2>9. Бонусы</h2>
                 <div id="bonusesList" class="checkbox-list"></div>
             </div>
 
             <div class="form-section">
-                <h2>8. Для запуска</h2>
+                <h2>10. Для запуска</h2>
                 <label>
                     <span>Регистрация в сервисе</span>
                     <select id="registrationStatus">
@@ -243,7 +330,7 @@
             </div>
 
             <div class="form-section">
-                <h2>9. Партнеры</h2>
+                <h2>11. Партнеры</h2>
                 <label>
                     <span>Партнеры парсинга</span>
                     <select id="partnersNeeded">
@@ -1737,6 +1824,20 @@
                             <div id="calcDetailsList"></div>
                         </div>
 
+                        <div class="calc-details" id="kor2AutoInformerDetails" style="display: none;">
+                            <div class="calc-details-caption">
+                                <span id="kor2AutoInformerCaption">3. Автоинформатор</span>
+                            </div>
+                            <div id="kor2AutoInformerList"></div>
+                        </div>
+
+                        <div class="calc-details" id="kor2TemplateRobotsDetails" style="display: none;">
+                            <div class="calc-details-caption">
+                                <span id="kor2TemplateRobotsCaption">3. Конструктор роботов</span>
+                            </div>
+                            <div id="kor2TemplateRobotsList"></div>
+                        </div>
+
                         <div class="calc-summary-row">
                             <div class="calc-summary-left">
                                 <div class="calc-summary-label">Итого за <span id="previewPeriodLabel">3 месяца</span></div>
@@ -2058,6 +2159,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="datastore.js?v=6"></script>
-    <script src="app.js?v=7"></script>
+    <script src="app.js?v=8"></script>
 </body>
 </html>

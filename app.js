@@ -476,6 +476,7 @@ const state = {
     templateRobotsSelected: [],
     templateRobotContacts: "",
     templateRobotTelephony: "own",
+    discoveryKor2Order: [],
     showAutoInformer: false,
     autoInformerContacts: "",
     autoInformerAsr: false,
@@ -1997,16 +1998,29 @@ function bindEvents() {
     const templateRobotsToggle = document.getElementById("templateRobotsToggle");
     if (templateRobotsToggle) {
         templateRobotsToggle.addEventListener("change", e => {
-            state.showTemplateRobots = e.target.checked;
-            const options = document.getElementById("templateRobotsOptions");
-            if (options) options.style.display = state.showTemplateRobots ? "block" : "none";
-            updatePreviewForTab();
+            handleDiscoveryProductToggle("templateRobots", e.target.checked);
+        });
+    }
+
+    const kor2TemplateRobotsToggle = document.getElementById("kor2TemplateRobotsToggle");
+    if (kor2TemplateRobotsToggle) {
+        kor2TemplateRobotsToggle.addEventListener("change", e => {
+            handleDiscoveryProductToggle("templateRobots", e.target.checked);
         });
     }
 
     document.querySelectorAll(".template-robot-checkbox").forEach(checkbox => {
         checkbox.addEventListener("change", () => {
             state.templateRobotsSelected = Array.from(document.querySelectorAll(".template-robot-checkbox:checked")).map(el => el.value);
+            syncDiscoveryProductControls();
+            updatePreviewForTab();
+        });
+    });
+
+    document.querySelectorAll(".template-robot-checkbox-kor2").forEach(checkbox => {
+        checkbox.addEventListener("change", () => {
+            state.templateRobotsSelected = Array.from(document.querySelectorAll(".template-robot-checkbox-kor2:checked")).map(el => el.value);
+            syncDiscoveryProductControls();
             updatePreviewForTab();
         });
     });
@@ -2015,6 +2029,16 @@ function bindEvents() {
     if (templateRobotContacts) {
         templateRobotContacts.addEventListener("input", e => {
             state.templateRobotContacts = e.target.value;
+            syncDiscoveryProductControls();
+            updatePreviewForTab();
+        });
+    }
+
+    const kor2TemplateRobotContacts = document.getElementById("kor2TemplateRobotContacts");
+    if (kor2TemplateRobotContacts) {
+        kor2TemplateRobotContacts.addEventListener("input", e => {
+            state.templateRobotContacts = e.target.value;
+            syncDiscoveryProductControls();
             updatePreviewForTab();
         });
     }
@@ -2023,6 +2047,16 @@ function bindEvents() {
     if (templateRobotTelephony) {
         templateRobotTelephony.addEventListener("change", e => {
             state.templateRobotTelephony = e.target.value;
+            syncDiscoveryProductControls();
+            updatePreviewForTab();
+        });
+    }
+
+    const kor2TemplateRobotTelephony = document.getElementById("kor2TemplateRobotTelephony");
+    if (kor2TemplateRobotTelephony) {
+        kor2TemplateRobotTelephony.addEventListener("change", e => {
+            state.templateRobotTelephony = e.target.value;
+            syncDiscoveryProductControls();
             updatePreviewForTab();
         });
     }
@@ -2030,10 +2064,14 @@ function bindEvents() {
     const autoInformerToggle = document.getElementById("autoInformerToggle");
     if (autoInformerToggle) {
         autoInformerToggle.addEventListener("change", e => {
-            state.showAutoInformer = e.target.checked;
-            const options = document.getElementById("autoInformerOptions");
-            if (options) options.style.display = state.showAutoInformer ? "block" : "none";
-            updatePreviewForTab();
+            handleDiscoveryProductToggle("autoInformer", e.target.checked);
+        });
+    }
+
+    const kor2AutoInformerToggle = document.getElementById("kor2AutoInformerToggle");
+    if (kor2AutoInformerToggle) {
+        kor2AutoInformerToggle.addEventListener("change", e => {
+            handleDiscoveryProductToggle("autoInformer", e.target.checked);
         });
     }
 
@@ -2041,33 +2079,32 @@ function bindEvents() {
     if (autoInformerContacts) {
         autoInformerContacts.addEventListener("input", e => {
             state.autoInformerContacts = e.target.value;
+            syncDiscoveryProductControls();
             updatePreviewForTab();
         });
     }
 
-    const autoInformerAsr = document.getElementById("autoInformerAsr");
-    if (autoInformerAsr) {
-        autoInformerAsr.addEventListener("change", e => {
-            state.autoInformerAsr = e.target.checked;
+    const kor2AutoInformerContacts = document.getElementById("kor2AutoInformerContacts");
+    if (kor2AutoInformerContacts) {
+        kor2AutoInformerContacts.addEventListener("input", e => {
+            state.autoInformerContacts = e.target.value;
+            syncDiscoveryProductControls();
             updatePreviewForTab();
         });
     }
 
-    const autoInformerTransfer = document.getElementById("autoInformerTransfer");
-    if (autoInformerTransfer) {
-        autoInformerTransfer.addEventListener("change", e => {
-            state.autoInformerTransfer = e.target.checked;
-            updatePreviewForTab();
-        });
-    }
-
-    const autoInformerRecording = document.getElementById("autoInformerRecording");
-    if (autoInformerRecording) {
-        autoInformerRecording.addEventListener("change", e => {
-            state.autoInformerRecording = e.target.checked;
-            updatePreviewForTab();
-        });
-    }
+    [["autoInformerAsr", "autoInformerAsr"], ["kor2AutoInformerAsr", "autoInformerAsr"],
+     ["autoInformerTransfer", "autoInformerTransfer"], ["kor2AutoInformerTransfer", "autoInformerTransfer"],
+     ["autoInformerRecording", "autoInformerRecording"], ["kor2AutoInformerRecording", "autoInformerRecording"]].forEach(([id, stateKey]) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("change", e => {
+                state[stateKey] = e.target.checked;
+                syncDiscoveryProductControls();
+                updatePreviewForTab();
+            });
+        }
+    });
 
     const scoringToggle = document.getElementById("scoringToggle");
     if (scoringToggle) {
@@ -2578,6 +2615,145 @@ function updateHumanVoiceCalculation() {
     container.innerHTML = buildRobotCalculationCards(HUMAN_VOICE_SCENARIOS, HUMAN_VOICE_MINUTE_MARKUP);
 }
 
+function syncDiscoveryProductControls() {
+    const setChecked = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.checked = value;
+    };
+    const setValue = (id, value) => {
+        const el = document.getElementById(id);
+        if (el && el.value !== String(value ?? "")) el.value = value ?? "";
+    };
+    const setDisplay = (id, visible) => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = visible ? "block" : "none";
+    };
+
+    setChecked("templateRobotsToggle", state.showTemplateRobots);
+    setChecked("kor2TemplateRobotsToggle", state.showTemplateRobots);
+    setDisplay("templateRobotsOptions", state.showTemplateRobots);
+    setDisplay("kor2TemplateRobotsOptions", state.showTemplateRobots);
+
+    setChecked("autoInformerToggle", state.showAutoInformer);
+    setChecked("kor2AutoInformerToggle", state.showAutoInformer);
+    setDisplay("autoInformerOptions", state.showAutoInformer);
+    setDisplay("kor2AutoInformerOptions", state.showAutoInformer);
+
+    setValue("templateRobotContacts", state.templateRobotContacts);
+    setValue("kor2TemplateRobotContacts", state.templateRobotContacts);
+    setValue("autoInformerContacts", state.autoInformerContacts);
+    setValue("kor2AutoInformerContacts", state.autoInformerContacts);
+
+    ["templateRobotTelephony", "kor2TemplateRobotTelephony"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = state.templateRobotTelephony;
+    });
+
+    document.querySelectorAll(".template-robot-checkbox, .template-robot-checkbox-kor2").forEach(cb => {
+        cb.checked = state.templateRobotsSelected.includes(cb.value);
+    });
+
+    ["Asr", "Transfer", "Recording"].forEach(suffix => {
+        const value = state["autoInformer" + suffix];
+        setChecked("autoInformer" + suffix, value);
+        setChecked("kor2AutoInformer" + suffix, value);
+    });
+}
+
+function handleDiscoveryProductToggle(product, enabled) {
+    if (product === "templateRobots") state.showTemplateRobots = enabled;
+    if (product === "autoInformer") state.showAutoInformer = enabled;
+    const order = state.discoveryKor2Order;
+    const idx = order.indexOf(product);
+    if (enabled && idx === -1) order.push(product);
+    if (!enabled && idx !== -1) order.splice(idx, 1);
+    syncDiscoveryProductControls();
+    updatePreviewForTab();
+}
+
+function updateKor2DiscoveryPreview() {
+    const aiDetails = document.getElementById("kor2AutoInformerDetails");
+    const trDetails = document.getElementById("kor2TemplateRobotsDetails");
+    if (!aiDetails || !trDetails) return;
+
+    const aiContacts = parseInt(state.autoInformerContacts) || 0;
+    const aiVisible = state.showAutoInformer && aiContacts > 0;
+    const trContacts = parseInt(state.templateRobotContacts) || 0;
+    const trVisible = state.showTemplateRobots && (state.templateRobotsSelected.length > 0 || trContacts > 0);
+
+    const ordered = state.discoveryKor2Order.filter(p =>
+        (p === "autoInformer" && aiVisible) || (p === "templateRobots" && trVisible));
+    if (aiVisible && !ordered.includes("autoInformer")) ordered.push("autoInformer");
+    if (trVisible && !ordered.includes("templateRobots")) ordered.push("templateRobots");
+
+    const renderRow = (name, desc, price) => `
+        <div class="calc-detail-item">
+            <div>
+                <div class="calc-detail-name">${name}</div>
+                ${desc ? `<div class="calc-detail-desc">${desc}</div>` : ""}
+            </div>
+            ${renderCalcDetailPrice(price, 1, true)}
+        </div>
+    `;
+
+    if (aiVisible) {
+        const requiredMinutes = Math.ceil(aiContacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+        const baseTotal = calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.minuteRate);
+        const addons = [
+            { enabled: state.autoInformerAsr, name: "Распознавание речи", rate: AUTOINFORMER_CALC.asrRate },
+            { enabled: state.autoInformerTransfer, name: "Перевод на менеджера", rate: AUTOINFORMER_CALC.transferRate },
+            { enabled: state.autoInformerRecording, name: "Запись звонка", rate: AUTOINFORMER_CALC.recordingRate }
+        ].filter(addon => addon.enabled);
+        let total = baseTotal;
+        let rows = renderRow("Обзвон роботом", `${formatNumber(requiredMinutes)} мин × ${formatRate(AUTOINFORMER_CALC.minuteRate)} ₽/мин`, baseTotal);
+        addons.forEach(addon => {
+            const addonTotal = calcClassicRobotMoney(requiredMinutes * addon.rate);
+            total += addonTotal;
+            rows += renderRow(addon.name, `${formatNumber(requiredMinutes)} мин × ${formatRate(addon.rate)} ₽/мин`, addonTotal);
+        });
+        rows += renderRow("Итого за первый месяц", "дозвон 50%, диалог 30 сек", total);
+        document.getElementById("kor2AutoInformerList").innerHTML = rows;
+        aiDetails.style.display = "block";
+    } else {
+        aiDetails.style.display = "none";
+    }
+
+    if (trVisible) {
+        const selected = TEMPLATE_ROBOTS.filter(template => state.templateRobotsSelected.includes(template.id));
+        const requiredMinutes = Math.ceil(trContacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+        const trafficRate = TEMPLATE_ROBOT_TRAFFIC_RATES[state.templateRobotTelephony] || TEMPLATE_ROBOT_TRAFFIC_RATES.own;
+        const telephonyLabel = state.templateRobotTelephony === "internod" ? "Интернод" : "своя АТС";
+        const trafficTotal = calcClassicRobotMoney(requiredMinutes * trafficRate);
+        const templatesTotal = selected.reduce((sum, template) => sum + template.price, 0);
+        let rows = selected.map(template =>
+            renderRow(template.name, "разовая оплата шаблона", template.price)).join("");
+        if (requiredMinutes > 0) {
+            rows += renderRow("Трафик", `${telephonyLabel}, ${formatNumber(requiredMinutes)} мин × ${formatRate(trafficRate)} ₽/мин`, trafficTotal);
+        }
+        rows += renderRow("Итого за первый месяц", "дозвон 50%, диалог 30 сек", templatesTotal + trafficTotal);
+        document.getElementById("kor2TemplateRobotsList").innerHTML = rows;
+        trDetails.style.display = "block";
+    } else {
+        trDetails.style.display = "none";
+    }
+
+    ordered.forEach((product, idx) => {
+        const caption = document.getElementById(product === "autoInformer" ? "kor2AutoInformerCaption" : "kor2TemplateRobotsCaption");
+        if (caption) caption.textContent = `${idx + 3}. ${product === "autoInformer" ? "Автоинформатор" : "Конструктор роботов"}`;
+    });
+
+    // блоки располагаем сразу после «2. Дополнительные услуги» в порядке выбора
+    const calcDetails = document.getElementById("calcDetails");
+    if (calcDetails) {
+        let ref = calcDetails;
+        ordered.forEach(product => {
+            const el = product === "autoInformer" ? aiDetails : trDetails;
+            ref.parentNode.insertBefore(el, ref.nextSibling);
+            ref = el;
+        });
+    }
+}
+
 function updateTemplateRobotsCalculation() {
     const container = document.getElementById("templateRobotsCalculationContent");
     if (!container) return;
@@ -2830,6 +3006,7 @@ function updatePreviewForTab() {
     if (managerSection) managerSection.style.display = "";
     if (header) header.style.display = "";
 
+    updateKor2DiscoveryPreview();
     updateManagerBlock();
     updateClientPreview();
     updateServicePreviewBanner();
@@ -3346,6 +3523,7 @@ function updateCalculations() {
     document.getElementById("summaryAdditionalTotal").textContent = formatPrice(additionalTotal);
     document.getElementById("summaryAdditionalRow").style.display = additionalTotal > 0 ? "" : "none";
 
+    updateKor2DiscoveryPreview();
     updateDiscoveryPreview();
 }
 
