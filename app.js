@@ -1034,7 +1034,8 @@ function calculate() {
     });
 
     const monthlyTotal = licenseMonthly + moduleMonthly + incomingMonthly + incomingAtcMonthly + featuresMonthly + discoveryMonthly;
-    const periodTotal = licensePeriod + (moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcFixedPrice + atcTotal + discoveryOneTime + featuresOneTime;
+    const kor2Discovery = getKor2DiscoveryTotals();
+    const periodTotal = licensePeriod + (moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcFixedPrice + atcTotal + discoveryOneTime + featuresOneTime + kor2Discovery.aiTotal + kor2Discovery.trTotal;
 
     return {
         licensePricePerPeriod,
@@ -1060,6 +1061,8 @@ function calculate() {
         featuresOneTime,
         discoveryMonthly,
         discoveryOneTime,
+        kor2AiTotal: kor2Discovery.aiTotal,
+        kor2TrTotal: kor2Discovery.trTotal,
         monthlyTotal,
         periodTotal,
         minutesPricePerMin,
@@ -2671,6 +2674,30 @@ function handleDiscoveryProductToggle(product, enabled) {
     updatePreviewForTab();
 }
 
+function getKor2DiscoveryTotals() {
+    const aiContacts = parseInt(state.autoInformerContacts) || 0;
+    let aiTotal = 0;
+    if (state.showAutoInformer && aiContacts > 0) {
+        const requiredMinutes = Math.ceil(aiContacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+        aiTotal = calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.minuteRate);
+        if (state.autoInformerAsr) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.asrRate);
+        if (state.autoInformerTransfer) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.transferRate);
+        if (state.autoInformerRecording) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.recordingRate);
+    }
+
+    const trContacts = parseInt(state.templateRobotContacts) || 0;
+    const selected = TEMPLATE_ROBOTS.filter(template => state.templateRobotsSelected.includes(template.id));
+    let trTotal = 0;
+    if (state.showTemplateRobots && (selected.length > 0 || trContacts > 0)) {
+        const requiredMinutes = Math.ceil(trContacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+        const trafficRate = TEMPLATE_ROBOT_TRAFFIC_RATES[state.templateRobotTelephony] || TEMPLATE_ROBOT_TRAFFIC_RATES.own;
+        trTotal = selected.reduce((sum, template) => sum + template.price, 0)
+            + calcClassicRobotMoney(requiredMinutes * trafficRate);
+    }
+
+    return { aiTotal, trTotal };
+}
+
 function updateKor2DiscoveryPreview() {
     const aiDetails = document.getElementById("kor2AutoInformerDetails");
     const trDetails = document.getElementById("kor2TemplateRobotsDetails");
@@ -3007,6 +3034,7 @@ function updatePreviewForTab() {
     if (header) header.style.display = "";
 
     updateKor2DiscoveryPreview();
+    updateCalculations();
     updateManagerBlock();
     updateClientPreview();
     updateServicePreviewBanner();
@@ -3517,11 +3545,15 @@ function updateCalculations() {
 
     document.getElementById("previewCalcTotal").textContent = formatPrice(calc.periodTotal);
 
-    const additionalTotal = calc.periodTotal - calc.licensePeriod;
+    const additionalTotal = calc.periodTotal - calc.licensePeriod - calc.kor2AiTotal - calc.kor2TrTotal;
     document.getElementById("summaryTariffName").textContent = tariffName;
     document.getElementById("summaryLicenseTotal").textContent = formatPrice(calc.licensePeriod);
     document.getElementById("summaryAdditionalTotal").textContent = formatPrice(additionalTotal);
     document.getElementById("summaryAdditionalRow").style.display = additionalTotal > 0 ? "" : "none";
+    document.getElementById("summaryKor2AiRow").style.display = calc.kor2AiTotal > 0 ? "" : "none";
+    document.getElementById("summaryKor2AiTotal").textContent = formatPrice(calc.kor2AiTotal);
+    document.getElementById("summaryKor2TrRow").style.display = calc.kor2TrTotal > 0 ? "" : "none";
+    document.getElementById("summaryKor2TrTotal").textContent = formatPrice(calc.kor2TrTotal);
 
     updateKor2DiscoveryPreview();
     updateDiscoveryPreview();
