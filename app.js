@@ -40,7 +40,7 @@ const adminData = {
             name: "Лешкин Виталий",
             email: "vlyoshkin@skorozvon.ru",
             photo: "",
-            directions: ["discovery"]
+            directions: ["discovery", "kor2"]
         },
         {
             id: 7,
