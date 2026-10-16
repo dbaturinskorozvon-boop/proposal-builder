@@ -232,6 +232,14 @@
                         <span>Кол-во контактов</span>
                         <input type="number" id="kor2AutoInformerContacts" min="0" step="1000" placeholder="20000">
                     </label>
+                    <label style="margin-left: 24px;">
+                        <span>Дозвон, %</span>
+                        <input type="number" id="kor2AutoInformerAnswerRate" min="0" max="100" step="1" value="50">
+                    </label>
+                    <label style="margin-left: 24px;">
+                        <span>Диалог, сек</span>
+                        <input type="number" id="kor2AutoInformerDialogSeconds" min="0" step="5" value="30">
+                    </label>
                     <label class="checkbox-item sub-checkbox-item" style="margin-left: 24px;">
                         <input type="checkbox" id="kor2AutoInformerAsr">
                         <div class="item-info">
@@ -295,6 +303,14 @@
                     <label style="margin-left: 24px;">
                         <span>Кол-во контактов</span>
                         <input type="number" id="kor2TemplateRobotContacts" min="0" step="1000" placeholder="20000">
+                    </label>
+                    <label style="margin-left: 24px;">
+                        <span>Дозвон, %</span>
+                        <input type="number" id="kor2TemplateRobotsAnswerRate" min="0" max="100" step="1" value="50">
+                    </label>
+                    <label style="margin-left: 24px;">
+                        <span>Диалог, сек</span>
+                        <input type="number" id="kor2TemplateRobotsDialogSeconds" min="0" step="5" value="30">
                     </label>
                     <label style="margin-left: 24px;">
                         <span>Телефония</span>
@@ -2167,6 +2183,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="datastore.js?v=6"></script>
-    <script src="app.js?v=10"></script>
+    <script src="app.js?v=11"></script>
 </body>
 </html>

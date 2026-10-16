@@ -477,6 +477,10 @@ const state = {
     templateRobotContacts: "",
     templateRobotTelephony: "own",
     discoveryKor2Order: [],
+    autoInformerAnswerRate: 50,
+    autoInformerDialogSeconds: 30,
+    templateRobotsAnswerRate: 50,
+    templateRobotsDialogSeconds: 30,
     showAutoInformer: false,
     autoInformerContacts: "",
     autoInformerAsr: false,
@@ -2096,7 +2100,7 @@ function bindEvents() {
         });
     }
 
-    [["autoInformerAsr", "autoInformerAsr"], ["kor2AutoInformerAsr", "autoInformerAsr"],
+    [    ["autoInformerAsr", "autoInformerAsr"], ["kor2AutoInformerAsr", "autoInformerAsr"],
      ["autoInformerTransfer", "autoInformerTransfer"], ["kor2AutoInformerTransfer", "autoInformerTransfer"],
      ["autoInformerRecording", "autoInformerRecording"], ["kor2AutoInformerRecording", "autoInformerRecording"]].forEach(([id, stateKey]) => {
         const el = document.getElementById(id);
@@ -2104,6 +2108,19 @@ function bindEvents() {
             el.addEventListener("change", e => {
                 state[stateKey] = e.target.checked;
                 syncDiscoveryProductControls();
+                updatePreviewForTab();
+            });
+        }
+    });
+
+    [["kor2AutoInformerAnswerRate", "autoInformerAnswerRate"],
+     ["kor2AutoInformerDialogSeconds", "autoInformerDialogSeconds"],
+     ["kor2TemplateRobotsAnswerRate", "templateRobotsAnswerRate"],
+     ["kor2TemplateRobotsDialogSeconds", "templateRobotsDialogSeconds"]].forEach(([id, stateKey]) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("input", e => {
+                state[stateKey] = e.target.value;
                 updatePreviewForTab();
             });
         }
@@ -2674,11 +2691,17 @@ function handleDiscoveryProductToggle(product, enabled) {
     updatePreviewForTab();
 }
 
+function getKor2RequiredMinutes(contacts, answerRatePercent, dialogSeconds) {
+    const answerRate = (parseFloat(answerRatePercent) || 0) / 100;
+    const dialogMinutes = (parseFloat(dialogSeconds) || 0) / 60;
+    return Math.ceil(contacts * answerRate * dialogMinutes);
+}
+
 function getKor2DiscoveryTotals() {
     const aiContacts = parseInt(state.autoInformerContacts) || 0;
     let aiTotal = 0;
     if (state.showAutoInformer && aiContacts > 0) {
-        const requiredMinutes = Math.ceil(aiContacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+        const requiredMinutes = getKor2RequiredMinutes(aiContacts, state.autoInformerAnswerRate, state.autoInformerDialogSeconds);
         aiTotal = calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.minuteRate);
         if (state.autoInformerAsr) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.asrRate);
         if (state.autoInformerTransfer) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.transferRate);
@@ -2689,7 +2712,7 @@ function getKor2DiscoveryTotals() {
     const selected = TEMPLATE_ROBOTS.filter(template => state.templateRobotsSelected.includes(template.id));
     let trTotal = 0;
     if (state.showTemplateRobots && (selected.length > 0 || trContacts > 0)) {
-        const requiredMinutes = Math.ceil(trContacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+        const requiredMinutes = getKor2RequiredMinutes(trContacts, state.templateRobotsAnswerRate, state.templateRobotsDialogSeconds);
         const trafficRate = TEMPLATE_ROBOT_TRAFFIC_RATES[state.templateRobotTelephony] || TEMPLATE_ROBOT_TRAFFIC_RATES.own;
         trTotal = selected.reduce((sum, template) => sum + template.price, 0)
             + calcClassicRobotMoney(requiredMinutes * trafficRate);
@@ -2716,15 +2739,15 @@ function updateKor2DiscoveryPreview() {
     const renderRow = (name, desc, price) => `
         <div class="calc-detail-item">
             <div>
-                <div class="calc-detail-name">${name}</div>
+                ${name ? `<div class="calc-detail-name">${name}</div>` : ""}
                 ${desc ? `<div class="calc-detail-desc">${desc}</div>` : ""}
             </div>
-            ${renderCalcDetailPrice(price, 1, true)}
+            ${price != null ? renderCalcDetailPrice(price, 1, true) : ""}
         </div>
     `;
 
     if (aiVisible) {
-        const requiredMinutes = Math.ceil(aiContacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+        const requiredMinutes = getKor2RequiredMinutes(aiContacts, state.autoInformerAnswerRate, state.autoInformerDialogSeconds);
         const baseTotal = calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.minuteRate);
         const addons = [
             { enabled: state.autoInformerAsr, name: "Распознавание речи", rate: AUTOINFORMER_CALC.asrRate },
@@ -2736,6 +2759,7 @@ function updateKor2DiscoveryPreview() {
             const addonTotal = calcClassicRobotMoney(requiredMinutes * addon.rate);
             rows += renderRow(addon.name, `${formatNumber(requiredMinutes)} мин × ${formatRate(addon.rate)} ₽/мин`, addonTotal);
         });
+        rows += renderRow(null, `дозвон ${state.autoInformerAnswerRate}%, диалог ${state.autoInformerDialogSeconds} сек; минут к оплате: ${formatNumber(requiredMinutes)}`);
         document.getElementById("kor2AutoInformerList").innerHTML = rows;
         aiDetails.style.display = "block";
     } else {
@@ -2744,7 +2768,7 @@ function updateKor2DiscoveryPreview() {
 
     if (trVisible) {
         const selected = TEMPLATE_ROBOTS.filter(template => state.templateRobotsSelected.includes(template.id));
-        const requiredMinutes = Math.ceil(trContacts * CLASSIC_ROBOT_CALC.answerRate * CLASSIC_ROBOT_CALC.dialogMinutes);
+        const requiredMinutes = getKor2RequiredMinutes(trContacts, state.templateRobotsAnswerRate, state.templateRobotsDialogSeconds);
         const trafficRate = TEMPLATE_ROBOT_TRAFFIC_RATES[state.templateRobotTelephony] || TEMPLATE_ROBOT_TRAFFIC_RATES.own;
         const telephonyLabel = state.templateRobotTelephony === "internod" ? "Интернод" : "своя АТС";
         const trafficTotal = calcClassicRobotMoney(requiredMinutes * trafficRate);
@@ -2753,6 +2777,7 @@ function updateKor2DiscoveryPreview() {
         if (requiredMinutes > 0) {
             rows += renderRow("Трафик", `${telephonyLabel}, ${formatNumber(requiredMinutes)} мин × ${formatRate(trafficRate)} ₽/мин`, trafficTotal);
         }
+        rows += renderRow(null, `дозвон ${state.templateRobotsAnswerRate}%, диалог ${state.templateRobotsDialogSeconds} сек; минут к оплате: ${formatNumber(requiredMinutes)}`);
         document.getElementById("kor2TemplateRobotsList").innerHTML = rows;
         trDetails.style.display = "block";
     } else {
