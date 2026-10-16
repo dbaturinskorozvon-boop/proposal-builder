@@ -2731,14 +2731,11 @@ function updateKor2DiscoveryPreview() {
             { enabled: state.autoInformerTransfer, name: "Перевод на менеджера", rate: AUTOINFORMER_CALC.transferRate },
             { enabled: state.autoInformerRecording, name: "Запись звонка", rate: AUTOINFORMER_CALC.recordingRate }
         ].filter(addon => addon.enabled);
-        let total = baseTotal;
         let rows = renderRow("Обзвон роботом", `${formatNumber(requiredMinutes)} мин × ${formatRate(AUTOINFORMER_CALC.minuteRate)} ₽/мин`, baseTotal);
         addons.forEach(addon => {
             const addonTotal = calcClassicRobotMoney(requiredMinutes * addon.rate);
-            total += addonTotal;
             rows += renderRow(addon.name, `${formatNumber(requiredMinutes)} мин × ${formatRate(addon.rate)} ₽/мин`, addonTotal);
         });
-        rows += renderRow("Итого за первый месяц", "дозвон 50%, диалог 30 сек", total);
         document.getElementById("kor2AutoInformerList").innerHTML = rows;
         aiDetails.style.display = "block";
     } else {
@@ -2751,13 +2748,11 @@ function updateKor2DiscoveryPreview() {
         const trafficRate = TEMPLATE_ROBOT_TRAFFIC_RATES[state.templateRobotTelephony] || TEMPLATE_ROBOT_TRAFFIC_RATES.own;
         const telephonyLabel = state.templateRobotTelephony === "internod" ? "Интернод" : "своя АТС";
         const trafficTotal = calcClassicRobotMoney(requiredMinutes * trafficRate);
-        const templatesTotal = selected.reduce((sum, template) => sum + template.price, 0);
         let rows = selected.map(template =>
             renderRow(template.name, "разовая оплата шаблона", template.price)).join("");
         if (requiredMinutes > 0) {
             rows += renderRow("Трафик", `${telephonyLabel}, ${formatNumber(requiredMinutes)} мин × ${formatRate(trafficRate)} ₽/мин`, trafficTotal);
         }
-        rows += renderRow("Итого за первый месяц", "дозвон 50%, диалог 30 сек", templatesTotal + trafficTotal);
         document.getElementById("kor2TemplateRobotsList").innerHTML = rows;
         trDetails.style.display = "block";
     } else {
