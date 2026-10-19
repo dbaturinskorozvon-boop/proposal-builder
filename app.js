@@ -942,8 +942,14 @@ function getTelephonyPeriodType(telephonyType) {
     return "посекундно";
 }
 
+const KOR2_PRO_YEAR_PRICE_FROM_99_OPS = 1600;
+
 function getLicensePricePerPeriod(tariff, period) {
     const base = adminData.tariffs.operatorLicense[tariff][period] || 0;
+    // КОР-2: профессиональный тариф, от 99 операторов — годовой пакет по 1 600 ₽/мес за оператора
+    if (period === "12" && tariff === "pro" && (parseInt(state.operatorsCount) || 0) >= 99) {
+        return KOR2_PRO_YEAR_PRICE_FROM_99_OPS;
+    }
     if (period === "3" && tariff === "pro") {
         const promo = getKor2ProThreeMonthPromoPrice();
         if (promo !== null) return promo;
