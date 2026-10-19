@@ -950,7 +950,8 @@ function getLicensePricePerPeriod(tariff, period) {
     if (period === "12" && tariff === "pro" && (parseInt(state.operatorsCount) || 0) >= 99) {
         return KOR2_PRO_YEAR_PRICE_FROM_99_OPS;
     }
-    if (period === "3" && tariff === "pro") {
+    // акция на 3 месяца не распространяется на 99+ операторов — там стандартная цена
+    if (period === "3" && tariff === "pro" && (parseInt(state.operatorsCount) || 0) < 99) {
         const promo = getKor2ProThreeMonthPromoPrice();
         if (promo !== null) return promo;
     }
