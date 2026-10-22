@@ -2813,7 +2813,7 @@ function updateKor2DiscoveryPreview() {
         });
         if (state.autoInformerRecording) {
             const recordingTotal = calcClassicRobotMoney(aiContacts * answerRate * 0.2);
-            rows += renderRow("Запись звонка", `${formatNumber(aiContacts)} контактов × ${state.autoInformerAnswerRate}% дозвона × 0,2 ₽`, recordingTotal);
+            rows += renderRow("Запись звонка", `${formatNumber(aiContacts)} контактов × ${state.autoInformerAnswerRate}% дозваниваемости × 0,2 ₽`, recordingTotal);
         }
         document.getElementById("kor2AutoInformerList").innerHTML = rows;
         aiDetails.style.display = "block";
