@@ -2752,10 +2752,12 @@ function getKor2DiscoveryTotals() {
     let aiTotal = 0;
     if (state.showAutoInformer && aiContacts > 0) {
         const requiredMinutes = getKor2RequiredMinutes(aiContacts, state.autoInformerAnswerRate, state.autoInformerDialogSeconds);
+        const answerRate = (parseFloat(state.autoInformerAnswerRate) || 0) / 100;
         aiTotal = calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.minuteRate);
         if (state.autoInformerAsr) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.asrRate);
         if (state.autoInformerTransfer) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.transferRate);
-        if (state.autoInformerRecording) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.recordingRate);
+        // запись звонка: контакты × дозвон% × 0,2 коп
+        if (state.autoInformerRecording) aiTotal += calcClassicRobotMoney(aiContacts * answerRate * 0.002);
     }
 
     const trContacts = parseInt(state.templateRobotContacts) || 0;
@@ -2798,17 +2800,21 @@ function updateKor2DiscoveryPreview() {
 
     if (aiVisible) {
         const requiredMinutes = getKor2RequiredMinutes(aiContacts, state.autoInformerAnswerRate, state.autoInformerDialogSeconds);
+        const answerRate = (parseFloat(state.autoInformerAnswerRate) || 0) / 100;
         const baseTotal = calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.minuteRate);
         const addons = [
             { enabled: state.autoInformerAsr, name: "Распознавание речи", rate: AUTOINFORMER_CALC.asrRate },
-            { enabled: state.autoInformerTransfer, name: "Перевод на менеджера", rate: AUTOINFORMER_CALC.transferRate },
-            { enabled: state.autoInformerRecording, name: "Запись звонка", rate: AUTOINFORMER_CALC.recordingRate }
+            { enabled: state.autoInformerTransfer, name: "Перевод на менеджера", rate: AUTOINFORMER_CALC.transferRate }
         ].filter(addon => addon.enabled);
         let rows = renderRow("Обзвон роботом", `${formatNumber(requiredMinutes)} мин × ${formatRate(AUTOINFORMER_CALC.minuteRate)} ₽/мин`, baseTotal);
         addons.forEach(addon => {
             const addonTotal = calcClassicRobotMoney(requiredMinutes * addon.rate);
             rows += renderRow(addon.name, `${formatNumber(requiredMinutes)} мин × ${formatRate(addon.rate)} ₽/мин`, addonTotal);
         });
+        if (state.autoInformerRecording) {
+            const recordingTotal = calcClassicRobotMoney(aiContacts * answerRate * 0.002);
+            rows += renderRow("Запись звонка", `${formatNumber(aiContacts)} контактов × ${state.autoInformerAnswerRate}% дозвона × 0,2 коп`, recordingTotal);
+        }
         rows += renderRow(null, `дозвон ${state.autoInformerAnswerRate}%, диалог ${state.autoInformerDialogSeconds} сек; минут к оплате: ${formatNumber(requiredMinutes)}`);
         document.getElementById("kor2AutoInformerList").innerHTML = rows;
         aiDetails.style.display = "block";
