@@ -1011,6 +1011,31 @@ input[type="checkbox"], input[type="radio"] {
     margin-bottom: 8px;
 }
 
+.advanced-settings {
+    margin-top: 12px;
+    border: 1px solid var(--border, #e2e5ee);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.advanced-settings summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    user-select: none;
+    list-style-position: inside;
+}
+
+.advanced-settings[open] summary {
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.advanced-settings .bonus-days-block:first-of-type {
+    margin-top: 4px;
+}
+
 .bonus-days-title {
     display: block;
     font-size: 12px;
