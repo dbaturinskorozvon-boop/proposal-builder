@@ -414,6 +414,10 @@ const state = {
     serviceUserPrices: { daily: null, "3": null, "6": null, "12": null },
     serviceSelectedFeatures: [],
     serviceFeatureQuantities: {},
+    serviceAiAmdEnabled: false,
+    serviceAiAmdNumbers: 10000,
+    serviceAiAmdAttempts: 3,
+    serviceAiAmdPrice: 6,
     showServiceProductsBanner: true,
     clientName: "",
     date: new Date().toISOString().split("T")[0],
@@ -1826,6 +1830,28 @@ function bindEvents() {
             updateServicePreviewBanner();
         });
     }
+
+    const serviceAiAmdToggle = document.getElementById("serviceAiAmdToggle");
+    if (serviceAiAmdToggle) {
+        serviceAiAmdToggle.addEventListener("change", e => {
+            state.serviceAiAmdEnabled = e.target.checked;
+            const options = document.getElementById("serviceAiAmdOptions");
+            if (options) options.style.display = state.serviceAiAmdEnabled ? "block" : "none";
+            updateServiceCalculations();
+        });
+    }
+
+    [["serviceAiAmdNumbers", "serviceAiAmdNumbers"],
+     ["serviceAiAmdAttempts", "serviceAiAmdAttempts"],
+     ["serviceAiAmdPrice", "serviceAiAmdPrice"]].forEach(([id, stateKey]) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("input", e => {
+                state[stateKey] = e.target.value;
+                updateServiceCalculations();
+            });
+        }
+    });
 
     const serviceFeaturesList = document.getElementById("serviceFeaturesList");
     if (serviceFeaturesList) {
@@ -3716,7 +3742,36 @@ function updateServiceCalculations() {
     if (summaryAdditionalRow) summaryAdditionalRow.style.display = additionalTotal > 0 ? "" : "none";
     if (summaryAdditionalTotal) summaryAdditionalTotal.textContent = formatPrice(additionalTotal);
 
-    const serviceTotal = licenseTotal + additionalTotal;
+    const aiAmdNumbers = state.serviceAiAmdEnabled ? (parseInt(state.serviceAiAmdNumbers) || 0) : 0;
+    const aiAmdAttempts = state.serviceAiAmdEnabled ? (parseInt(state.serviceAiAmdAttempts) || 0) : 0;
+    const aiAmdPriceKop = parseFloat(state.serviceAiAmdPrice) || 0;
+    const aiAmdTotal = aiAmdNumbers * aiAmdAttempts * aiAmdPriceKop / 100;
+
+    const aiAmdDetails = document.getElementById("serviceAiAmdDetails");
+    const aiAmdList = document.getElementById("serviceAiAmdList");
+    if (aiAmdDetails && aiAmdList) {
+        if (aiAmdTotal > 0) {
+            aiAmdList.innerHTML = `
+                <div class="calc-detail-item">
+                    <div>
+                        <div class="calc-detail-name">AI AMD: детектор автоответчиков</div>
+                        <div class="calc-detail-desc">${aiAmdNumbers.toLocaleString("ru-RU")} ${declineWord(aiAmdNumbers, "номер", "номера", "номеров")} × ${aiAmdAttempts} ${declineWord(aiAmdAttempts, "попытка", "попытки", "попыток")}, ${aiAmdPriceKop} коп/попытка</div>
+                    </div>
+                    ${renderCalcDetailPrice(aiAmdTotal, 1, true)}
+                </div>
+            `;
+            aiAmdDetails.style.display = "block";
+        } else {
+            aiAmdDetails.style.display = "none";
+        }
+    }
+
+    const summaryAiAmdRow = document.getElementById("serviceSummaryAiAmdRow");
+    const summaryAiAmdTotal = document.getElementById("serviceSummaryAiAmdTotal");
+    if (summaryAiAmdRow) summaryAiAmdRow.style.display = aiAmdTotal > 0 ? "" : "none";
+    if (summaryAiAmdTotal) summaryAiAmdTotal.textContent = formatPrice(aiAmdTotal);
+
+    const serviceTotal = licenseTotal + additionalTotal + aiAmdTotal;
 
     document.getElementById("serviceSummaryTariffName").textContent = tariffName;
     document.getElementById("serviceSummaryLicenseTotal").textContent = formatPrice(licenseTotal);

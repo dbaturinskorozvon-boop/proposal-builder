@@ -830,12 +830,36 @@
                 </div>
 
                 <div class="form-section">
-                    <h2>3. Возможности</h2>
+                    <div class="section-header-toggle">
+                        <h2>3. AI AMD</h2>
+                        <label class="switch" aria-label="Показать AI AMD">
+                            <input type="checkbox" id="serviceAiAmdToggle">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div id="serviceAiAmdOptions" style="display: none;">
+                        <label style="margin-left: 24px; margin-top: 8px;">
+                            <span>Кол-во номеров в базе</span>
+                            <input type="number" id="serviceAiAmdNumbers" min="0" step="1000" value="10000">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Попытки дозвона</span>
+                            <input type="number" id="serviceAiAmdAttempts" min="0" step="1" value="3">
+                        </label>
+                        <label style="margin-left: 24px;">
+                            <span>Стоимость попытки, коп</span>
+                            <input type="number" id="serviceAiAmdPrice" min="0" step="1" value="6">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>4. Возможности</h2>
                     <div id="serviceFeaturesList" class="checkbox-list"></div>
                 </div>
 
                 <div class="form-section">
-                    <h2>4. Дополнительные продукты</h2>
+                    <h2>5. Дополнительные продукты</h2>
                     <label class="switch" aria-label="Показать баннер дополнительных продуктов">
                         <input type="checkbox" id="serviceProductsBannerToggle" checked>
                         <span class="slider"></span>
@@ -1965,6 +1989,13 @@
                             <div id="serviceCalcDetailsList"></div>
                         </div>
 
+                        <div class="calc-details" id="serviceAiAmdDetails" style="display: none;">
+                            <div class="calc-details-caption">
+                                <span>AI AMD: детектор автоответчиков</span>
+                            </div>
+                            <div id="serviceAiAmdList"></div>
+                        </div>
+
                         <div class="calc-summary-row">
                             <div class="calc-summary-left">
                                 <div class="calc-summary-label">Итого за <span id="servicePreviewPeriodLabel">90 дней</span></div>
@@ -1976,6 +2007,10 @@
                                     <div class="calc-summary-line" id="serviceSummaryAdditionalRow" style="display: none;">
                                         <span class="calc-summary-line-name">+&nbsp;&nbsp;Дополнительные услуги</span>
                                         <span class="calc-summary-line-value" id="serviceSummaryAdditionalTotal"></span>
+                                    </div>
+                                    <div class="calc-summary-line" id="serviceSummaryAiAmdRow" style="display: none;">
+                                        <span class="calc-summary-line-name">+&nbsp;&nbsp;AI AMD: детектор автоответчиков</span>
+                                        <span class="calc-summary-line-value" id="serviceSummaryAiAmdTotal"></span>
                                     </div>
                                 </div>
                             </div>
@@ -2183,6 +2218,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="datastore.js?v=6"></script>
-    <script src="app.js?v=13"></script>
+    <script src="app.js?v=14"></script>
 </body>
 </html>
