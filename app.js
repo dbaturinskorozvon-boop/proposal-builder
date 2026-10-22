@@ -2756,8 +2756,8 @@ function getKor2DiscoveryTotals() {
         aiTotal = calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.minuteRate);
         if (state.autoInformerAsr) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.asrRate);
         if (state.autoInformerTransfer) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.transferRate);
-        // запись звонка: контакты × дозвон% × 0,2 коп
-        if (state.autoInformerRecording) aiTotal += calcClassicRobotMoney(aiContacts * answerRate * 0.002);
+        // запись звонка: контакты × дозвон% × 0,2 ₽
+        if (state.autoInformerRecording) aiTotal += calcClassicRobotMoney(aiContacts * answerRate * 0.2);
     }
 
     const trContacts = parseInt(state.templateRobotContacts) || 0;
@@ -2812,10 +2812,9 @@ function updateKor2DiscoveryPreview() {
             rows += renderRow(addon.name, `${formatNumber(requiredMinutes)} мин × ${formatRate(addon.rate)} ₽/мин`, addonTotal);
         });
         if (state.autoInformerRecording) {
-            const recordingTotal = calcClassicRobotMoney(aiContacts * answerRate * 0.002);
-            rows += renderRow("Запись звонка", `${formatNumber(aiContacts)} контактов × ${state.autoInformerAnswerRate}% дозвона × 0,2 коп`, recordingTotal);
+            const recordingTotal = calcClassicRobotMoney(aiContacts * answerRate * 0.2);
+            rows += renderRow("Запись звонка", `${formatNumber(aiContacts)} контактов × ${state.autoInformerAnswerRate}% дозвона × 0,2 ₽`, recordingTotal);
         }
-        rows += renderRow(null, `дозвон ${state.autoInformerAnswerRate}%, диалог ${state.autoInformerDialogSeconds} сек; минут к оплате: ${formatNumber(requiredMinutes)}`);
         document.getElementById("kor2AutoInformerList").innerHTML = rows;
         aiDetails.style.display = "block";
     } else {
@@ -2833,7 +2832,6 @@ function updateKor2DiscoveryPreview() {
         if (requiredMinutes > 0) {
             rows += renderRow("Трафик", `${telephonyLabel}, ${formatNumber(requiredMinutes)} мин × ${formatRate(trafficRate)} ₽/мин`, trafficTotal);
         }
-        rows += renderRow(null, `дозвон ${state.templateRobotsAnswerRate}%, диалог ${state.templateRobotsDialogSeconds} сек; минут к оплате: ${formatNumber(requiredMinutes)}`);
         document.getElementById("kor2TemplateRobotsList").innerHTML = rows;
         trDetails.style.display = "block";
     } else {
