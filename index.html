@@ -842,17 +842,36 @@
                     </div>
                     <div id="serviceAiAmdOptions" style="display: none;">
                         <label style="margin-left: 24px; margin-top: 8px;">
-                            <span>Кол-во номеров в базе</span>
-                            <input type="number" id="serviceAiAmdNumbers" min="0" step="1000" value="10000">
+                            <span>Способ расчёта</span>
+                            <select id="serviceAiAmdMode">
+                                <option value="base">По базе номеров</option>
+                                <option value="attempts">По попыткам дозвона</option>
+                            </select>
                         </label>
-                        <label style="margin-left: 24px;">
-                            <span>Попытки дозвона</span>
-                            <input type="number" id="serviceAiAmdAttempts" min="0" step="1" value="3">
-                        </label>
-                        <label style="margin-left: 24px;">
-                            <span>Стоимость попытки, коп</span>
-                            <input type="number" id="serviceAiAmdPrice" min="0" step="1" value="6">
-                        </label>
+                        <div id="serviceAiAmdBaseFields">
+                            <label style="margin-left: 24px;">
+                                <span>Кол-во номеров в базе</span>
+                                <input type="number" id="serviceAiAmdNumbers" min="0" step="1000" value="10000">
+                            </label>
+                            <label style="margin-left: 24px;">
+                                <span>Попытки дозвона</span>
+                                <input type="number" id="serviceAiAmdAttempts" min="0" step="1" value="3">
+                            </label>
+                            <label style="margin-left: 24px;">
+                                <span>Стоимость попытки, коп</span>
+                                <input type="number" id="serviceAiAmdPrice" min="0" step="1" value="6">
+                            </label>
+                        </div>
+                        <div id="serviceAiAmdAttemptsFields" style="display: none;">
+                            <label style="margin-left: 24px;">
+                                <span>Кол-во инициаций вызова</span>
+                                <input type="number" id="serviceAiAmdInitiations" min="0" step="1000" placeholder="30000">
+                            </label>
+                            <label style="margin-left: 24px;">
+                                <span>Стоимость 1 инициации, коп</span>
+                                <input type="number" id="serviceAiAmdInitiationPrice" min="0" step="1" value="6">
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -2222,6 +2241,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="datastore.js?v=6"></script>
-    <script src="app.js?v=15"></script>
+    <script src="app.js?v=16"></script>
 </body>
 </html>

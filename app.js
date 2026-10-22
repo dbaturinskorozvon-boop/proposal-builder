@@ -415,9 +415,12 @@ const state = {
     serviceSelectedFeatures: [],
     serviceFeatureQuantities: {},
     serviceAiAmdEnabled: false,
+    serviceAiAmdMode: "base",
     serviceAiAmdNumbers: 10000,
     serviceAiAmdAttempts: 3,
     serviceAiAmdPrice: 6,
+    serviceAiAmdInitiations: "",
+    serviceAiAmdInitiationPrice: 6,
     showServiceProductsBanner: true,
     clientName: "",
     date: new Date().toISOString().split("T")[0],
@@ -1841,9 +1844,23 @@ function bindEvents() {
         });
     }
 
+    const serviceAiAmdMode = document.getElementById("serviceAiAmdMode");
+    if (serviceAiAmdMode) {
+        serviceAiAmdMode.addEventListener("change", e => {
+            state.serviceAiAmdMode = e.target.value;
+            const baseFields = document.getElementById("serviceAiAmdBaseFields");
+            const attemptsFields = document.getElementById("serviceAiAmdAttemptsFields");
+            if (baseFields) baseFields.style.display = state.serviceAiAmdMode === "base" ? "block" : "none";
+            if (attemptsFields) attemptsFields.style.display = state.serviceAiAmdMode === "attempts" ? "block" : "none";
+            updateServiceCalculations();
+        });
+    }
+
     [["serviceAiAmdNumbers", "serviceAiAmdNumbers"],
      ["serviceAiAmdAttempts", "serviceAiAmdAttempts"],
-     ["serviceAiAmdPrice", "serviceAiAmdPrice"]].forEach(([id, stateKey]) => {
+     ["serviceAiAmdPrice", "serviceAiAmdPrice"],
+     ["serviceAiAmdInitiations", "serviceAiAmdInitiations"],
+     ["serviceAiAmdInitiationPrice", "serviceAiAmdInitiationPrice"]].forEach(([id, stateKey]) => {
         const el = document.getElementById(id);
         if (el) {
             el.addEventListener("input", e => {
@@ -3742,10 +3759,20 @@ function updateServiceCalculations() {
     if (summaryAdditionalRow) summaryAdditionalRow.style.display = additionalTotal > 0 ? "" : "none";
     if (summaryAdditionalTotal) summaryAdditionalTotal.textContent = formatPrice(additionalTotal);
 
-    const aiAmdNumbers = state.serviceAiAmdEnabled ? (parseInt(state.serviceAiAmdNumbers) || 0) : 0;
-    const aiAmdAttempts = state.serviceAiAmdEnabled ? (parseInt(state.serviceAiAmdAttempts) || 0) : 0;
-    const aiAmdPriceKop = parseFloat(state.serviceAiAmdPrice) || 0;
-    const aiAmdTotal = aiAmdNumbers * aiAmdAttempts * aiAmdPriceKop / 100;
+    let aiAmdTotal = 0;
+    let aiAmdDesc = "";
+    if (state.serviceAiAmdMode === "attempts") {
+        const initiations = state.serviceAiAmdEnabled ? (parseInt(state.serviceAiAmdInitiations) || 0) : 0;
+        const priceKop = parseFloat(state.serviceAiAmdInitiationPrice) || 0;
+        aiAmdTotal = initiations * priceKop / 100;
+        aiAmdDesc = `${initiations.toLocaleString("ru-RU")} инициаций вызова × ${priceKop} коп/инициация`;
+    } else {
+        const aiAmdNumbers = state.serviceAiAmdEnabled ? (parseInt(state.serviceAiAmdNumbers) || 0) : 0;
+        const aiAmdAttempts = state.serviceAiAmdEnabled ? (parseInt(state.serviceAiAmdAttempts) || 0) : 0;
+        const priceKop = parseFloat(state.serviceAiAmdPrice) || 0;
+        aiAmdTotal = aiAmdNumbers * aiAmdAttempts * priceKop / 100;
+        aiAmdDesc = `${aiAmdNumbers.toLocaleString("ru-RU")} ${declineWord(aiAmdNumbers, "номер", "номера", "номеров")} × ${aiAmdAttempts} ${declineWord(aiAmdAttempts, "попытка", "попытки", "попыток")}, ${priceKop} коп/попытка`;
+    }
 
     const aiAmdDetails = document.getElementById("serviceAiAmdDetails");
     const aiAmdList = document.getElementById("serviceAiAmdList");
@@ -3755,7 +3782,7 @@ function updateServiceCalculations() {
                 <div class="calc-detail-item">
                     <div>
                         <div class="calc-detail-name">AI AMD: детектор автоответчиков</div>
-                        <div class="calc-detail-desc">${aiAmdNumbers.toLocaleString("ru-RU")} ${declineWord(aiAmdNumbers, "номер", "номера", "номеров")} × ${aiAmdAttempts} ${declineWord(aiAmdAttempts, "попытка", "попытки", "попыток")}, ${aiAmdPriceKop} коп/попытка</div>
+                        <div class="calc-detail-desc">${aiAmdDesc}</div>
                     </div>
                     ${renderCalcDetailPrice(aiAmdTotal, 1, true)}
                 </div>
