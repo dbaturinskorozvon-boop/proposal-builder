@@ -8,7 +8,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["kor2"]
+      "directions": [
+        "kor2"
+      ]
     },
     {
       "id": 2,
@@ -18,7 +20,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["kor2"]
+      "directions": [
+        "kor2"
+      ]
     },
     {
       "id": 3,
@@ -28,7 +32,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["kor2"]
+      "directions": [
+        "kor2"
+      ]
     },
     {
       "id": 4,
@@ -38,7 +44,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["kor2"]
+      "directions": [
+        "kor2"
+      ]
     },
     {
       "id": 5,
@@ -48,7 +56,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["kor2"]
+      "directions": [
+        "kor2"
+      ]
     },
     {
       "id": 6,
@@ -58,7 +68,10 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["discovery", "kor2"]
+      "directions": [
+        "discovery",
+        "kor2"
+      ]
     },
     {
       "id": 7,
@@ -68,7 +81,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["discovery"]
+      "directions": [
+        "discovery"
+      ]
     },
     {
       "id": 8,
@@ -78,7 +93,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["discovery"]
+      "directions": [
+        "discovery"
+      ]
     },
     {
       "id": 9,
@@ -88,7 +105,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["discovery"]
+      "directions": [
+        "discovery"
+      ]
     },
     {
       "id": 10,
@@ -98,7 +117,10 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["kor2", "discovery"]
+      "directions": [
+        "kor2",
+        "discovery"
+      ]
     },
     {
       "id": 11,
@@ -108,7 +130,10 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["kor2", "discovery"]
+      "directions": [
+        "kor2",
+        "discovery"
+      ]
     },
     {
       "id": 12,
@@ -118,7 +143,10 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["kor2", "discovery"]
+      "directions": [
+        "kor2",
+        "discovery"
+      ]
     },
     {
       "id": 13,
@@ -128,7 +156,10 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["kor2", "discovery"]
+      "directions": [
+        "kor2",
+        "discovery"
+      ]
     },
     {
       "id": 14,
@@ -138,7 +169,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["service"]
+      "directions": [
+        "service"
+      ]
     },
     {
       "id": 15,
@@ -148,7 +181,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["service"]
+      "directions": [
+        "service"
+      ]
     },
     {
       "id": 16,
@@ -158,7 +193,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["service"]
+      "directions": [
+        "service"
+      ]
     },
     {
       "id": 17,
@@ -168,7 +205,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["service"]
+      "directions": [
+        "service"
+      ]
     },
     {
       "id": 18,
@@ -178,7 +217,9 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["service"]
+      "directions": [
+        "service"
+      ]
     },
     {
       "id": 19,
@@ -188,11 +229,28 @@
       "telegram": "",
       "max": "",
       "photo": "",
-      "directions": ["service"]
+      "directions": [
+        "service"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Горайчук Анастасия",
+      "email": "agorajchuk@skorozvon.ru",
+      "phone": "",
+      "telegram": "",
+      "max": "",
+      "photo": "",
+      "directions": [
+        "discovery"
+      ]
     }
   ],
   "sharedContacts": {
-    "phones": ["8 800 505 86 80", "+7 (495) 449-97-02"],
+    "phones": [
+      "8 800 505 86 80",
+      "+7 (495) 449-97-02"
+    ],
     "whatsapp": "+7 922 104 08 45",
     "whatsappNote": "Добавьте нас в контакты и напишите сообщение, чтобы мы смогли вам ответить",
     "telegram": "@skorozvon_tg",
@@ -225,7 +283,9 @@
       "id": "so-module",
       "title": "Бонус «50 000 + Модуль»",
       "description": "Подойдет для тех, кто хочет получить эффективный запуск обзвона с максимальной экономией на старте.",
-      "directions": ["kor2"],
+      "directions": [
+        "kor2"
+      ],
       "bonuses": [
         {
           "title": "Бонус: Модуль дозвона (1000 минут)",
@@ -247,7 +307,9 @@
       "id": "so-cashback",
       "title": "Бонус «50 000 + кешбэк»",
       "description": "Подойдет для тех, кто хочет получить эффективный запуск обзвона с максимальной экономией на старте.",
-      "directions": ["kor2"],
+      "directions": [
+        "kor2"
+      ],
       "bonuses": [
         {
           "title": "Бонус: Кэшбэк 10 000 рублей",
@@ -263,7 +325,9 @@
       "id": "so-easy-start",
       "title": "Легкий старт",
       "description": "Тариф «Ежедневно» по специальной цене 3 600 ₽/мес за пользователя вместо 4 500 ₽/мес. Выгода — 900 ₽ на каждого пользователя в первый месяц.",
-      "directions": ["kor2"],
+      "directions": [
+        "kor2"
+      ],
       "bonuses": []
     }
   ],
@@ -290,9 +354,21 @@
         "fixedPrice": 6000,
         "fixedThreshold": 1999,
         "tiers": [
-          { "min": 2000, "max": 9999, "pricePerMin": 2.2 },
-          { "min": 10000, "max": 39999, "pricePerMin": 1.7 },
-          { "min": 40000, "max": 59999, "pricePerMin": 1.6 }
+          {
+            "min": 2000,
+            "max": 9999,
+            "pricePerMin": 2.2
+          },
+          {
+            "min": 10000,
+            "max": 39999,
+            "pricePerMin": 1.7
+          },
+          {
+            "min": 40000,
+            "max": 59999,
+            "pricePerMin": 1.6
+          }
         ]
       },
       "pro": {
@@ -300,15 +376,33 @@
         "fixedPrice": 7000,
         "fixedThreshold": 1999,
         "tiers": [
-          { "min": 2000, "max": 9999, "pricePerMin": 2.5 },
-          { "min": 10000, "max": 39999, "pricePerMin": 2.0 },
-          { "min": 40000, "max": 59999, "pricePerMin": 1.8 }
+          {
+            "min": 2000,
+            "max": 9999,
+            "pricePerMin": 2.5
+          },
+          {
+            "min": 10000,
+            "max": 39999,
+            "pricePerMin": 2.0
+          },
+          {
+            "min": 40000,
+            "max": 59999,
+            "pricePerMin": 1.8
+          }
         ]
       }
     },
     "atc": {
-      "with_reg": { "name": "С регистрацией", "price": 2000 },
-      "without_reg": { "name": "Без регистрации", "price": 10000 }
+      "with_reg": {
+        "name": "С регистрацией",
+        "price": 2000
+      },
+      "without_reg": {
+        "name": "Без регистрации",
+        "price": 10000
+      }
     },
     "incomingNumber": {
       "setup": 1000,
@@ -322,10 +416,26 @@
     },
     "minutes": {
       "tiers": [
-        { "min": 0, "max": 1999, "pricePerMin": 2.2 },
-        { "min": 2000, "max": 9999, "pricePerMin": 1.7 },
-        { "min": 10000, "max": 39999, "pricePerMin": 1.4 },
-        { "min": 40000, "max": null, "pricePerMin": 1.2 }
+        {
+          "min": 0,
+          "max": 1999,
+          "pricePerMin": 2.2
+        },
+        {
+          "min": 2000,
+          "max": 9999,
+          "pricePerMin": 1.7
+        },
+        {
+          "min": 10000,
+          "max": 39999,
+          "pricePerMin": 1.4
+        },
+        {
+          "min": 40000,
+          "max": null,
+          "pricePerMin": 1.2
+        }
       ]
     }
   },
@@ -409,8 +519,18 @@
       "description": "Превращайте звонки в рабочие бизнес-инсайты. Получайте персональные ИИ-рекомендации, оценивайте эффективность телефонных разговоров и улучшайте метрики на основе данных.",
       "requiresSkorozvon": true,
       "pricingOptions": [
-        { "id": "sa_base", "name": "Базовый", "price": 18000, "description": "До 1 000 минут аналитики" },
-        { "id": "sa_pro", "name": "PRO", "price": 35000, "description": "До 5 000 минут аналитики" }
+        {
+          "id": "sa_base",
+          "name": "Базовый",
+          "price": 18000,
+          "description": "До 1 000 минут аналитики"
+        },
+        {
+          "id": "sa_pro",
+          "name": "PRO",
+          "price": 35000,
+          "description": "До 5 000 минут аналитики"
+        }
       ]
     },
     {
@@ -419,8 +539,18 @@
       "description": "Выводите менеджеров на плановые KPI за 2 недели, а не за 3 месяца. Интерактивный онлайн-тренажер имитирует диалог с реальным клиентом.",
       "requiresSkorozvon": false,
       "pricingOptions": [
-        { "id": "at_5", "name": "5 тренировок", "price": 23000, "description": "5 тренировок в месяц" },
-        { "id": "at_10", "name": "10 тренировок", "price": 35000, "description": "10 тренировок в месяц" }
+        {
+          "id": "at_5",
+          "name": "5 тренировок",
+          "price": 23000,
+          "description": "5 тренировок в месяц"
+        },
+        {
+          "id": "at_10",
+          "name": "10 тренировок",
+          "price": 35000,
+          "description": "10 тренировок в месяц"
+        }
       ]
     },
     {
@@ -429,8 +559,18 @@
       "description": "Оптимизируйте затраты на обзвон на 20%. Сервис проанализирует все номера в базе и даст рекомендации.",
       "requiresSkorozvon": true,
       "pricingOptions": [
-        { "id": "sc_1000", "name": "1 000 контактов", "price": 300, "description": "1 000 контактов" },
-        { "id": "sc_5000", "name": "5 000 контактов", "price": 1200, "description": "5 000 контактов" }
+        {
+          "id": "sc_1000",
+          "name": "1 000 контактов",
+          "price": 300,
+          "description": "1 000 контактов"
+        },
+        {
+          "id": "sc_5000",
+          "name": "5 000 контактов",
+          "price": 1200,
+          "description": "5 000 контактов"
+        }
       ]
     },
     {
@@ -439,9 +579,24 @@
       "description": "Автоматизируйте исходящие звонки с помощью голосового робота. Доступны сценарный, гибридный и ИИ-робот.",
       "requiresSkorozvon": false,
       "pricingOptions": [
-        { "id": "dr_script", "name": "Сценарный", "price": 15000, "description": "Базовый сценарный робот" },
-        { "id": "dr_hybrid", "name": "Гибридный", "price": 25000, "description": "Гибридный робот" },
-        { "id": "dr_ai", "name": "ИИ-робот", "price": 40000, "description": "Робот на базе ИИ" }
+        {
+          "id": "dr_script",
+          "name": "Сценарный",
+          "price": 15000,
+          "description": "Базовый сценарный робот"
+        },
+        {
+          "id": "dr_hybrid",
+          "name": "Гибридный",
+          "price": 25000,
+          "description": "Гибридный робот"
+        },
+        {
+          "id": "dr_ai",
+          "name": "ИИ-робот",
+          "price": 40000,
+          "description": "Робот на базе ИИ"
+        }
       ]
     }
   ],
@@ -451,34 +606,55 @@
       "icon": "🎁",
       "title": "Подключение транка бесплатно",
       "description": "При пополнении счёта от 50 000 ₽. Экономия 10 000 ₽!",
-      "directions": ["kor2"]
+      "directions": [
+        "kor2"
+      ]
     },
     {
       "id": "b2",
       "icon": "🤖",
       "title": "Бесплатный AI-пакет",
       "description": "5 тренировок AI-тренера, 1 000 мин аналитики, скоринг 1 000 контактов.",
-      "directions": ["discovery"]
+      "directions": [
+        "discovery"
+      ]
     },
     {
       "id": "b3",
       "icon": "📞",
       "title": "20 номеров без абонентской платы",
       "description": "На первый месяц использования.",
-      "directions": ["kor2"]
+      "directions": [
+        "kor2"
+      ]
     },
     {
       "id": "b4",
       "icon": "💰",
       "title": "Подключение транка + кешбэк",
       "description": "При пополнении от 50 000 рублей вы получите 5% бонусами на счет + подключение 1 транка бесплатно!",
-      "directions": ["kor2"]
+      "directions": [
+        "kor2"
+      ]
     }
   ],
   "clientLogos": [
-    "Яндекс Такси", "ПИК", "auto.ru", "ТОЧКА", "DELTA",
-    "Модульбанк", "БайкалИнвестБанк", "Деньги Сразу", "Телесейлз", "NEW RETAIL FORUM",
-    "BIO", "ЭЛТА", "Айва", "Auchan RETAIL", "Zetta",
-    "One click money", "ЛИДГЕН БЮРО"
+    "Яндекс Такси",
+    "ПИК",
+    "auto.ru",
+    "ТОЧКА",
+    "DELTA",
+    "Модульбанк",
+    "БайкалИнвестБанк",
+    "Деньги Сразу",
+    "Телесейлз",
+    "NEW RETAIL FORUM",
+    "BIO",
+    "ЭЛТА",
+    "Айва",
+    "Auchan RETAIL",
+    "Zetta",
+    "One click money",
+    "ЛИДГЕН БЮРО"
   ]
 }

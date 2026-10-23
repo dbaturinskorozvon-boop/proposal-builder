@@ -104,6 +104,13 @@ const adminData = {
             email: "akharchenko@skorozvon.ru",
             photo: "",
             directions: ["service"]
+        },
+        {
+            id: 20,
+            name: "Горайчук Анастасия",
+            email: "agorajchuk@skorozvon.ru",
+            photo: "",
+            directions: ["discovery"]
         }
     ],
 
