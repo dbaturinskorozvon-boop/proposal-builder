@@ -2763,8 +2763,8 @@ function getKor2DiscoveryTotals() {
         aiTotal = calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.minuteRate);
         if (state.autoInformerAsr) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.asrRate);
         if (state.autoInformerTransfer) aiTotal += calcClassicRobotMoney(requiredMinutes * AUTOINFORMER_CALC.transferRate);
-        // запись звонка: контакты × дозвон% × 0,2 ₽
-        if (state.autoInformerRecording) aiTotal += calcClassicRobotMoney(aiContacts * answerRate * 0.2);
+        // запись звонка: контакты × дозвон% × 0,02 ₽
+        if (state.autoInformerRecording) aiTotal += calcClassicRobotMoney(aiContacts * answerRate * 0.02);
     }
 
     const trContacts = parseInt(state.templateRobotContacts) || 0;
@@ -2819,8 +2819,8 @@ function updateKor2DiscoveryPreview() {
             rows += renderRow(addon.name, `${formatNumber(requiredMinutes)} мин × ${formatRate(addon.rate)} ₽/мин`, addonTotal);
         });
         if (state.autoInformerRecording) {
-            const recordingTotal = calcClassicRobotMoney(aiContacts * answerRate * 0.2);
-            rows += renderRow("Запись звонка", `${formatNumber(aiContacts)} контактов × ${state.autoInformerAnswerRate}% дозваниваемости × 0,2 ₽`, recordingTotal);
+            const recordingTotal = calcClassicRobotMoney(aiContacts * answerRate * 0.02);
+            rows += renderRow("Запись звонка", `${formatNumber(aiContacts)} контактов × ${state.autoInformerAnswerRate}% дозваниваемости × 0,02 ₽`, recordingTotal);
         }
         document.getElementById("kor2AutoInformerList").innerHTML = rows;
         aiDetails.style.display = "block";
