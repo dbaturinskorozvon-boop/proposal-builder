@@ -110,7 +110,7 @@ const adminData = {
             name: "Горайчук Анастасия",
             email: "agorajchuk@skorozvon.ru",
             photo: "",
-            directions: ["discovery"]
+            directions: ["service"]
         }
     ],
 

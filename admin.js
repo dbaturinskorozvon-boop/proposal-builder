@@ -66,7 +66,7 @@ function getDefaultAdminData() {
             { id: 17, name: "Мансурова Александра", email: "amansurova@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] },
             { id: 18, name: "Евграшина Дарья", email: "devgrashina@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] },
             { id: 19, name: "Харченко Александра", email: "akharchenko@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] },
-            { id: 20, name: "Горайчук Анастасия", email: "agorajchuk@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["discovery"] }
+            { id: 20, name: "Горайчук Анастасия", email: "agorajchuk@skorozvon.ru", phone: "", telegram: "", max: "", photo: "", directions: ["service"] }
         ],
         specialOffers: [
             {
