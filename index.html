@@ -124,8 +124,8 @@
 
             <div class="form-section" id="featuresSection">
                 <h2>5. Телефония и возможности</h2>
-                <label>
-                    <span>Телефония (можно выбрать несколько)</span>
+                <details class="advanced-settings" id="telephonyTypesDetails">
+                    <summary id="telephonyTypesSummary">Телефония — ничего не выбрано</summary>
                     <div class="checkbox-list" id="telephonyTypeList">
                         <label class="checkbox-item">
                             <input type="checkbox" class="telephony-type-checkbox" value="internod">
@@ -152,13 +152,25 @@
                             </div>
                         </label>
                         <label class="checkbox-item">
+                            <input type="checkbox" class="telephony-type-checkbox" value="md_extended_fix">
+                            <div class="item-info">
+                                <div class="item-name">МД расширенный (фикс) — 20 000 ₽/мес</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" class="telephony-type-checkbox" value="md_max">
                             <div class="item-info">
                                 <div class="item-name">МД Максимальный</div>
                             </div>
                         </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="telephony-type-checkbox" value="md_max_fix">
+                            <div class="item-info">
+                                <div class="item-name">МД Максимальный (фикс) — 40 000 ₽/мес</div>
+                            </div>
+                        </label>
                     </div>
-                </label>
+                </details>
                 <label>
                     <span>Количество минут в месяц</span>
                     <input type="number" id="minutesCount" min="0" step="100" value="1000">
@@ -2266,6 +2278,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="datastore.js?v=6"></script>
-    <script src="app.js?v=22"></script>
+    <script src="app.js?v=23"></script>
 </body>
 </html>

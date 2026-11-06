@@ -524,7 +524,7 @@ const state = {
 const INTERNOD_MAV_ATTEMPT_PRICE = 0.7;
 
 function isAiAmdAvailable() {
-    return state.telephonyTypes.some(t => t === "md_extended" || t === "md_basic" || t === "md_basic_second" || t === "internod");
+    return state.telephonyTypes.some(t => t === "md_extended" || t === "md_extended_fix" || t === "md_basic" || t === "md_basic_second" || t === "internod");
 }
 
 const EASY_START_OFFER_ID = "so-easy-start";
@@ -861,6 +861,8 @@ function getTelephonyPrice(telephonyType, minutes) {
     }
     if (telephonyType === "md_basic") return minutes * 0.25 * 1.4;
     if (telephonyType === "md_basic_second") return minutes * 0.25;
+    if (telephonyType === "md_extended_fix") return 20000;
+    if (telephonyType === "md_max_fix") return 40000;
 
     const tariffs = {
         md_extended: {
@@ -939,11 +941,17 @@ function getTelephonyName(telephonyType) {
     const names = {
         internod: "Партнерская телефония",
         md_basic: "Модуль дозвона: базовый",
-        md_basic_second: "Модуль дозвона: базовый (посекундный)",
+        md_basic_second: "Пропуск трафика",
         md_extended: "Модуль дозвона: расширенный",
-        md_max: "Модуль дозвона: максимальный"
+        md_extended_fix: "Модуль дозвона: расширенный (фикс)",
+        md_max: "Модуль дозвона: максимальный",
+        md_max_fix: "Модуль дозвона: максимальный (фикс)"
     };
     return names[telephonyType] || "Телефония";
+}
+
+function isFixedTelephony(telephonyType) {
+    return telephonyType === "md_extended_fix" || telephonyType === "md_max_fix";
 }
 
 function getTelephonyPeriodType(telephonyType) {
@@ -1447,6 +1455,12 @@ function bindEvents() {
     document.querySelectorAll(".telephony-type-checkbox").forEach(checkbox => {
         checkbox.addEventListener("change", () => {
             state.telephonyTypes = Array.from(document.querySelectorAll(".telephony-type-checkbox:checked")).map(el => el.value);
+            const summary = document.getElementById("telephonyTypesSummary");
+            if (summary) {
+                summary.textContent = state.telephonyTypes.length === 0
+                    ? "Телефония — ничего не выбрано"
+                    : `Телефония — выбрано: ${state.telephonyTypes.length}`;
+            }
             const internodOptions = document.getElementById("internodOptions");
             if (internodOptions) {
                 internodOptions.style.display = state.telephonyTypes.includes("internod") ? "block" : "none";
@@ -1456,7 +1470,7 @@ function bindEvents() {
                 aiAmdOptions.style.display = isAiAmdAvailable() ? "block" : "none";
             }
             if (isAiAmdAvailable()) {
-                state.aiAmdPrice = state.telephonyTypes.includes("md_extended") ? 6 : 10;
+                state.aiAmdPrice = (state.telephonyTypes.includes("md_extended") || state.telephonyTypes.includes("md_extended_fix")) ? 6 : 10;
                 const priceInput = document.getElementById("aiAmdPrice");
                 if (priceInput) priceInput.value = state.aiAmdPrice;
             }
@@ -3447,21 +3461,23 @@ function updateCalculations() {
         state.telephonyTypes.forEach(telephonyType => {
             let minutes = parseInt(state.minutesCount) || 0;
             if (telephonyType === "md_extended" && minutes === 10000000) minutes = 126000;
-            const rate = getTelephonyRate(telephonyType, parseInt(state.minutesCount) || 0);
-            const periodType = getTelephonyPeriodType(telephonyType);
             const telephonyName = getTelephonyName(telephonyType);
+            const isFixed = isFixedTelephony(telephonyType);
+            const desc = isFixed
+                ? "фиксированная стоимость, без привязки к минутам"
+                : `${minutes.toLocaleString("ru-RU")} минут, ${getTelephonyRate(telephonyType, parseInt(state.minutesCount) || 0)} ₽/мин (${getTelephonyPeriodType(telephonyType)})`;
 
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
                     <div>
                         <div class="calc-detail-name">${telephonyName}</div>
-                        <div class="calc-detail-desc">${minutes.toLocaleString("ru-RU")} минут, ${rate} ₽/мин (${periodType})</div>
+                        <div class="calc-detail-desc">${desc}</div>
                     </div>
                     ${renderCalcDetailPrice(getTelephonyPrice(telephonyType, parseInt(state.minutesCount) || 0), calc.periodMonths)}
                 </div>
             `;
 
-            if (telephonyType === "md_max") {
+            if (telephonyType === "md_max" || telephonyType === "md_max_fix") {
                 calcDetailsList.innerHTML += `
                     <div class="calc-detail-item">
                         <div>
