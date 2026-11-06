@@ -439,7 +439,7 @@ const state = {
     startAmount: 0,
     startAmountDesc: "Рекомендуемая сумма для внесения на баланс.\nЭтого хватит на первое время работы.",
     minutesCount: 1000,
-    telephonyType: "none",
+    telephonyTypes: [],
     internodBilling: "per_minute",
     internodRate: 2.15,
     internodMavAttempts: 0,
@@ -523,14 +523,8 @@ const state = {
 
 const INTERNOD_MAV_ATTEMPT_PRICE = 0.7;
 
-const AI_AMD_DEFAULT_PRICES = { md_extended: 6, md_basic: 10, internod: 10 };
-
 function isAiAmdAvailable() {
-    return state.telephonyType === "md_extended" || state.telephonyType === "md_basic" || state.telephonyType === "internod";
-}
-
-function getAiAmdDefaultPrice(telephonyType) {
-    return AI_AMD_DEFAULT_PRICES[telephonyType] || 10;
+    return state.telephonyTypes.some(t => t === "md_extended" || t === "md_basic" || t === "md_basic_second" || t === "internod");
 }
 
 const EASY_START_OFFER_ID = "so-easy-start";
@@ -860,13 +854,13 @@ function getMinutesPrice(minutes) {
 
 function getTelephonyPrice(telephonyType, minutes) {
     if (telephonyType === "md_extended" && minutes === 10000000) return 126000 * 0.5;
-    if (telephonyType === "none") return 0;
     if (telephonyType === "internod") {
         const rate = state.internodRate || 2.15;
         if (state.internodBilling === "per_second") return minutes * rate;
         return minutes * rate * 1.4;
     }
     if (telephonyType === "md_basic") return minutes * 0.25 * 1.4;
+    if (telephonyType === "md_basic_second") return minutes * 0.25;
 
     const tariffs = {
         md_extended: {
@@ -910,6 +904,7 @@ function getTelephonyRate(telephonyType, minutes) {
     if (telephonyType === "md_extended" && minutes === 10000000) return 0.5;
     if (telephonyType === "internod") return state.internodRate || 2.15;
     if (telephonyType === "md_basic") return 0.25;
+    if (telephonyType === "md_basic_second") return 0.25;
 
     const tiers = {
         md_extended: [
@@ -944,6 +939,7 @@ function getTelephonyName(telephonyType) {
     const names = {
         internod: "Партнерская телефония",
         md_basic: "Модуль дозвона: базовый",
+        md_basic_second: "Модуль дозвона: базовый (посекундный)",
         md_extended: "Модуль дозвона: расширенный",
         md_max: "Модуль дозвона: максимальный"
     };
@@ -953,6 +949,7 @@ function getTelephonyName(telephonyType) {
 function getTelephonyPeriodType(telephonyType) {
     if (telephonyType === "internod") return state.internodBilling === "per_second" ? "посекундная" : "поминутная";
     if (telephonyType === "md_basic") return "поминутная";
+    if (telephonyType === "md_basic_second") return "посекундная";
     return "посекундно";
 }
 
@@ -998,11 +995,12 @@ function calculate() {
 
     const minutesPricePerMin = getMinutesPrice(minutes);
     const minutesMonthly = minutes * minutesPricePerMin;
-    const telephonyMonthly = getTelephonyPrice(state.telephonyType, minutes);
-    const internodMavAttemptsCount = state.telephonyType === "internod" ? (parseInt(state.internodMavAttempts) || 0) : 0;
+    const telephonyMonthly = state.telephonyTypes.reduce((sum, type) => sum + getTelephonyPrice(type, minutes), 0);
+    const hasInternodTelephony = state.telephonyTypes.includes("internod");
+    const internodMavAttemptsCount = hasInternodTelephony ? (parseInt(state.internodMavAttempts) || 0) : 0;
     const internodMavMonthly = internodMavAttemptsCount * INTERNOD_MAV_ATTEMPT_PRICE;
-    const internodCarouselMonthly = state.telephonyType === "internod" && state.internodCarousel ? 3000 : 0;
-    const internodNumbersMonthly = state.telephonyType === "internod" && state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
+    const internodCarouselMonthly = hasInternodTelephony && state.internodCarousel ? 3000 : 0;
+    const internodNumbersMonthly = hasInternodTelephony && state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
     const aiAmdActive = isAiAmdAvailable() && state.aiAmdEnabled;
     const aiAmdNumbersCount = aiAmdActive ? (parseInt(state.aiAmdNumbers) || 0) : 0;
     const aiAmdAttemptsCount = aiAmdActive ? (parseInt(state.aiAmdAttempts) || 0) : 0;
@@ -1446,21 +1444,24 @@ function bindEvents() {
         updateCalculations();
     });
 
-    document.getElementById("telephonySelect").addEventListener("change", e => {
-        state.telephonyType = e.target.value;
-        const internodOptions = document.getElementById("internodOptions");
-        if (internodOptions) {
-            internodOptions.style.display = state.telephonyType === "internod" ? "block" : "none";
-        }
-        const aiAmdOptions = document.getElementById("aiAmdOptions");
-        if (aiAmdOptions) {
-            aiAmdOptions.style.display = isAiAmdAvailable() ? "block" : "none";
-        }
-        if (isAiAmdAvailable()) {
-            state.aiAmdPrice = getAiAmdDefaultPrice(state.telephonyType);
-            document.getElementById("aiAmdPrice").value = state.aiAmdPrice;
-        }
-        updateCalculations();
+    document.querySelectorAll(".telephony-type-checkbox").forEach(checkbox => {
+        checkbox.addEventListener("change", () => {
+            state.telephonyTypes = Array.from(document.querySelectorAll(".telephony-type-checkbox:checked")).map(el => el.value);
+            const internodOptions = document.getElementById("internodOptions");
+            if (internodOptions) {
+                internodOptions.style.display = state.telephonyTypes.includes("internod") ? "block" : "none";
+            }
+            const aiAmdOptions = document.getElementById("aiAmdOptions");
+            if (aiAmdOptions) {
+                aiAmdOptions.style.display = isAiAmdAvailable() ? "block" : "none";
+            }
+            if (isAiAmdAvailable()) {
+                state.aiAmdPrice = state.telephonyTypes.includes("md_extended") ? 6 : 10;
+                const priceInput = document.getElementById("aiAmdPrice");
+                if (priceInput) priceInput.value = state.aiAmdPrice;
+            }
+            updateCalculations();
+        });
     });
 
     document.getElementById("aiAmdEnabled").addEventListener("change", e => {
@@ -3443,12 +3444,12 @@ function updateCalculations() {
     calcDetailsList.innerHTML = "";
 
     if (state.proposalType !== "discovery") {
-        if (state.telephonyType !== "none") {
+        state.telephonyTypes.forEach(telephonyType => {
             let minutes = parseInt(state.minutesCount) || 0;
-            if (state.telephonyType === "md_extended" && minutes === 10000000) minutes = 126000;
-            const rate = getTelephonyRate(state.telephonyType, parseInt(state.minutesCount) || 0);
-            const periodType = getTelephonyPeriodType(state.telephonyType);
-            const telephonyName = getTelephonyName(state.telephonyType);
+            if (telephonyType === "md_extended" && minutes === 10000000) minutes = 126000;
+            const rate = getTelephonyRate(telephonyType, parseInt(state.minutesCount) || 0);
+            const periodType = getTelephonyPeriodType(telephonyType);
+            const telephonyName = getTelephonyName(telephonyType);
 
             calcDetailsList.innerHTML += `
                 <div class="calc-detail-item">
@@ -3456,11 +3457,11 @@ function updateCalculations() {
                         <div class="calc-detail-name">${telephonyName}</div>
                         <div class="calc-detail-desc">${minutes.toLocaleString("ru-RU")} минут, ${rate} ₽/мин (${periodType})</div>
                     </div>
-                    ${renderCalcDetailPrice(calc.telephonyMonthly, calc.periodMonths)}
+                    ${renderCalcDetailPrice(getTelephonyPrice(telephonyType, parseInt(state.minutesCount) || 0), calc.periodMonths)}
                 </div>
             `;
 
-            if (state.telephonyType === "md_max") {
+            if (telephonyType === "md_max") {
                 calcDetailsList.innerHTML += `
                     <div class="calc-detail-item">
                         <div>
@@ -3471,57 +3472,57 @@ function updateCalculations() {
                     </div>
                 `;
             }
+        });
 
-            if (calc.aiAmdMonthly > 0) {
-                calcDetailsList.innerHTML += `
-                    <div class="calc-detail-item">
-                        <div>
-                            <div class="calc-detail-name">AI AMD: детекция автоответчиков</div>
-                            <div class="calc-detail-desc">${calc.aiAmdNumbersCount.toLocaleString("ru-RU")} ${declineWord(calc.aiAmdNumbersCount, "номер", "номера", "номеров")} × ${calc.aiAmdAttemptsCount} ${declineWord(calc.aiAmdAttemptsCount, "дозвон", "дозвона", "дозвонов")}, ${calc.aiAmdPriceKop} коп/детекция</div>
-                        </div>
-                        ${renderCalcDetailPrice(calc.aiAmdMonthly, calc.periodMonths)}
+        if (calc.aiAmdMonthly > 0) {
+            calcDetailsList.innerHTML += `
+                <div class="calc-detail-item">
+                    <div>
+                        <div class="calc-detail-name">AI AMD: детекция автоответчиков</div>
+                        <div class="calc-detail-desc">${calc.aiAmdNumbersCount.toLocaleString("ru-RU")} ${declineWord(calc.aiAmdNumbersCount, "номер", "номера", "номеров")} × ${calc.aiAmdAttemptsCount} ${declineWord(calc.aiAmdAttemptsCount, "дозвон", "дозвона", "дозвонов")}, ${calc.aiAmdPriceKop} коп/детекция</div>
                     </div>
-                `;
-            }
+                    ${renderCalcDetailPrice(calc.aiAmdMonthly, calc.periodMonths)}
+                </div>
+            `;
+        }
 
-            if (calc.internodMavAttemptsCount > 0) {
-                calcDetailsList.innerHTML += `
-                    <div class="calc-detail-item">
-                        <div>
-                            <div class="calc-detail-name">МАВ и этикетка</div>
-                            <div class="calc-detail-desc">${calc.internodMavAttemptsCount.toLocaleString("ru-RU")} инициаций вызова, 0.70 коп/шт</div>
-                        </div>
-                        ${renderCalcDetailPrice(calc.internodMavMonthly, calc.periodMonths)}
+        if (calc.internodMavAttemptsCount > 0) {
+            calcDetailsList.innerHTML += `
+                <div class="calc-detail-item">
+                    <div>
+                        <div class="calc-detail-name">МАВ и этикетка</div>
+                        <div class="calc-detail-desc">${calc.internodMavAttemptsCount.toLocaleString("ru-RU")} инициаций вызова, 0.70 коп/шт</div>
                     </div>
-                `;
-            }
+                    ${renderCalcDetailPrice(calc.internodMavMonthly, calc.periodMonths)}
+                </div>
+            `;
+        }
 
-            if (state.telephonyType === "internod" && state.internodCarousel) {
-                calcDetailsList.innerHTML += `
-                    <div class="calc-detail-item">
-                        <div>
-                            <div class="calc-detail-name">Карусель номеров</div>
-                            <div class="calc-detail-desc">Автоматическая смена номеров при исходящем обзвоне</div>
-                        </div>
-                        ${renderCalcDetailPrice(calc.internodCarouselMonthly, calc.periodMonths)}
+        if (state.telephonyTypes.includes("internod") && state.internodCarousel) {
+            calcDetailsList.innerHTML += `
+                <div class="calc-detail-item">
+                    <div>
+                        <div class="calc-detail-name">Карусель номеров</div>
+                        <div class="calc-detail-desc">Автоматическая смена номеров при исходящем обзвоне</div>
                     </div>
-                `;
-            }
+                    ${renderCalcDetailPrice(calc.internodCarouselMonthly, calc.periodMonths)}
+                </div>
+            `;
+        }
 
-            if (state.telephonyType === "internod" && state.internodNumbers) {
-                const numbersCount = parseInt(state.internodNumbersCount) || 1;
-                const title = numbersCount === 1 ? "Телефонный номер" : "Телефонные номера";
-                const numbersWord = declineWord(numbersCount, "номер", "номера", "номеров");
-                calcDetailsList.innerHTML += `
-                    <div class="calc-detail-item">
-                        <div>
-                            <div class="calc-detail-name">${title}</div>
-                            <div class="calc-detail-desc">${numbersCount} ${numbersWord}, прием входящих бесплатно</div>
-                        </div>
-                        ${renderCalcDetailPrice(calc.internodNumbersMonthly, calc.periodMonths)}
+        if (state.telephonyTypes.includes("internod") && state.internodNumbers) {
+            const numbersCount = parseInt(state.internodNumbersCount) || 1;
+            const title = numbersCount === 1 ? "Телефонный номер" : "Телефонные номера";
+            const numbersWord = declineWord(numbersCount, "номер", "номера", "номеров");
+            calcDetailsList.innerHTML += `
+                <div class="calc-detail-item">
+                    <div>
+                        <div class="calc-detail-name">${title}</div>
+                        <div class="calc-detail-desc">${numbersCount} ${numbersWord}, прием входящих бесплатно</div>
                     </div>
-                `;
-            }
+                    ${renderCalcDetailPrice(calc.internodNumbersMonthly, calc.periodMonths)}
+                </div>
+            `;
         }
 
         if (state.incomingAtcType === "incoming_atc") {

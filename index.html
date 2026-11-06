@@ -125,14 +125,39 @@
             <div class="form-section" id="featuresSection">
                 <h2>5. Телефония и возможности</h2>
                 <label>
-                    <span>Телефония</span>
-                    <select id="telephonySelect">
-                        <option value="none">Не выбрано</option>
-                        <option value="internod">Интернод / партнерская телефония</option>
-                        <option value="md_basic">МД базовый</option>
-                        <option value="md_extended">МД расширенный</option>
-                        <option value="md_max">МД Максимальный</option>
-                    </select>
+                    <span>Телефония (можно выбрать несколько)</span>
+                    <div class="checkbox-list" id="telephonyTypeList">
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="telephony-type-checkbox" value="internod">
+                            <div class="item-info">
+                                <div class="item-name">Интернод / партнерская телефония</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="telephony-type-checkbox" value="md_basic">
+                            <div class="item-info">
+                                <div class="item-name">МД базовый (поминутный)</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="telephony-type-checkbox" value="md_basic_second">
+                            <div class="item-info">
+                                <div class="item-name">МД базовый (посекундный)</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="telephony-type-checkbox" value="md_extended">
+                            <div class="item-info">
+                                <div class="item-name">МД расширенный</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="telephony-type-checkbox" value="md_max">
+                            <div class="item-info">
+                                <div class="item-name">МД Максимальный</div>
+                            </div>
+                        </label>
+                    </div>
                 </label>
                 <label>
                     <span>Количество минут в месяц</span>
@@ -2241,6 +2266,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="datastore.js?v=6"></script>
-    <script src="app.js?v=21"></script>
+    <script src="app.js?v=22"></script>
 </body>
 </html>
