@@ -530,14 +530,10 @@ function isAiAmdAvailable() {
 const EASY_START_OFFER_ID = "so-easy-start";
 const EASY_START_DAILY_MONTHLY_PRICE = 3600;
 
-const KOR2_PRO_P3_PROMO_START = "2026-09-30";
-const KOR2_PRO_P3_PROMO_END = "2026-10-31";
 const KOR2_PRO_P3_PRICE_20_TO_39 = 2000;
 const KOR2_PRO_P3_PRICE_40_PLUS = 1600;
 
 function getKor2ProThreeMonthPromoPrice() {
-    const date = (state.date || "").split("T")[0];
-    if (!date || date < KOR2_PRO_P3_PROMO_START || date > KOR2_PRO_P3_PROMO_END) return null;
     const operators = parseInt(state.operatorsCount) || 0;
     if (operators >= 40) return KOR2_PRO_P3_PRICE_40_PLUS;
     if (operators >= 20) return KOR2_PRO_P3_PRICE_20_TO_39;
