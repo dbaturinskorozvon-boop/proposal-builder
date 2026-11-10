@@ -446,6 +446,7 @@ const state = {
     internodCarousel: false,
     internodNumbers: false,
     internodNumbersCount: 1,
+    internodCityNumber: false,
     aiAmdEnabled: false,
     aiAmdNumbers: 10000,
     aiAmdAttempts: 3,
@@ -1005,6 +1006,7 @@ function calculate() {
     const internodMavMonthly = internodMavAttemptsCount * INTERNOD_MAV_ATTEMPT_PRICE;
     const internodCarouselMonthly = hasInternodTelephony && state.internodCarousel ? 3000 : 0;
     const internodNumbersMonthly = hasInternodTelephony && state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
+    const internodCityNumberOneTime = hasInternodTelephony && state.internodNumbers && state.internodCityNumber ? (parseInt(state.internodNumbersCount) || 1) * 999 : 0;
     const aiAmdActive = isAiAmdAvailable() && state.aiAmdEnabled;
     const aiAmdNumbersCount = aiAmdActive ? (parseInt(state.aiAmdNumbers) || 0) : 0;
     const aiAmdAttemptsCount = aiAmdActive ? (parseInt(state.aiAmdAttempts) || 0) : 0;
@@ -1062,7 +1064,7 @@ function calculate() {
 
     const monthlyTotal = licenseMonthly + moduleMonthly + incomingMonthly + incomingAtcMonthly + featuresMonthly + discoveryMonthly;
     const kor2Discovery = getKor2DiscoveryTotals();
-    const periodTotal = licensePeriod + (moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcFixedPrice + atcTotal + discoveryOneTime + featuresOneTime + kor2Discovery.aiTotal + kor2Discovery.trTotal;
+    const periodTotal = licensePeriod + (moduleMonthly + incomingMonthly + featuresMonthly + discoveryMonthly) * periodMonths + incomingSetup + incomingAtcFixedPrice + atcTotal + discoveryOneTime + featuresOneTime + internodCityNumberOneTime + kor2Discovery.aiTotal + kor2Discovery.trTotal;
 
     return {
         licensePricePerPeriod,
@@ -1074,6 +1076,7 @@ function calculate() {
         internodMavMonthly,
         internodCarouselMonthly,
         internodNumbersMonthly,
+        internodCityNumberOneTime,
         aiAmdNumbersCount,
         aiAmdAttemptsCount,
         aiAmdPriceKop,
@@ -1522,6 +1525,11 @@ function bindEvents() {
 
     document.getElementById("internodNumbersCount").addEventListener("input", e => {
         state.internodNumbersCount = e.target.value;
+        updateCalculations();
+    });
+
+    document.getElementById("internodCityNumber").addEventListener("change", e => {
+        state.internodCityNumber = e.target.checked;
         updateCalculations();
     });
 
@@ -3535,6 +3543,18 @@ function updateCalculations() {
                     ${renderCalcDetailPrice(calc.internodNumbersMonthly, calc.periodMonths)}
                 </div>
             `;
+
+            if (calc.internodCityNumberOneTime > 0) {
+                calcDetailsList.innerHTML += `
+                    <div class="calc-detail-item">
+                        <div>
+                            <div class="calc-detail-name">Городской номер</div>
+                            <div class="calc-detail-desc">${numbersCount} ${numbersWord} × 999 ₽ подключение, разово (не при продлении)</div>
+                        </div>
+                        ${renderCalcDetailPrice(calc.internodCityNumberOneTime, calc.periodMonths, true)}
+                    </div>
+                `;
+            }
         }
 
         if (state.incomingAtcType === "incoming_atc") {
