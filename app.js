@@ -1006,7 +1006,7 @@ function calculate() {
     const internodMavMonthly = internodMavAttemptsCount * INTERNOD_MAV_ATTEMPT_PRICE;
     const internodCarouselMonthly = hasInternodTelephony && state.internodCarousel ? 3000 : 0;
     const internodNumbersMonthly = hasInternodTelephony && state.internodNumbers ? (parseInt(state.internodNumbersCount) || 1) * 300 : 0;
-    const internodCityNumberOneTime = hasInternodTelephony && state.internodNumbers && state.internodCityNumber ? (parseInt(state.internodNumbersCount) || 1) * 999 : 0;
+    const internodCityNumberOneTime = hasInternodTelephony && state.internodNumbers && state.internodCityNumber ? (parseInt(state.internodNumbersCount) || 1) * 990 : 0;
     const aiAmdActive = isAiAmdAvailable() && state.aiAmdEnabled;
     const aiAmdNumbersCount = aiAmdActive ? (parseInt(state.aiAmdNumbers) || 0) : 0;
     const aiAmdAttemptsCount = aiAmdActive ? (parseInt(state.aiAmdAttempts) || 0) : 0;
@@ -3549,7 +3549,7 @@ function updateCalculations() {
                     <div class="calc-detail-item">
                         <div>
                             <div class="calc-detail-name">Городской номер</div>
-                            <div class="calc-detail-desc">${numbersCount} ${numbersWord} × 999 ₽ подключение, разово (не при продлении)</div>
+                            <div class="calc-detail-desc">${numbersCount} ${numbersWord} × 990 ₽ подключение, разово</div>
                         </div>
                         ${renderCalcDetailPrice(calc.internodCityNumberOneTime, calc.periodMonths, true)}
                     </div>
